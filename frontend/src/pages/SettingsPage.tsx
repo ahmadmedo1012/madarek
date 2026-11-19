@@ -1,3 +1,5 @@
+import { SESSIONS_NOTICE_OTHER_DEVICES, LABEL_EMAIL, CHANGE_PASSWORD, ACCOUNT_SETTINGS } from '../lib/copy';
+
 import { Link } from 'react-router-dom';
 import { Bell, Languages, LifeBuoy, MonitorSmartphone, Moon, Palette } from 'lucide-react';
 import { Card } from '../components/primitives';
@@ -34,7 +36,7 @@ import '../styles/student/settings.css';
  * route), and the honest account facts from /auth/me.
  */
 export default function SettingsPage() {
-  usePageTitle('إعدادات الحساب');
+  usePageTitle(ACCOUNT_SETTINGS);
   const { data: me } = useMe();
   const role = useAuthStore((s) => s.user?.role);
 
@@ -44,7 +46,7 @@ export default function SettingsPage() {
   return (
     <PageFrame width="default">
       <PageHeader
-        title="إعدادات الحساب"
+        title={ACCOUNT_SETTINGS}
         eyebrow="الحساب"
       />
 
@@ -67,9 +69,9 @@ export default function SettingsPage() {
 
       {/* ── [02] تغيير كلمة المرور ──────────────────────────────── */}
       <section>
-        <SectionBar index="02" title="تغيير كلمة المرور" />
+        <SectionBar index="02" title={CHANGE_PASSWORD} />
         <p className="set-note">
-          عند التغيير تُنهى جلسات بقية الأجهزة، وتبقى جلستك مفتوحة.
+          {SESSIONS_NOTICE_OTHER_DEVICES}
         </p>
         <ChangePasswordCard />
       </section>
@@ -91,7 +93,7 @@ export default function SettingsPage() {
             <div className="set-row-main">
               <Icon icon={Languages} size={16} aria-hidden />
               <div>
-                <div className="set-row-title">البريد الإلكتروني</div>
+                <div className="set-row-title">{LABEL_EMAIL}</div>
                 <div className="set-row-note">
                   {me?.email ? <bdi dir="ltr" className="font-mono">{me.email}</bdi> : '—'}
                 </div>

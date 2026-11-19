@@ -44,6 +44,7 @@ import { latn } from "@/lib/format";
 import { countAr } from "@/features/student/more";
 import { CourseWell } from "@/features/student/components";
 import { catalogDepartmentGroups } from "@/features/student/coursesLogic";
+import {NO_COURSES, UNSPECIFIED_DEPT, NO_INSTITUTION, PICK_INSTITUTION_FIRST} from "@/lib/copy";
 
 const PAGE_SIZE = 20;
 
@@ -91,7 +92,7 @@ const CatalogCard = makeRow<
               {item.name}
             </T>
             <T variant="xs" color="muted" numberOfLines={1}>
-              {item.department?.name ?? "قسم غير محدَّد"}
+              {item.department?.name ?? UNSPECIFIED_DEPT}
               {item.institution ? ` · ${item.institution.name}` : ""}
             </T>
           </View>
@@ -237,7 +238,7 @@ export default function CatalogScreen() {
   const searching = term.length > 0;
   const filtering = searching || departmentId !== null;
   const offlineFailure = isNetworkFailure(list.query.error);
-  const totalLabel = countAr(list.total, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"]);
+  const totalLabel = countAr(list.total, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"]);
 
   return (
     <Screen scroll={false} padded={false}>
@@ -258,7 +259,7 @@ export default function CatalogScreen() {
         >
           <Info size={16} color={p.accentInk} />
           <T variant="sm" style={{ flex: 1, color: p.accentInk }}>
-            التسجيل في المقرّرات تتم إدارته — تواصل مع شؤون الطلاب.
+            التسجيل يُدار من شؤون الطلاب.
           </T>
         </View>
 
@@ -318,8 +319,8 @@ export default function CatalogScreen() {
         {!slug ? (
           <EmptyState
             icon={<BookOpen size={22} color={p.textMuted} />}
-            title="لم تُحدَّد مؤسستك"
-            message="اختر مؤسستك أولًا."
+            title={NO_INSTITUTION}
+            message={PICK_INSTITUTION_FIRST}
           />
         ) : (
           <DataList
@@ -350,7 +351,7 @@ export default function CatalogScreen() {
               ) : (
                 <EmptyState
                   room="library"
-                  title="لا مقرّرات"
+                  title={NO_COURSES}
                   message="لا مقرّرات — تظهر فور الإضافة."
                 />
               )
@@ -427,7 +428,7 @@ export default function CatalogScreen() {
                     {card.name}
                   </T>
                   <T variant="xs" color="muted">
-                    {card.department?.name ?? "قسم غير محدَّد"}
+                    {card.department?.name ?? UNSPECIFIED_DEPT}
                     {card.institution ? ` · ${card.institution.name}` : ""}
                   </T>
                 </View>
@@ -454,7 +455,7 @@ export default function CatalogScreen() {
                 </T>
               ) : null}
               <T variant="xs" color="muted">
-                للاستفسار عن التسجيل تواصل مع شؤون الطلاب.
+                للاستفسار: شؤون الطلاب.
               </T>
             </View>
           ) : null}

@@ -1,6 +1,6 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — R325 P2.5 — the INDICATOR sheet (DESIGN.md §R325)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    The measurement vocabulary of the app grammar: the seven instruments
    of components/patterns/indicators.tsx (RulerGauge · SegmentedProgress
    · MasteryCells · StreakTicks · ScheduleStrip · AttendanceTicks ·
@@ -23,12 +23,14 @@
    their geometry in r325-app.css) · the ONE transition rides
    --app-t-hover (the §R325.k seat, collapsed to 0 by the RM belt) ·
    logical properties everywhere.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 /* ── 0 · The shared micro-voices ──────────────────────────────────────
    .ind-mono — the Latin data voice (codes, numerals, times; Arabic
    never rides mono, the r197 contract). .ind-microlabel — the Arabic
-   micro-label that names an instrument (body face, quiet). */
+   micro-label that names an instrument (body face, quiet).
+*/
 .ind-mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -39,8 +41,9 @@
   color: var(--text-muted);
   margin-block-end: var(--sp-2);
   /* R366-final (A2→A3 R1): the label wraps IN ITS OWN BOX at any text
-     scale — a stress-lengthened Arabic label never shares line space
-     with the instrument below. */
+   scale — a stress-lengthened Arabic label never shares line space
+   with the instrument below.
+*/
   min-inline-size: 0;
   overflow-wrap: anywhere;
 }
@@ -50,7 +53,8 @@
    ink fill run along the baseline, the ORANGE end-tick at the reading;
    mono numerals 0/25/50/75/100 below. Numerals anchor their inline-start
    edge on the tick (RTL) and center via transform — the two edge
-   numerals fold inward so nothing overflows the ruler. */
+   numerals fold inward so nothing overflows the ruler.
+*/
 .ind-ruler {
   display: grid;
   gap: var(--sp-1);
@@ -88,13 +92,14 @@
 }
 .ind-ruler-numerals {
   /* R366-final (A2→A3 R1): the 0.5/1/1/1/0.5 grid — the three middle
-     cells' centers land exactly on the 25/50/75 ticks, the edge cells
-     fold flush; the row is CONTENT-SIZED (the old fixed 13px row let
-     200%-scaled numerals escape into the microlabel block below —
-     measured 0.36 overlap fraction at 1440×900). container-type lets
-     the minor-numerals thin when the ruler crowds (12rem is root-
-     relative, so the threshold scales WITH the text scale — triggers
-     at 1024@200% only, never at 1440@200% or 100/130%). */
+   cells' centers land exactly on the 25/50/75 ticks, the edge cells
+   fold flush; the row is CONTENT-SIZED (the old fixed 13px row let
+   200%-scaled numerals escape into the microlabel block below —
+   measured 0.36 overlap fraction at 1440×900). container-type lets
+   the minor-numerals thin when the ruler crowds (12rem is root-
+   relative, so the threshold scales WITH the text scale — triggers
+   at 1024@200% only, never at 1440@200% or 100/130%).
+*/
   display: grid;
   grid-template-columns: 0.5fr 1fr 1fr 1fr 0.5fr;
   font-size: var(--fs-mono-sm);
@@ -118,7 +123,8 @@
    detect + the live hunt). The band-safe recipe is the band's own — the
    eyebrow's 72/28 mix of the band fg toward the band ground
    (theme-proof by construction, 5.32:1+ on both poles — the same math
-   as r325's ink-app README). */
+   as r325's ink-app README).
+*/
 .r305s-band--deep .ind-microlabel,
 .r305s-band--deep .ind-ruler-num,
 .r305s-band--deep .dash-resume-segcount {
@@ -133,7 +139,8 @@
    color-contrast serious, 5–6 nodes, both 390 and 1440). The dark
    counterpart rides the same 72/28 recipe the band's own dark eyebrow
    uses (the night poles) — 5.3:1+ on the neutral-150 ground. Light is
-   untouched. */
+   untouched.
+*/
 [data-theme='dark'] .r305s-band--deep .ind-microlabel,
 [data-theme='dark'] .r305s-band--deep .ind-ruler-num,
 [data-theme='dark'] .r305s-band--deep .dash-resume-segcount {
@@ -142,7 +149,8 @@
 
 /* ── 2 · SegmentedProgress — one square segment per week/lecture ──────
    full=ink · partial=mid (ink at 45%) · empty=hatch at the element's
-   own ink (the §R325.g recipe). Hairline join, radius 0. */
+   own ink (the §R325.g recipe). Hairline join, radius 0.
+*/
 .ind-segments {
   display: flex;
   gap: var(--sp-0-5);
@@ -161,13 +169,11 @@
 .ind-segment--partial {
   background: color-mix(in srgb, currentColor 45%, transparent);
 }
-.ind-segment--empty {
-  background-image: var(--app-hatch);
-}
 
 /* ── 3 · MasteryCells — the 0–4 mastery scale ─────────────────────────
    Empty=hatch · filled=ink · level 4 = the orange DOT (radius rides
-   --r-full — the one round mark in the language, the signal state). */
+   --r-full — the one round mark in the language, the signal state).
+*/
 .ind-mastery {
   display: inline-flex;
   gap: var(--sp-0-5);
@@ -193,7 +199,8 @@
 
 /* ── 4 · StreakTicks — the weekly study streak ─────────────────────────
    done=ink fill · missed=hatch · none=empty hairline (no datum —
-   honestly distinct from a missed day) · today=the orange outline. */
+   honestly distinct from a missed day) · today=the orange outline.
+*/
 .ind-streak {
   display: inline-flex;
   align-items: center;
@@ -204,13 +211,6 @@
   inline-size: 12px;
   block-size: 12px;
   border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
-}
-.ind-streak-tick--done {
-  background: currentColor;
-  border-color: currentColor;
-}
-.ind-streak-tick--missed {
-  background-image: var(--app-hatch);
 }
 .ind-streak-tick--today {
   border-color: var(--app-signal);
@@ -225,7 +225,8 @@
    The WeekStrip grammar grown a slot body: hairline frame, Sunday-first
    columns flowing RTL, mono date numerals, and each day's real slots
    (mono time + mono code). The TODAY column's header cell rides the
-   WeekStrip inversion (ink fill, surface-colored labels). */
+   WeekStrip inversion (ink fill, surface-colored labels).
+*/
 .ind-sched {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -290,7 +291,8 @@
   text-align: center;
 }
 /* Phone band: the 7-up grid keeps the week shape; slots collapse to
-   the code alone (the times stay in the DOM for assistive tech). */
+   the code alone (the times stay in the DOM for assistive tech).
+*/
 @media (max-width: 640px) {
   .ind-sched-day {
     min-block-size: 72px;
@@ -304,7 +306,8 @@
 }
 
 /* ── 6 · AttendanceTicks — the roll-call row ───────────────────────────
-   ✓ ink (present) · ✗ on hatch (absent) · ✓ in the signal (late). */
+   ✓ ink (present) · ✗ on hatch (absent) · ✓ in the signal (late).
+*/
 .ind-att {
   display: inline-flex;
   align-items: center;
@@ -326,26 +329,11 @@
   font-size: var(--fs-mono-md);
   line-height: 1;
 }
-.ind-att-tick--present {
-  background: currentColor;
-  border-color: currentColor;
-}
-.ind-att-tick--present > span[aria-hidden] {
-  color: var(--surface);
-}
-.ind-att-tick--late > span[aria-hidden] {
-  color: var(--app-signal-ink);
-}
-.ind-att-tick--late {
-  border-color: var(--app-signal);
-}
-.ind-att-tick--absent {
-  background-image: var(--app-hatch);
-}
 
 /* ── 7 · GradeBars — the distribution over a hairline axis ────────────
    Ink bars from a shared baseline; the student's own band wears the
-   signal (bar + count + label). Band labels are the Latin mono voice. */
+   signal (bar + count + label). Band labels are the Latin mono voice.
+*/
 .ind-grades {
   display: flex;
   align-items: stretch;
@@ -396,7 +384,8 @@
    new sheet + one component file.)
 
    .dash-resume-progress — the hero's instrument row (the deep band
-   inverts currentColor for free: the ruler's ink is the band's own). */
+   inverts currentColor for free: the ruler's ink is the band's own).
+*/
 .dash-resume-progress {
   margin-block-start: var(--sp-3);
   max-inline-size: 420px;
@@ -405,7 +394,8 @@
   margin-block-start: var(--sp-3);
   max-inline-size: 420px;
   /* R366-final (A2→A3 R1): the label row and the instrument row own
-     separate grid rows — they never share line space at any scale. */
+   separate grid rows — they never share line space at any scale.
+*/
   display: grid;
   grid-template-rows: auto auto;
 }
@@ -420,14 +410,16 @@
   color: var(--text-muted);
 }
 
-/* The gaps rail's trailing seat: mastery cells + the row's action. */
+/* The gaps rail's trailing seat: mastery cells + the row's action.
+*/
 .dash-gap-side {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-3);
 }
 
-/* The momentum band's indicator rows (GradeBars / StreakTicks). */
+/* The momentum band's indicator rows (GradeBars / StreakTicks).
+*/
 .dash-indicators {
   display: grid;
   gap: var(--sp-5);
@@ -446,7 +438,8 @@
 }
 
 /* The AI assistant entry — a quiet hairline row, the §R325.c hover:
-   hatch tint at the element's own ink, 120ms, hover-guarded. */
+   hatch tint at the element's own ink, 120ms, hover-guarded.
+*/
 .dash-ai {
   margin-block: var(--sp-6) 0;
 }
@@ -497,7 +490,8 @@
 
 /* Reduced-motion belt: the sheet's one transition is already seated on
    --app-t-hover, which the r325-app.css RM block collapses to 0 — kept
-   here as the explicit local contract (mirrors the family sheets). */
+   here as the explicit local contract (mirrors the family sheets).
+*/
 @media (prefers-reduced-motion: reduce) {
   .dash-ai-row {
     transition: none;

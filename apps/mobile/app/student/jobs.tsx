@@ -19,6 +19,7 @@ import { toast } from "@/components/ui/toast";
 import { latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { JOB_TYPE_LABEL, SectionNote, countAr } from "@/features/student/more";
+import { REQUEST_SEND_FAILED } from "@/lib/copy";
 
 /** One job row — module scope so FlashList rows stay cheap to re-render. */
 function JobRow({
@@ -95,14 +96,14 @@ export default function JobsScreen() {
     onSuccess: (_res, jobId) => {
       setJustApplied((prev) => ({ ...prev, [jobId]: true }));
       void qc.invalidateQueries({ queryKey: ["jobs"] });
-      toast.success("وصل طلبك.", "تمّ التقديم");
+      toast.success("وصل طلبك.");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إرسال الطلب"),
+    onError: (e) => toast.error(humanizeError(e), REQUEST_SEND_FAILED),
   });
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="وظائف" kicker="فرص العمل" />
+      <StackHeader title="وظائف" />
       <DataList
         data={rows}
         renderItem={({ item }) => (
@@ -130,7 +131,7 @@ export default function JobsScreen() {
         }
         ListHeaderComponent={
           <View style={{ paddingHorizontal: sp[16], paddingTop: sp[12], paddingBottom: sp[8] }}>
-            <SectionNote>وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض).</SectionNote>
+            <SectionNote>فرص تجريبية لطلاب وخرّيجي الجامعة — بيانات عرض.</SectionNote>
           </View>
         }
         contentPadding={{ horizontal: 16, bottom: 24 }}

@@ -167,7 +167,7 @@ export function BiometricGate({ children }: { children: ReactNode }) {
               </T>
             </Pressable>
             <T variant="xs" color="faint" align="center" style={{ paddingHorizontal: sp[24] }}>
-              تعمل البصمة أو رمز قفل الجهاز — لن تُحبس خارج حسابك أبدًا.
+              البصمة أو رمز الجهاز — لن تُحبس خارج حسابك.
             </T>
           </>
         ) : null}

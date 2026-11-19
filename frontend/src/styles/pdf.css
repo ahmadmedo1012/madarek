@@ -4,7 +4,8 @@
    r304: the viewer body becomes a deliberate composition — the page
    canvas stays the primary surface; the thumbnail rail is a secondary
    navigator that only exists when summoned. The rail sits at the
-   INLINE-START edge (right in RTL) like every reader's page rail. */
+   INLINE-START edge (right in RTL) like every reader's page rail.
+*/
 .pdf-body {
   flex: 1;
   display: flex;
@@ -14,7 +15,8 @@
 
 /* Thumbnail rail — a quiet strip of pages: button = page, the active
    page carries the accent ring, each canvas renders lazily as the rail
-   scrolls (IntersectionObserver in PdfViewer). */
+   scrolls (IntersectionObserver in PdfViewer).
+*/
 .pdf-thumbs {
   display: flex;
   flex-direction: column;
@@ -52,8 +54,9 @@
 .pdf-thumb.on {
   border-color: var(--accent);
   /* r313: the active thumb is the accent HAIRLINE itself — the old
-     double ring (border + 1px accent box-shadow) retired with the
-     shadow sweep (the reference's only shadow is the cookie banner). */
+   double ring (border + 1px accent box-shadow) retired with the
+   shadow sweep (the reference's only shadow is the cookie banner).
+*/
 }
 .pdf-thumb-canvas {
   inline-size: 100%;
@@ -74,13 +77,15 @@
   font-size: var(--fs-xxs);
   color: var(--text-muted);
   /* r313: page indices are mono micro-labels (Geist Mono, tabular
-     Latin digits — the reference's instrument voice). */
+   Latin digits — the reference's instrument voice).
+*/
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 .pdf-thumb.on .pdf-thumb-num { color: var(--accent-ink); font-weight: var(--fw-semibold); }
 /* Placeholder for pages outside the render window — shape-matched, no
-   canvas mounted (the thumb list stays cheap on 300-page documents). */
+   canvas mounted (the thumb list stays cheap on 300-page documents).
+*/
 .pdf-thumb-ghost {
   inline-size: 100%;
   aspect-ratio: 210 / 297;
@@ -97,7 +102,8 @@
 
 /* ≤920 (the mobile shell boundary): the rail becomes a drawer overlay
    INSIDE the viewer — it never stacks under the document or eats its
-   height; the toolbar toggle summons it over the canvas edge. */
+   height; the toolbar toggle summons it over the canvas edge.
+*/
 @media (max-width: 920px) {
   .pdf-thumbs {
     position: absolute;
@@ -113,7 +119,8 @@
 /* Annotations column resize — the drag strip between the document and
    the side panel: an 8px hit strip whose visible hairline lights in
    the accent while dragging; cursor col-resize both directions (RTL
-   flips the visual, not the verb). */
+   flips the visual, not the verb).
+*/
 .doc-side-resize {
   flex-shrink: 0;
   align-self: stretch;
@@ -159,7 +166,8 @@
    viewport's fold). The reader is a flex ROW: the canvas column and the
    annotations rail sit BESIDE each other inside the viewport-locked
    page; the rail is a flex COLUMN so its list owns the scroll and the
-   panel can never stretch the workspace. */
+   panel can never stretch the workspace.
+*/
 .doc-reader {
   display: flex;
   flex-direction: row;
@@ -193,7 +201,8 @@
 }
 /* ─── PDF Viewer ──────────────────────────────────────────
    Self-contained viewer chrome. Theme-aware via CSS vars.
-   ────────────────────────────────────────────────────── */
+   ───
+*/
 
 .pdf-viewer {
   display: flex;
@@ -212,7 +221,8 @@
 
 /* Fullscreen: the viewer root IS the screen — drop the card chrome,
    keep the ground + paper (state synced by the fullscreenchange
-   listener in PdfViewer.tsx). */
+   listener in PdfViewer.tsx).
+*/
 .pdf-viewer:fullscreen {
   border: 0;
   border-radius: 0;
@@ -221,7 +231,8 @@
 }
 .pdf-viewer::backdrop { background: var(--bg); }
 
-/* Toolbar */
+/* Toolbar
+*/
 .pdf-toolbar {
   display: flex;
   align-items: center;
@@ -230,21 +241,26 @@
   background: var(--surface-1);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
+  /* R369-C (C4.2): the entrance animation folded home from the
+   duplicate block below (one owner per selector).
+*/
+  animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
 }
 
-/* ╔═══════════════════════════════════════════════════════════════╗
-   ║  Controls-bar fade-in — home since r152e (was polish v19)      ║
-   ╚═══════════════════════════════════════════════════════════════╝ */
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PDF VIEWER — controls bar fades in                            ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+/* ╔╔╔
+   Controls-bar fade-in — home since r152e (was polish v19)
+   ╚╚╚
+*/
+  /* ╔╔╔
+   PDF VIEWER — controls bar fades in
+   ╚╚╚
+*/
   /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
-     zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
-  .pdf-toolbar {
-    animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
-  }
+   zero TSX consumers; PdfViewer renders .pdf-toolbar.)
+*/
   @keyframes madarek-pdf-controls-in {
-    from { opacity: 0; transform: translateY(calc(var(--motion-distance-small) * -1)); } /* r153h: -6px → --motion-distance-small */
+    from { opacity: 0; transform: translateY(calc(var(--motion-distance-small) * -1)); } /* r153h: -6px → --motion-distance-small
+*/
     to   { opacity: 1; transform: none; }
   }
 
@@ -284,7 +300,8 @@
 .pdf-btn:active:not(:disabled) { background: var(--surface-3); }
 /* r313: the pressed-in toggle (thumbs/search ON) is the ink fill held
    — the reference's active-state grammar (dark rect + light glyph),
-   not a soft tint chip. */
+   not a soft tint chip.
+*/
 .pdf-btn.on { background: var(--primary); color: var(--primary-fg); }
 .pdf-btn:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 .pdf-btn.sm { width: 28px; height: 28px; }
@@ -315,9 +332,10 @@
   font-size: var(--fs-xs);
   color: var(--text-muted);
   /* r313: the page indicator is a mono micro-label (Geist Mono,
-     tabular) — the zoom pill and search counter already ride the
-     same voice; the Arabic words (صفحة/من) resolve to the Arabic
-     face inside the mono stack. */
+   tabular) — the zoom pill and search counter already ride the
+   same voice; the Arabic words (صفحة/من) resolve to the Arabic
+   face inside the mono stack.
+*/
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
@@ -333,9 +351,10 @@
   color: var(--text);
   font-family: var(--font-mono);
   /* 21-b hand-off (23-a, A10 iOS-zoom class): 16px floor — iOS
-     Safari zooms the page on any focused input <16px; the old
-     fs-xs (12px) made every page jump on tap. Same recipe as the
-     shared input (components.css). */
+   Safari zooms the page on any focused input <16px; the old
+   fs-xs (12px) made every page jump on tap. Same recipe as the
+   shared input (components.css).
+*/
   font-size: max(16px, var(--fs-xs));
   font-variant-numeric: tabular-nums;
 }
@@ -343,11 +362,13 @@
 .pdf-pageinfo input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .pdf-pageinfo input[type=number] { -moz-appearance: textfield; }
 
-/* Search bar */
+/* Search bar
+*/
 .pdf-searchbar {
   display: flex;
   align-items: center;
-  /* r153h: 6px → --sp-1-5 */
+  /* r153h: 6px → --sp-1-5
+*/
   gap: var(--sp-1-5);
   padding: var(--sp-1-5) var(--sp-3);
   background: var(--surface-1);
@@ -363,20 +384,23 @@
   background: transparent;
   color: var(--text);
   font-family: inherit;
-  /* 16px floor — see the pageinfo note above (fs-sm was 14px). */
+  /* 16px floor — see the pageinfo note above (fs-sm was 14px).
+*/
   font-size: max(16px, var(--fs-sm));
   /* No `outline: none` — the global :focus-visible ring (polish.css
-     v22, overrides layer) is the single focus system; suppressing the
-     outline locally would strand keyboard users if layer order ever
-     changes. */
+   v22, overrides layer) is the single focus system; suppressing the
+   outline locally would strand keyboard users if layer order ever
+   changes.
+*/
 }
 .pdf-searchbar-count {
   font-size: var(--fs-xxs);
   color: var(--text-subtle);
   padding: 0 var(--sp-2);
   /* r313: hit counters are mono micro-labels (matches the TSX
-     .font-mono belt — kept in CSS so the grammar survives markup
-     churn). */
+   .font-mono belt — kept in CSS so the grammar survives markup
+   churn).
+*/
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
@@ -386,7 +410,8 @@
    owns its overflow and a bounded block-size, so a long walk (many hit
    pages) never stretches the reader — the canvas keeps the space the
    fold leaves it. An empty walk says so in ONE line (.pdf-search-empty)
-   — never a fake counter. */
+   — never a fake counter.
+*/
 .pdf-search-results {
   list-style: none;
   margin: 0;
@@ -426,7 +451,8 @@
   outline-offset: calc(var(--sp-0-5) * -1);
 }
 /* The active hit row: the surface-2 fill + the accent-ink page label —
-   the same quiet-state grammar as the toolbar's pressed toggles. */
+   the same quiet-state grammar as the toolbar's pressed toggles.
+*/
 .pdf-search-result[aria-current='true'] { background: var(--surface-2); }
 .pdf-search-result-page {
   flex-shrink: 0;
@@ -450,7 +476,8 @@
   white-space: nowrap;
   color: var(--text-muted);
 }
-/* The honest one-line answer to an empty walk. */
+/* The honest one-line answer to an empty walk.
+*/
 .pdf-search-empty {
   margin: 0;
   padding: var(--sp-1-5) var(--sp-3);
@@ -460,7 +487,8 @@
   border-block-end: 1px solid var(--border);
 }
 
-/* Canvas area */
+/* Canvas area
+*/
 .pdf-canvas-wrap {
   flex: 1;
   overflow: auto;
@@ -476,10 +504,11 @@
   position: relative;
   display: inline-block;
   /* The paper is a physical object: white in BOTH themes (the PDF
-     paints its own ground). r313: the sheet sits FLAT on the reader
-     ground — the retired --elev-3 shadow is gone and the white-on-
-     paper-step contrast draws the edge (the reference ships no
-     decorative shadows at all). */
+   paints its own ground). r313: the sheet sits FLAT on the reader
+   ground — the retired --elev-3 shadow is gone and the white-on-
+   paper-step contrast draws the edge (the reference ships no
+   decorative shadows at all).
+*/
   background: white;
   border-radius: var(--r-sm);
   overflow: hidden;
@@ -492,7 +521,8 @@
    safe). r366-2b: the skeleton takes the FULL wrap width with the same
    A4 ratio the fit-width render will occupy (the old 620px cap made
    the canvas land ~250px wider than its ghost on a desktop split —
-   a visible shift on every load). The wrap scrolls both identically. */
+   a visible shift on every load). The wrap scrolls both identically.
+*/
 .pdf-page-skeleton {
   width: 100%;
   aspect-ratio: 210 / 297;
@@ -503,7 +533,8 @@
   overflow: hidden;
 }
 .pdf-page-skeleton::before {
-  /* heading block */
+  /* heading block
+*/
   content: "";
   position: absolute;
   top: var(--sp-6);
@@ -514,7 +545,8 @@
   background: var(--surface-3);
 }
 .pdf-page-skeleton::after {
-  /* body text lines */
+  /* body text lines
+*/
   content: "";
   position: absolute;
   top: calc(var(--sp-6) + var(--sp-4) + var(--sp-3));
@@ -530,7 +562,8 @@
 
 /* Page-render indicator — the canvas keeps the previous page's pixels
    until the new render lands, so an honest busy cue matters during
-   page flips / zoom changes. */
+   page flips / zoom changes.
+*/
 .pdf-rendering {
   position: absolute;
   top: var(--sp-3);
@@ -548,7 +581,8 @@
 
 /* Coarse-pointer pinch hint — the browser's pinch gesture is the only
    touch zoom this viewer has (native pinch handling is a roadmap
-   item, audit 0-f P3-38). Decorative; never intercepts touches. */
+   item, audit 0-f P3-38). Decorative; never intercepts touches.
+*/
 .pdf-touch-hint {
   display: none;
   position: absolute;
@@ -557,7 +591,8 @@
   margin: 0 auto;
   width: max-content;
   align-items: center;
-  /* r153h: 6px → --sp-1-5 */
+  /* r153h: 6px → --sp-1-5
+*/
   gap: var(--sp-1-5);
   padding: var(--sp-1-5) var(--sp-3);
   background: var(--surface-1);
@@ -572,7 +607,8 @@
    Layer opacity is 1 (modern pdf.js pattern — the OLD 0.25 dimmed the
    ::selection/highlight colors to a quarter of their strength, making
    the themed AA selection pair below impossible); the spans themselves
-   are color: transparent, so the idle layer paints nothing. */
+   are color: transparent, so the idle layer paints nothing.
+*/
 .pdf-textLayer {
   position: absolute;
   inset: 0;
@@ -580,9 +616,10 @@
   opacity: 1;
   line-height: 1;
   /* pdf.js find-controller highlight tints — the paper is white in
-     both themes, so the accent is mixed with transparency and stays
-     readable on white regardless of theme (raw rgba(255,222,0,….)
-     removed, audit 0-f P2-10). */
+   both themes, so the accent is mixed with transparency and stays
+   readable on white regardless of theme (raw rgba(255,222,0,….)
+   removed, audit 0-f P2-10).
+*/
   --highlight-bg-color: color-mix(in srgb, var(--accent) 30%, transparent);
   --highlight-selected-bg-color: color-mix(in srgb, var(--accent) 55%, transparent);
 }
@@ -600,22 +637,26 @@
    r155d: 600 → 640 — folds to the dominant phone-band rung (the r152i
    ladder, student.css:1250; nearest rungs 480/640, 640 is 40px away).
    The 601-640 band joins the touch floor: toolbar buttons and the
-   scale pill grow to 44px slightly earlier. */
+   scale pill grow to 44px slightly earlier.
+*/
 @media (max-width: 640px) {
-  .pdf-toolbar { padding: var(--sp-1-5) var(--sp-2); gap: var(--sp-2); } /* r153h: 6px → --sp-1-5 */
+  .pdf-toolbar { padding: var(--sp-1-5) var(--sp-2); gap: var(--sp-2); } /* r153h: 6px → --sp-1-5
+*/
   .pdf-title { display: none; }
   .pdf-btn,
   .pdf-btn.sm { width: 44px; height: 44px; }
   .pdf-scale-pill { min-width: 64px; padding: 0 var(--sp-2); height: 44px; }
   .pdf-pageinfo input { height: 44px; }
   /* r366-2b: the page indicator collapses to its compact form on the
-     phone band — the «صفحة» word folds away (the input + «من N» total
-     carry the whole contract), so the nav cluster never crowds the
-     zoom cluster on a wrapped toolbar line. */
+   phone band — the «صفحة» word folds away (the input + «من N» total
+   carry the whole contract), so the nav cluster never crowds the
+   zoom cluster on a wrapped toolbar line.
+*/
   .pdf-pageinfo-word { display: none; }
   .pdf-canvas-wrap { padding: var(--sp-2); }
   /* The results fold keeps its 44px touch floor on phones (rows are
-     jump targets, not prose). */
+   jump targets, not prose).
+*/
   .pdf-search-result { min-block-size: 44px; align-items: center; }
   .pdf-search-empty { min-block-size: 44px; display: flex; align-items: center; }
 }
@@ -624,7 +665,8 @@
 }
 
 /* Annotations panel — a calm step on the paper ground, not a box in a
-   box: one hairline, one radius, the list owns the scroll. */
+   box: one hairline, one radius, the list owns the scroll.
+*/
 .annotations-panel {
   display: flex;
   flex-direction: column;
@@ -657,8 +699,9 @@
 .annotation-composer {
   padding: var(--sp-3);
   /* r313: the composer is a hairline band on the panel surface — the
-     accent-soft tint retired with the two-tone sweep; the block-end
-     rule is the separator (the reference separates with hairlines). */
+   accent-soft tint retired with the two-tone sweep; the block-end
+   rule is the separator (the reference separates with hairlines).
+*/
   background: transparent;
   border-bottom: 1px solid var(--border);
 }
@@ -673,7 +716,8 @@
   color: var(--text);
   font-family: inherit;
   /* 16px floor — textarea focus zooms iOS like any input (see the
-     pageinfo note above). */
+   pageinfo note above).
+*/
   font-size: max(16px, var(--fs-sm));
   line-height: var(--lh-base);
   resize: vertical;
@@ -681,23 +725,27 @@
 .annotation-page-input {
   width: 56px;
   height: 28px;
-  padding: 0 var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  padding: 0 var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   text-align: center;
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
   color: var(--text);
-  /* 16px floor — same iOS-zoom class as the toolbar inputs above. */
+  /* 16px floor — same iOS-zoom class as the toolbar inputs above.
+*/
   font-size: max(16px, var(--fs-xs));
   font-variant-numeric: tabular-nums;
 }
 
 /* Pen chips — the button carries the 28px hit target (44 on mobile)
    with the colored dot centered inside; selection is the copper ring
-   on the dot, focus is the global ring on the button. */
+   on the dot, focus is the global ring on the button.
+*/
 .annotation-colors {
   display: inline-flex;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   margin-inline-start: auto;
   flex-wrap: wrap;
 }
@@ -718,7 +766,8 @@
   width: 18px;
   height: 18px;
   border-radius: var(--r-full);
-  /* bounded swatch — keeps pale inks identifiable on light grounds */
+  /* bounded swatch — keeps pale inks identifiable on light grounds
+*/
   border: 1px solid var(--border-strong);
   transition: transform var(--t-fast) var(--ease);
 }
@@ -727,7 +776,8 @@
 }
 /* r132-F5: was a raw scale(0.95) — adjudicated to the controls register
    (--press-scale 0.97): the swatch is a tappable control, not a card or
-   a bottom-nav thumb target (r130-W2-7 one-token-per-register ladder). */
+   a bottom-nav thumb target (r130-W2-7 one-token-per-register ladder).
+*/
 .annotation-color:active .annotation-color-dot { transform: scale(var(--press-scale)); }
 .annotation-color.on .annotation-color-dot {
   border-color: var(--text);
@@ -736,7 +786,8 @@
 }
 
 /* List skeleton — mirrors an annotation card (avatar + author line +
-   two comment lines). */
+   two comment lines).
+*/
 .annotations-skeleton {
   display: flex;
   flex-direction: column;
@@ -776,11 +827,14 @@
 .annotation-jump {
   display: inline-flex;
   align-items: center;
-  gap: 3px; /* spacing-gate: allow — annotation jump-link arrow-to-label hairline gap */
-  padding: var(--sp-1-5) var(--sp-2-5); /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
+  gap: 3px; /* spacing-gate: allow — annotation jump-link arrow-to-label hairline gap
+*/
+  padding: var(--sp-1-5) var(--sp-2-5); /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل)
+*/
   /* r313: the jump chip is a hairline mono micro-label (square, 1px
-     #B3B3AF, accent ink) — the accent-soft pill retired with the
-     two-tone sweep; hover/active keep the reference's fill grammar. */
+   #B3B3AF, accent ink) — the accent-soft pill retired with the
+   two-tone sweep; hover/active keep the reference's fill grammar.
+*/
   background: transparent;
   color: var(--accent-ink, var(--accent));
   border: 1px solid var(--border-strong);
@@ -805,7 +859,8 @@
 }
 .annotation-delete {
   position: absolute;
-  /* r153h: 6px → --sp-1-5 */
+  /* r153h: 6px → --sp-1-5
+*/
   top: var(--sp-1-5);
   inset-inline-end: var(--sp-1-5);
   width: 22px;
@@ -830,12 +885,14 @@
    view belongs to the desktop shell: ≤920 is exactly where the app
    swaps the sidebar for the mobile drawer, so the viewer stacks at the
    same boundary; the 801-920 band (small tablets in portrait) joins
-   the stacked layout and the full-width annotations panel. */
+   the stacked layout and the full-width annotations panel.
+*/
 @media (max-width: 920px) {
   .annotations-panel { width: 100%; max-height: 320px; }
   /* 44px touch floor: chips/jump/delete grow for real (visual weight
-     on a touch surface beats pseudo-element hit hacks here — the
-     chips row wraps to its own line via .annotation-composer-meta). */
+   on a touch surface beats pseudo-element hit hacks here — the
+   chips row wraps to its own line via .annotation-composer-meta).
+*/
   .annotation-color { width: 44px; height: 44px; }
   .annotation-colors { margin-inline-start: 0; width: 100%; }
   .annotation-jump { min-height: 44px; padding-inline: var(--sp-3); }
@@ -847,7 +904,8 @@
    The split surface (.doc-reader row + .doc-reader-main/.doc-reader-side
    columns + the resize strip) lives in the resizable-geometry block at
    the top of this sheet. What stays here is the reader's own chrome:
-   the quiet head, the notes Sheet embedding and the viewport lock. */
+   the quiet head, the notes Sheet embedding and the viewport lock.
+*/
 .doc-reader-head {
   display: flex;
   flex-direction: row;
@@ -858,14 +916,16 @@
 }
 .doc-reader-title {
   /* The title shares the head line with the back affordance — one quiet
-     bar of context above the paper, not two stacked blocks eating the
-     viewport-locked reader's height (final-research D). Wraps under
-     the back link on narrow screens. */
+   bar of context above the paper, not two stacked blocks eating the
+   viewport-locked reader's height (final-research D). Wraps under
+   the back link on narrow screens.
+*/
   flex: 1 1 240px;
   min-inline-size: 0;
   margin: 0;
   font-size: var(--fs-h3);
-  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law
+*/
   color: var(--text);
   line-height: var(--lh-snug);
   overflow-wrap: anywhere;
@@ -874,7 +934,8 @@
 
 /* The annotations panel embedded in the mobile bottom Sheet — full
    width, natural height with an internal scroll; the fixed 320px side
-   column is a desktop-only geometry. */
+   column is a desktop-only geometry.
+*/
 .rs-notes-sheet-body .annotations-panel {
   width: 100%;
   max-height: min(60dvh, 480px);
@@ -888,19 +949,22 @@
    .fb-fab) already owns the inline-end one, and in RTL the start corner
    is the reading thumb's home. It rides ABOVE the phone dock with the
    same clearance the feedback seat keeps (72px + safe-area, on top of
-   the bottom-stack offset when other floating layers are up). */
+   the bottom-stack offset when other floating layers are up).
+*/
 .doc-notes-fab {
   position: fixed;
   inset-inline-start: var(--sp-3);
   inset-block-end: calc(var(--app-bottom-stack, 0px) + 72px + env(safe-area-inset-bottom, 0px));
-  z-index: 60; /* the feedback seat's rung: over page content, under every overlay */
+  z-index: 60; /* the feedback seat's rung: over page content, under every overlay
+*/
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1-5);
   min-block-size: 44px;
   /* The icon-only form (r368-t8's copy cut) measures 16+24+2 = 42px
-     inline — the same 44px touch floor the topbar's collapsed avatar
-     chip keeps (polish.css), so both axes are floored, not just block. */
+   inline — the same 44px touch floor the topbar's collapsed avatar
+   chip keeps (polish.css), so both axes are floored, not just block.
+*/
   min-inline-size: 44px;
   padding-inline: var(--sp-3);
   border: 1px solid var(--border);
@@ -939,7 +1003,8 @@
    A4 canvas rendered 529px wide on a 1440 viewport. inline-size:100%
    restores the stretch; max-inline-size widens the route from the
    generic 1080px page cap to the app's own content cap (--content-
-   max-w) — the one surface that genuinely benefits from it. */
+   max-w) — the one surface that genuinely benefits from it.
+*/
 .document-viewer-page {
   height: calc(100dvh - var(--topbar-h));
   padding-block-end: 0;
@@ -948,23 +1013,25 @@
 .document-viewer-page .pf-page {
   inline-size: 100%;
   /* The definite height closes the loop: without it the auto-height
-     chain (pf-page → doc-reader → main → viewer) sizes itself to the
-     RENDERED A4 content (at the new reading width that is ~1060px —
-     taller than the viewport) and the reader overflows its locked
-     page. With block-size:100% the flex distribution bounds the
-     canvas area, which scrolls its paper like every document reader. */
+   chain (pf-page → doc-reader → main → viewer) sizes itself to the
+   RENDERED A4 content (at the new reading width that is ~1060px —
+   taller than the viewport) and the reader overflows its locked
+   page. With block-size:100% the flex distribution bounds the
+   canvas area, which scrolls its paper like every document reader.
+*/
   block-size: 100%;
 }
 
 /* r366-2b — the lock has to start AT the fold. The shell's content
    column carries the page gutter as block padding; around a page that
    is already calc(100dvh − topbar) tall that gutter pushed the reader
-     (and the annotations rail) ~96px past the viewport — the page
+   (and the annotations rail) ~96px past the viewport — the page
    scrolled inside its own "locked" frame. The column yields its BLOCK
    padding for this route only (pages layer over base): the page starts
    under the topbar and ends exactly at the fold. Inline gutters stay
    (desktop keeps its framed margin); the phone band narrows them to a
-   hairline so the reader owns the width. */
+   hairline so the reader owns the width.
+*/
 .content-inner:has(> .document-viewer-page) {
   padding-block: 0;
 }
@@ -980,7 +1047,8 @@
    to scroll under its own lock on short viewports (a 568px phone has
    ~450px for the viewer after the head). Scoped to this route the
    viewer takes exactly the space the lock leaves — the canvas keeps
-   its internal scroll either way. */
+   its internal scroll either way.
+*/
 .document-viewer-page .pdf-viewer.fill { min-block-size: 0; }
 .document-viewer-page .pdf-canvas-wrap { min-block-size: 0; }
 
@@ -990,7 +1058,8 @@
    underlining, pagination) is owned by polish.css v22 — this block
    just shapes this page's surfaces around the paper and hides the
    pieces v22 doesn't know about (toolbar, search bar, annotations
-   sidebar, back link, the inline 100vh height). */
+   sidebar, back link, the inline 100vh height).
+*/
 @media print {
   .document-viewer-page { height: auto !important; }
   .doc-reader-head { margin-block-end: 0; }
@@ -1016,10 +1085,12 @@
   .pdf-page {
     border-radius: 0;
     break-inside: avoid;
-    /* box-shadow is already frozen globally by the v22 print belt */
+    /* box-shadow is already frozen globally by the v22 print belt
+*/
   }
   /* The canvas carries inline px sizing from the on-screen render —
-     cap it to the printed sheet width, keep the aspect ratio. */
+   cap it to the printed sheet width, keep the aspect ratio.
+*/
   .pdf-page canvas {
     max-width: 100% !important;
     height: auto !important;
@@ -1042,12 +1113,14 @@
    (r306: the selection is the brand signal — reached through the
    semantic accent aliases, not the legacy copper namesake):
    light --accent-strong #A32400 on --accent-soft #FCE3D9 = 8.62:1;
-   dark --neutral-50 #191918 on --accent #FF5A1F = 7.87:1. */
+   dark --neutral-50 #191918 on --accent #FF5A1F = 7.87:1.
+*/
 .pdf-textLayer ::selection {
   background: var(--accent-soft);
   color: var(--accent-strong);
 }
 :root[data-theme='dark'] .pdf-textLayer ::selection {
   background: var(--accent);
-  color: var(--neutral-50); /* the ink ground — #191918 in dark */
+  color: var(--neutral-50); /* the ink ground — #191918 in dark
+*/
 }

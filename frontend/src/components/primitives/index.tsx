@@ -536,7 +536,13 @@ export function UserAvatar({
       style={{
         width: size,
         height: size,
-        fontSize: Math.round(size * 0.4),
+        /* R369 (C1 · the T6 N6 root fix): the monogram rides the mono
+         * RUNG LADDER (mono-sm ≤32px cells, mono-md above) — the old
+         * size*0.4 ratio emitted raw 12/14px pixels that sat off the
+         * type ladder at the tablet root (12px @768 missed every rung
+         * by >0.9px on every authed page that renders an avatar).
+         * Tokens only; the quiet-chrome voice is unchanged. */
+        fontSize: size <= 32 ? 'var(--fs-mono-sm)' : 'var(--fs-mono-md)',
         ...(color ? { background: color } : {}),
         ...(ink ? { color: ink } : {}),
       }}

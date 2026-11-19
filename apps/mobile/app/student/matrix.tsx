@@ -27,6 +27,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { GapList, CourseWell, PushFrame, masteryMeta } from "@/features/student/components";
+import { MASTERY_EMPTY_NOTE } from "@/lib/copy";
 
 const LEVEL_FILTERS: { id: string; label: string }[] = [
   { id: "all", label: "الكل" },
@@ -70,7 +71,6 @@ export default function MatrixScreen() {
   return (
     <PushFrame
       title="مصفوفة الإتقان"
-      kicker="تتبّع المعرفة"
       refreshing={(matrix.isFetching && !matrix.isLoading) || gaps.isFetching}
       onRefresh={() => {
         void matrix.refetch();
@@ -78,7 +78,7 @@ export default function MatrixScreen() {
       }}
     >
       <T variant="sm" color="muted">
-        {`خريطة معرفيّة شخصيّة لكل مفهوم درسته — تُرسم من نقاط التفاعل في المحاضرات والاختبارات.`}
+        {`خريطة لكل مفهوم — تُرسم من نقاط التفاعل والاختبارات.`}
       </T>
 
       {/* Legend — words + dots, ranges stated in text */}
@@ -117,7 +117,7 @@ export default function MatrixScreen() {
           }
         />
         <T variant="sm" color="muted">
-          ابدأ بسدّ هذه الفجوات — حيث تتوفّر توصية، يأخذك الصفّ مباشرة إلى المحاضرة المناسبة.
+          ابدأ بسدّ الفجوات — التوصية للمحاضرة المناسبة.
         </T>
         {gaps.isLoading ? (
           <SkeletonList rows={2} rowHeight={56} />
@@ -125,7 +125,7 @@ export default function MatrixScreen() {
           <ErrorState message={humanizeError(gaps.error)} onRetry={() => gaps.refetch()} compact />
         ) : (gaps.data ?? []).length === 0 ? (
           <T variant="sm" color="muted">
-            لا فجوات حالياً — أحسنت! استمر بحضور المحاضرات والإجابة على نقاط التفاعل.
+            لا فجوات حالياً. استمر بالحضور والإجابة.
           </T>
         ) : (
           <GapList gaps={gaps.data ?? []} max={5} />
@@ -141,7 +141,7 @@ export default function MatrixScreen() {
         <EmptyState
           art={<Illustration id="r342/problem-03-mastery" width={216} />}
           title="لم تتشكل بعد"
-          message="أجب عن نقاط التفاعل — ترسم المصفوفة خريطتك."
+          message={MASTERY_EMPTY_NOTE}
         />
       ) : (
         <>
@@ -167,7 +167,7 @@ export default function MatrixScreen() {
 
           {mappedCourses.length === 0 ? (
             <T variant="sm" color="muted">
-              لم تُحدَّد مفاهيم مقرّراتك بعد — ستظهر المفاهيم هنا فور إضافتها من الأستاذ.
+              لا مفاهيم بعد — تُضاف من الأستاذ.
             </T>
           ) : (
             <View style={{ gap: sp[16] }}>
@@ -258,7 +258,7 @@ export default function MatrixScreen() {
                       </RowList>
                     ) : (
                       <T variant="sm" color="muted">
-                        لا مفاهيم في هذا التصنيف لهذا المقرّر.
+                        لا مفاهيم في هذا التصنيف.
                       </T>
                     )}
                   </View>

@@ -15,6 +15,7 @@ import { resolveEntryDestination } from "@/components/ui/boot";
 import { takePendingDeepLink } from "@/lib/push";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
+import { PASSWORD_LABEL } from "@/lib/copy";
 
 const DEMO_ACCOUNTS = [
   { email: "student@test.ly", label: "طالب" },
@@ -122,7 +123,7 @@ export default function SignIn() {
                 }
                 style={{ paddingVertical: sp[4] }}
               >
-                <T variant="sm" color="secondary">إنشاء حساب جديد</T>
+                <T variant="sm" color="secondary">إنشاء حساب</T>
               </Pressable>
             </View>
             <Pressable
@@ -130,7 +131,7 @@ export default function SignIn() {
               onPress={() => router.replace("/auth")}
               style={{ alignItems: "center", paddingVertical: sp[8] }}
             >
-              <T variant="sm" color="muted">العودة إلى صفحة البداية</T>
+              <T variant="sm" color="muted">رجوع</T>
             </Pressable>
           </View>
         }
@@ -154,7 +155,7 @@ export default function SignIn() {
           <SecretField
             {...form.field("password")}
             fieldId="password"
-            label="كلمة المرور"
+            label={PASSWORD_LABEL}
             testID="login-password"
             purpose="password"
             required
@@ -192,7 +193,7 @@ export default function SignIn() {
                 </Pressable>
               ))}
             </View>
-            <T variant="xs" color="faint">تظهر هذه اللوحة في بنيات التطوير والمعاينة فقط.</T>
+            <T variant="xs" color="faint">بنيات التطوير والمعاينة فقط.</T>
           </Card>
         ) : null}
       </FormScreen>

@@ -30,7 +30,7 @@ import {
   type OfferingPickRow,
   type StudentEnrollmentRow,
 } from "@/features/governance/components";
-import { SEARCH_NAME_OR_EMAIL } from "@/lib/copy";
+import {SEARCH_NAME_OR_EMAIL, TRY_WIDER_SEARCH, NO_RESULTS} from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -86,9 +86,6 @@ export default function AdminStudents() {
               onPress={() => router.push("/admin/directory" as never)}
             />
           </View>
-          <T variant="body" color="muted">
-            قائمة الطلاب المسجَّلين في الجامعة، مع البحث وإدارة التسجيلات.
-          </T>
         </View>
 
         <SearchBar
@@ -125,10 +122,10 @@ export default function AdminStudents() {
           hasNextPage={users.hasNextPage}
           loadMoreError={users.loadMoreError}
           onRetryLoadMore={users.retryLoadMore}
-          emptyTitle={appliedQ ? "لا نتائج" : "لا طلاب بعد"}
+          emptyTitle={appliedQ ? NO_RESULTS : "لا طلاب بعد"}
           emptyMessage={
             appliedQ
-              ? "جرّب بحثًا أوسع."
+              ? TRY_WIDER_SEARCH
               : "تظهر فور تسجيل أول طالب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
@@ -251,7 +248,7 @@ function EnrollmentManager({
     <Sheet open onClose={onClose} title={`تسجيلات ${student.firstName} ${student.lastName}`}>
       <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
-          إلغاء التسجيل يحذف تسجيل الطالب في المقرّر وتقدُّمه فيه نهائيًا — يمرّ كل إلغاء على تأكيد صريح قبل التنفيذ.
+          الإلغاء يحذف التسجيل والتقدُّم — يمرّ على تأكيد.
         </T>
 
         <T variant="sm" weight="bold">
@@ -319,7 +316,7 @@ function EnrollmentManager({
           <ErrorState message={humanizeError(offerings.error)} onRetry={() => offerings.refetch()} compact />
         ) : (offerings.data ?? []).length === 0 ? (
           <T variant="body" color="muted">
-            لا توجد مقرّرات متاحة للتسجيل.
+            لا مقرّرات متاحة.
           </T>
         ) : (
           <View style={{ gap: sp[8] }}>
@@ -347,7 +344,7 @@ function EnrollmentManager({
         title="إلغاء التسجيل"
         message={
           confirming
-            ? `سيُحذف تسجيل الطالب في «${confirming.offering?.course?.name ?? "المقرّر"}» وتقدُّمه نهائيًا. لا يمكن التراجع عن هذا الإجراء.`
+            ? `سيُحذف «${confirming.offering?.course?.name ?? "المقرّر"}» والتقدُّم — لا تراجع.`
             : ""
         }
         confirmLabel="إلغاء نهائي"

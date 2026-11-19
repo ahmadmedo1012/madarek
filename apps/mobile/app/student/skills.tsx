@@ -32,8 +32,8 @@ export default function SkillsScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title="مهاراتي" kicker="المهارات والشهادات" />
-      <SectionNote>رصد مهاراتك التقنية وتطوّرها مع الوقت — تُحتسب تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير.</SectionNote>
+      <StackHeader title="مهاراتي" />
+      <SectionNote>مهاراتك التقنية وتطوّرها.</SectionNote>
 
       {skills.isLoading ? (
         <SkeletonList rows={4} rowHeight={72} />

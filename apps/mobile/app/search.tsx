@@ -103,7 +103,7 @@ export default function Search() {
 
   return (
     <Screen scroll>
-      <PageHeader title="البحث" kicker="كل الأقسام" compact />
+      <PageHeader title="البحث" compact />
       <SearchBar
         value={q}
         onChange={setQ}
@@ -129,7 +129,7 @@ export default function Search() {
           onRetry={() => results.refetch()}
         />
       ) : sections.length === 0 ? (
-        <EmptyState title="لا نتائج" message={`لا شيء يطابق «${debounced}» في نطاق حسابك الحالي.`} />
+        <EmptyState title="لا نتائج" message={`لا شيء يطابق «${debounced}» في نطاقك.`} />
       ) : (
         sections.map((s) => {
           const Icon = KIND_ICON[s.rows[0]?.kind ?? "course"] ?? BookOpen;

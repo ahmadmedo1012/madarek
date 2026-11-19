@@ -137,7 +137,7 @@ describe("navCellA11y", () => {
 
 describe("unansweredNoteAr", () => {
   it("follows the four-form Arabic counted-noun grammar", () => {
-    expect(unansweredNoteAr(1)).toBe("لديك سؤال واحد بدون إجابة.");
+    expect(unansweredNoteAr(1)).toBe("لديك سؤال بدون إجابة.");
     expect(unansweredNoteAr(2)).toBe("لديك سؤالان بدون إجابة.");
     expect(unansweredNoteAr(5)).toBe("لديك 5 أسئلة بدون إجابة.");
     expect(unansweredNoteAr(11)).toBe("لديك 11 سؤالاً بدون إجابة.");
@@ -215,11 +215,11 @@ describe("examStatusChip", () => {
 describe("fmtUntilAr", () => {
   it("uses accusative duals so «بعد …» reads grammatically", () => {
     expect(fmtUntilAr(30_000)).toBe("أقل من دقيقة");
-    expect(fmtUntilAr(60_000)).toBe("دقيقة واحدة");
+    expect(fmtUntilAr(60_000)).toBe("دقيقة");
     expect(fmtUntilAr(120_000)).toBe("دقيقتين");
     expect(fmtUntilAr(5 * 60_000)).toBe("5 دقائق");
     expect(fmtUntilAr(2 * HOUR)).toBe("ساعتين");
-    expect(fmtUntilAr(26 * HOUR)).toBe("يوم واحد");
+    expect(fmtUntilAr(26 * HOUR)).toBe("يوم");
   });
 });
 

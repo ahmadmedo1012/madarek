@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, CANCEL, EMPTY_COURSES_YET, NOUN_STUDENTS, SAVING, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, PREV, NEXT, NOUN_COURSE_ACC, NOUN_STUDENT, LABEL_COURSES, LABEL_ACTIONS, LABEL_THE_COURSE, LABEL_DEPT, NOUN_COURSE_TWO, ADDING, COURSE_NAME, COLLEGE_DEPT, NAME_ENG_OPTIONAL, EMOJI_OPTIONAL, FAILED_ADD_COLLEGE, FAILED_ADD_DEPT, FAILED_SAVE_COURSE, FAILED_OPEN_SECTION, STATUS_ACTIVE_F, COURSE, FAILED_LOAD_PROFS, NOUN_TWO_DEPTS, NOUN_DEPTS, NOUN_DEPT_ACC, COLLEGE_NAME, COLLEGE_SCIENCES, LABEL_CITY, KNOWLEDGE_CAMPUS, ADD_COLLEGE, ADD_DEPT, DEPT_NAME, CS_DEPT, ADD_THE_DEPT, ADD_COURSE, COURSE_CODE, THE_CREDIT_HOURS, BETWEEN_1_10, ADD_THE_COURSE, OPEN_SECTION, LABEL_THE_PROF, PICK_PROF, HALL_OPTIONAL, CAPACITY, OPENING, OPEN_THE_SECTION, ADD_A_COLLEGE, PICK_DEPT, SEM, DEPT, INSTITUTIONS, FAILED_CONNECT_DOT } from '../../lib/copy';
+
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
@@ -65,7 +67,7 @@ import { formatNum } from '../../utils/numbers';
  */
 
 const STATUS_LABELS: Record<OwnerInstitution['status'], string> = {
-  ACTIVE: 'نشطة',
+  ACTIVE: STATUS_ACTIVE_F,
   SUSPENDED: 'معلّقة',
 };
 
@@ -167,11 +169,11 @@ function OwnerFacultyCard({
               in content — no new CSS, no second grammar. */}
           <span>{faculty.city.trim() || '—'}</span>
           <span aria-hidden="true">{' · '}</span>
-          <span>{countAr(faculty.departmentCount, ['قسم', 'قسمان', 'أقسام', 'قسماً'])}</span>
+          <span>{countAr(faculty.departmentCount, [DEPT, NOUN_TWO_DEPTS, NOUN_DEPTS, NOUN_DEPT_ACC])}</span>
           <span aria-hidden="true">{' · '}</span>
-          <span>{countAr(faculty.courseCount, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
+          <span>{countAr(faculty.courseCount, [COURSE, NOUN_COURSE_TWO, LABEL_COURSES, NOUN_COURSE_ACC])}</span>
           <span aria-hidden="true">{' · '}</span>
-          <span>{countAr(faculty.studentCount, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span>{countAr(faculty.studentCount, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])}</span>
         </div>
       </div>
       {hasDepts && (
@@ -211,7 +213,7 @@ function OwnerFacultyCard({
             <div key={d.id} className="admin-faculty-dept">
               <span className="admin-faculty-dept-name">{d.name}</span>
               <span className="admin-faculty-dept-meta">
-                {countAr(d.courses, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])} · {countAr(d.teachers, ['مدرّس', 'مدرّسان', 'مدرّسون', 'مدرّساً'])}
+                {countAr(d.courses, [COURSE, NOUN_COURSE_TWO, LABEL_COURSES, NOUN_COURSE_ACC])} · {countAr(d.teachers, ['مدرّس', 'مدرّسان', 'مدرّسون', 'مدرّساً'])}
               </span>
             </div>
           ))}
@@ -225,7 +227,7 @@ function OwnerFacultyCard({
           disabled={writesDisabled}
         >
           <Icon icon={Plus} size={13} />
-          إضافة قسم
+          {ADD_DEPT}
         </button>
       </div>
     </div>
@@ -457,7 +459,7 @@ export function OwnerInstitutionDetailPage() {
          * sector eyebrow (the surface family this page belongs to).
          * D10 quality precedent. */
         index="04"
-        eyebrow="المؤسسات"
+        eyebrow={INSTITUTIONS}
         description={
           /* r299: the Latin nameEn is bidi-isolated like the list
               page renders it (a bare RTL-embedded Latin run can
@@ -516,7 +518,7 @@ export function OwnerInstitutionDetailPage() {
       <Card
         title="البنية الأكاديمية"
         icon={Building2}
-        subtitle={`${countAr(faculties.length, ['كلّيّة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, ['قسم', 'قسمان', 'أقسام', 'قسماً'])}${foldedRows > 0 ? ` · ${foldedRows} سجلّ بذر مُجمَّع` : ''}`}
+        subtitle={`${countAr(faculties.length, ['كلّيّة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, [DEPT, NOUN_TWO_DEPTS, NOUN_DEPTS, NOUN_DEPT_ACC])}${foldedRows > 0 ? ` · ${foldedRows} سجلّ بذر مُجمَّع` : ''}`}
         actions={(
           /* r180/R304: the section's create action rides the section
               header — the scope (this institution) is named by the
@@ -529,7 +531,7 @@ export function OwnerInstitutionDetailPage() {
             aria-label="إضافة كلّيّة جديدة إلى المؤسسة"
           >
             <Icon icon={Plus} size={14} />
-            إضافة كلّيّة
+            {ADD_A_COLLEGE}
           </button>
         )}
       >
@@ -593,7 +595,7 @@ export function OwnerInstitutionDetailPage() {
                           disabled={suspended}
                         >
                           <Icon icon={Plus} size={13} />
-                          إضافة قسم
+                          {ADD_DEPT}
                         </button>
                       </div>
                     ))}
@@ -616,7 +618,7 @@ export function OwnerInstitutionDetailPage() {
         title="المقرّرات والشُّعب"
         icon={BookOpen}
         subtitle={coursesMeta
-          ? countAr(coursesMeta.total, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])
+          ? countAr(coursesMeta.total, [COURSE, NOUN_COURSE_TWO, LABEL_COURSES, NOUN_COURSE_ACC])
           : undefined}
         actions={(
           <button
@@ -627,7 +629,7 @@ export function OwnerInstitutionDetailPage() {
             aria-label="إضافة مقرّر جديد إلى المؤسسة"
           >
             <Icon icon={Plus} size={14} />
-            إضافة مقرّر
+            {ADD_COURSE}
           </button>
         )}
       >
@@ -644,11 +646,11 @@ export function OwnerInstitutionDetailPage() {
               <thead>
                 <tr>
                   <th scope="col" style={{ width: 100 }}>الكود</th>
-                  <th scope="col">المقرّر</th>
-                  <th scope="col">الكلّيّة / القسم</th>
+                  <th scope="col">{LABEL_THE_COURSE}</th>
+                  <th scope="col">{COLLEGE_DEPT}</th>
                   <th scope="col" className="admin-table-num" style={{ width: 70 }}>س.م</th>
                   <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>
-                  <th scope="col">إجراءات</th>
+                  <th scope="col">{LABEL_ACTIONS}</th>
                 </tr>
               </thead>
               <tbody>
@@ -657,7 +659,7 @@ export function OwnerInstitutionDetailPage() {
                     <td colSpan={6}>
                       <EmptyState
                         icon={BookOpen}
-                        title="لا مقرّرات بعد"
+                        title={EMPTY_COURSES_YET}
                       />
                     </td>
                   </tr>
@@ -665,10 +667,10 @@ export function OwnerInstitutionDetailPage() {
                 {courses.map((c) => (
                   <tr key={c.id}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td className="ws-id" data-label="المقرّر">
+                    <td className="ws-id" data-label={LABEL_THE_COURSE}>
                       <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
                     </td>
-                    <td data-label="الكلّيّة / القسم">
+                    <td data-label={COLLEGE_DEPT}>
                       {c.faculty ? (
                         <span className="text-xs text-muted">
                           {c.faculty}
@@ -680,7 +682,7 @@ export function OwnerInstitutionDetailPage() {
                     </td>
                     <td className="admin-table-num font-mono" data-label="س.م">{c.credits}</td>
                     <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>
-                    <td data-label="إجراءات">
+                    <td data-label={LABEL_ACTIONS}>
                       <button
                         type="button"
                         className="btn ghost sm"
@@ -689,7 +691,7 @@ export function OwnerInstitutionDetailPage() {
                         aria-label={`فتح شعبة لمقرّر ${c.name}`}
                       >
                         <Icon icon={Plus} size={13} />
-                        فتح شعبة
+                        {OPEN_SECTION}
                       </button>
                     </td>
                   </tr>
@@ -699,7 +701,7 @@ export function OwnerInstitutionDetailPage() {
             {coursesMeta && coursesMeta.totalPages > 1 && (
               <div className="table-pagination">
                 <span>
-                  صفحة {formatNum(coursesMeta.page)} من {formatNum(coursesMeta.totalPages)} · {countAr(coursesMeta.total, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
+                  صفحة {formatNum(coursesMeta.page)} من {formatNum(coursesMeta.totalPages)} · {countAr(coursesMeta.total, [COURSE, NOUN_COURSE_TWO, LABEL_COURSES, NOUN_COURSE_ACC])}
                 </span>
                 <span className="table-row-actions">
                   {/* r183-B5 (A10 wave-A P2 — RTL directionality): «السابق»
@@ -714,7 +716,7 @@ export function OwnerInstitutionDetailPage() {
                     onClick={() => setCoursePage((p) => Math.max(1, p - 1))}
                   >
                     <Icon icon={ChevronRight} size={13} />
-                    السابق
+                    {PREV}
                   </button>
                   <button
                     type="button"
@@ -722,7 +724,7 @@ export function OwnerInstitutionDetailPage() {
                     disabled={coursePage >= coursesMeta.totalPages || coursesQ.isFetching}
                     onClick={() => setCoursePage((p) => p + 1)}
                   >
-                    التالي
+                    {NEXT}
                     <Icon icon={ChevronLeft} size={13} />
                   </button>
                 </span>
@@ -735,21 +737,21 @@ export function OwnerInstitutionDetailPage() {
       {/* ── «إضافة كلّيّة» modal ─────────────────────────────────────── */}
       <Modal open={facultyFormOpen} onClose={closeFacultyForm} ariaLabel="إضافة كلّيّة جديدة">
         <div className="modal-header">
-          <h3 className="modal-title">إضافة كلّيّة</h3>
+          <h3 className="modal-title">{ADD_A_COLLEGE}</h3>
           <button type="button" className="icon-btn" onClick={closeFacultyForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <FormField label="اسم الكلّيّة" id="owner-faculty-name">
+          <FormField label={COLLEGE_NAME} id="owner-faculty-name">
             <input
               className="input"
               value={facultyForm.name}
               onChange={(e) => setFacultyForm({ ...facultyForm, name: e.target.value })}
-              placeholder="كلية العلوم"
+              placeholder={COLLEGE_SCIENCES}
             />
           </FormField>
-          <FormField label="الاسم بالإنجليزية (اختياري)" id="owner-faculty-name-en">
+          <FormField label={NAME_ENG_OPTIONAL} id="owner-faculty-name-en">
             <input
               className="input"
               value={facultyForm.nameEn}
@@ -758,7 +760,7 @@ export function OwnerInstitutionDetailPage() {
             />
           </FormField>
           <FormField
-            label="المدينة"
+            label={LABEL_CITY}
             id="owner-faculty-city"
             hint="مطلوب"
           >
@@ -766,10 +768,10 @@ export function OwnerInstitutionDetailPage() {
               className="input"
               value={facultyForm.city}
               onChange={(e) => setFacultyForm({ ...facultyForm, city: e.target.value })}
-              placeholder="حرم المعرفة"
+              placeholder={KNOWLEDGE_CAMPUS}
             />
           </FormField>
-          <FormField label="رمز تعبيري (اختياري)" id="owner-faculty-icon">
+          <FormField label={EMOJI_OPTIONAL} id="owner-faculty-icon">
             <input
               className="input"
               value={facultyForm.iconEmoji}
@@ -780,7 +782,7 @@ export function OwnerInstitutionDetailPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeFacultyForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -788,23 +790,23 @@ export function OwnerInstitutionDetailPage() {
             onClick={submitFaculty}
             disabled={!facultyForm.name.trim() || !facultyForm.city.trim() || createFaculty.isPending}
           >
-            {createFaculty.isPending ? 'جارٍ الإضافة…' : 'إضافة الكلّيّة'}
+            {createFaculty.isPending ? ADDING : ADD_COLLEGE}
           </button>
         </div>
         {createFaculty.isError && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر إضافة الكلّيّة"
-            description={apiErrorMessage(createFaculty.error, 'تعذَّر الاتصال.')}
+            title={FAILED_ADD_COLLEGE}
+            description={apiErrorMessage(createFaculty.error, FAILED_CONNECT_DOT)}
           />
         )}
       </Modal>
 
       {/* ── «إضافة قسم» modal (bound to the target faculty) ────────── */}
-      <Modal open={deptTarget !== null} onClose={closeDeptForm} ariaLabel="إضافة قسم">
+      <Modal open={deptTarget !== null} onClose={closeDeptForm} ariaLabel={ADD_DEPT}>
         <div className="modal-header">
-          <h3 className="modal-title">إضافة قسم</h3>
+          <h3 className="modal-title">{ADD_DEPT}</h3>
           <button type="button" className="icon-btn" onClick={closeDeptForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
@@ -815,15 +817,15 @@ export function OwnerInstitutionDetailPage() {
               سيُضاف القسم إلى «{deptTarget.name}».
             </p>
           )}
-          <FormField label="اسم القسم" id="owner-dept-name">
+          <FormField label={DEPT_NAME} id="owner-dept-name">
             <input
               className="input"
               value={deptForm.name}
               onChange={(e) => setDeptForm({ ...deptForm, name: e.target.value })}
-              placeholder="قسم الحاسوب"
+              placeholder={CS_DEPT}
             />
           </FormField>
-          <FormField label="الاسم بالإنجليزية (اختياري)" id="owner-dept-name-en">
+          <FormField label={NAME_ENG_OPTIONAL} id="owner-dept-name-en">
             <input
               className="input"
               value={deptForm.nameEn}
@@ -834,7 +836,7 @@ export function OwnerInstitutionDetailPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeDeptForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -842,15 +844,15 @@ export function OwnerInstitutionDetailPage() {
             onClick={submitDepartment}
             disabled={!deptForm.name.trim() || createDepartment.isPending}
           >
-            {createDepartment.isPending ? 'جارٍ الإضافة…' : 'إضافة القسم'}
+            {createDepartment.isPending ? ADDING : ADD_THE_DEPT}
           </button>
         </div>
         {createDepartment.isError && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر إضافة القسم"
-            description={apiErrorMessage(createDepartment.error, 'تعذَّر الاتصال.')}
+            title={FAILED_ADD_DEPT}
+            description={apiErrorMessage(createDepartment.error, FAILED_CONNECT_DOT)}
           />
         )}
       </Modal>
@@ -858,13 +860,13 @@ export function OwnerInstitutionDetailPage() {
       {/* ── «إضافة مقرّر» modal (department picker from this institution) ── */}
       <Modal open={courseFormOpen} onClose={closeCourseForm} ariaLabel="إضافة مقرّر جديد">
         <div className="modal-header">
-          <h3 className="modal-title">إضافة مقرّر</h3>
+          <h3 className="modal-title">{ADD_COURSE}</h3>
           <button type="button" className="icon-btn" onClick={closeCourseForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <FormField label="كود المقرّر" id="owner-course-code">
+          <FormField label={COURSE_CODE} id="owner-course-code">
             <input
               className="input"
               value={courseForm.code}
@@ -872,7 +874,7 @@ export function OwnerInstitutionDetailPage() {
               placeholder="CS101"
             />
           </FormField>
-          <FormField label="اسم المقرّر" id="owner-course-name">
+          <FormField label={COURSE_NAME} id="owner-course-name">
             <input
               className="input"
               value={courseForm.name}
@@ -881,7 +883,7 @@ export function OwnerInstitutionDetailPage() {
             />
           </FormField>
           <FormField
-            label="القسم"
+            label={LABEL_DEPT}
             id="owner-course-dept"
             hint={`أقسام «${institution.name}» فقط`}
           >
@@ -892,7 +894,7 @@ export function OwnerInstitutionDetailPage() {
               disabled={facultiesQ.isPending}
             >
               <option value="">
-                {facultiesQ.isPending ? 'جارٍ التحميل…' : 'اختر القسم…'}
+                {facultiesQ.isPending ? LOADING : PICK_DEPT}
               </option>
               {faculties.flatMap((f) =>
                 f.departments.map((d) => (
@@ -902,9 +904,9 @@ export function OwnerInstitutionDetailPage() {
             </select>
           </FormField>
           <FormField
-            label="الساعات المعتمدة"
+            label={THE_CREDIT_HOURS}
             id="owner-course-credits"
-            hint="بين 1 و10"
+            hint={BETWEEN_1_10}
           >
             <input
               className="input"
@@ -918,7 +920,7 @@ export function OwnerInstitutionDetailPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeCourseForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -936,23 +938,23 @@ export function OwnerInstitutionDetailPage() {
               || createCourse.isPending
             }
           >
-            {createCourse.isPending ? 'جارٍ الحفظ…' : 'إضافة المقرّر'}
+            {createCourse.isPending ? SAVING : ADD_THE_COURSE}
           </button>
         </div>
         {createCourse.isError && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر حفظ المقرّر"
-            description={apiErrorMessage(createCourse.error, 'تعذَّر الاتصال.')}
+            title={FAILED_SAVE_COURSE}
+            description={apiErrorMessage(createCourse.error, FAILED_CONNECT_DOT)}
           />
         )}
       </Modal>
 
       {/* ── «فتح شعبة» modal (teacher picker = this institution's roster) ── */}
-      <Modal open={offeringCourse !== null} onClose={closeOfferingForm} ariaLabel="فتح شعبة">
+      <Modal open={offeringCourse !== null} onClose={closeOfferingForm} ariaLabel={OPEN_SECTION}>
         <div className="modal-header">
-          <h3 className="modal-title">فتح شعبة</h3>
+          <h3 className="modal-title">{OPEN_SECTION}</h3>
           <button type="button" className="icon-btn" onClick={closeOfferingForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
@@ -963,7 +965,7 @@ export function OwnerInstitutionDetailPage() {
               سيُدرَّس «{offeringCourse.name}» في شعبة جديدة.
             </p>
           )}
-          <FormField label="الفصل" id="owner-offering-term">
+          <FormField label={SEM} id="owner-offering-term">
             <input
               className="input"
               value={offeringForm.term}
@@ -973,7 +975,7 @@ export function OwnerInstitutionDetailPage() {
             />
           </FormField>
           <FormField
-            label="الأستاذ"
+            label={LABEL_THE_PROF}
             id="owner-offering-teacher"
             hint="أساتذة المؤسسة فقط"
           >
@@ -984,14 +986,14 @@ export function OwnerInstitutionDetailPage() {
               disabled={teachersQ.isPending}
             >
               <option value="">
-                {teachersQ.isPending ? 'جارٍ التحميل…' : 'اختر الأستاذ…'}
+                {teachersQ.isPending ? LOADING : PICK_PROF}
               </option>
               {teachersQ.data?.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
           </FormField>
-          <FormField label="القاعة (اختياري)" id="owner-offering-room">
+          <FormField label={HALL_OPTIONAL} id="owner-offering-room">
             <input
               className="input"
               value={offeringForm.room}
@@ -999,7 +1001,7 @@ export function OwnerInstitutionDetailPage() {
               placeholder="قاعة A12"
             />
           </FormField>
-          <FormField label="السعة" id="owner-offering-capacity">
+          <FormField label={CAPACITY} id="owner-offering-capacity">
             <input
               className="input"
               type="number"
@@ -1013,8 +1015,8 @@ export function OwnerInstitutionDetailPage() {
             <AlertRow
               color="red"
               icon={AlertTriangle}
-              title="تعذّر تحميل الأساتذة"
-              description={apiErrorMessage(teachersQ.error, 'تعذَّر الاتصال.')}
+              title={FAILED_LOAD_PROFS}
+              description={apiErrorMessage(teachersQ.error, FAILED_CONNECT_DOT)}
               actions={(
                 <button
                   type="button"
@@ -1022,7 +1024,7 @@ export function OwnerInstitutionDetailPage() {
                   onClick={() => teachersQ.refetch()}
                   disabled={teachersQ.isPending}
                 >
-                  إعادة المحاولة
+                  {RETRY_ACTION}
                 </button>
               )}
             />
@@ -1030,7 +1032,7 @@ export function OwnerInstitutionDetailPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeOfferingForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -1039,15 +1041,15 @@ export function OwnerInstitutionDetailPage() {
             disabled={!offeringForm.term.trim() || !offeringForm.teacherId
               || !(offeringForm.capacity >= 1) || createOffering.isPending}
           >
-            {createOffering.isPending ? 'جارٍ الفتح…' : 'فتح الشعبة'}
+            {createOffering.isPending ? OPENING : OPEN_THE_SECTION}
           </button>
         </div>
         {createOffering.isError && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر فتح الشعبة"
-            description={apiErrorMessage(createOffering.error, 'تعذَّر الاتصال.')}
+            title={FAILED_OPEN_SECTION}
+            description={apiErrorMessage(createOffering.error, FAILED_CONNECT_DOT)}
           />
         )}
       </Modal>

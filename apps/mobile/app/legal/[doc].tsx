@@ -35,7 +35,7 @@ export default function LegalDocScreen() {
   if (!doc || !data) {
     return (
       <Screen scroll>
-        <StackHeader title="السياسات" kicker="مدارك" />
+        <StackHeader title="السياسات" />
         <EmptyState
           title="الصفحة غير موجودة"
           message="ليست من سياسات المنصّة."
@@ -50,7 +50,7 @@ export default function LegalDocScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title={data.title} kicker="السياسات" />
+      <StackHeader title={data.title} />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">

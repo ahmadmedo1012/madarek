@@ -36,7 +36,7 @@ import { CountUp, RingProgress } from "@/motion";
 import { fonts } from "@/design/fonts";
 import { type as typeScale } from "@/design/tokens";
 import { latn } from "@/lib/format";
-import { QUIZ_LABEL } from "@/lib/copy";
+import {QUIZ_LABEL, MCQ_LABEL, UNDER_PROCESSING, OPEN_ALERTS, AI_REQUESTS_PER_MIN} from "@/lib/copy";
 
 /* ══════════════════════ Counted Arabic plurals ═══════════════════ */
 
@@ -49,15 +49,15 @@ export function countAr(n: number, forms: [string, string, string, string]): str
 }
 
 export const UNIT = {
-  user: ["مستخدم واحد", "مستخدمان", "مستخدمين", "مستخدماً"] as [string, string, string, string],
-  student: ["طالب واحد", "طالبان", "طلاب", "طالباً"] as [string, string, string, string],
-  teacher: ["أستاذ واحد", "أستاذان", "أساتذة", "أستاذاً"] as [string, string, string, string],
-  course: ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"] as [string, string, string, string],
-  faculty: ["كلّيّة واحدة", "كلّيّتان", "كلّيّات", "كلّيّة"] as [string, string, string, string],
-  paper: ["ورقة واحدة", "ورقتان", "أوراق", "ورقة"] as [string, string, string, string],
-  event: ["حدث واحد", "حدثان", "أحداث", "حدثاً"] as [string, string, string, string],
-  alert: ["تنبيه واحد", "تنبيهان", "تنبيهات", "تنبيهاً"] as [string, string, string, string],
-  report: ["تقرير واحد", "تقريران", "تقارير", "تقريراً"] as [string, string, string, string],
+  user: ["مستخدم", "مستخدمان", "مستخدمين", "مستخدماً"] as [string, string, string, string],
+  student: ["طالب", "طالبان", "طلاب", "طالباً"] as [string, string, string, string],
+  teacher: ["أستاذ", "أستاذان", "أساتذة", "أستاذاً"] as [string, string, string, string],
+  course: ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"] as [string, string, string, string],
+  faculty: ["كلّيّة", "كلّيّتان", "كلّيّات", "كلّيّة"] as [string, string, string, string],
+  paper: ["ورقة", "ورقتان", "أوراق", "ورقة"] as [string, string, string, string],
+  event: ["حدث", "حدثان", "أحداث", "حدثاً"] as [string, string, string, string],
+  alert: ["تنبيه", "تنبيهان", "تنبيهات", "تنبيهاً"] as [string, string, string, string],
+  report: ["تقرير", "تقريران", "تقارير", "تقريراً"] as [string, string, string, string],
 };
 
 /* ══════════════════════ Page normalization ════════════════════════ */
@@ -208,22 +208,22 @@ const KNOWN_LABELS: Record<string, string> = {
   papers: "البحوث",
   permissionChanges: "تغييرات صلاحيات",
   roleChanges: "تغييرات أدوار",
-  newUsersThisMonth: "جدد هذا الشهر",
+  newUsersThisMonth: "جدد الشهر",
   successCount: "محاولات ناجحة",
   failureCount: "محاولات فاشلة",
   total: "الإجمالي",
   recentAuditLogs: "سجلّات 7 أيام",
   recentEventsLast7Days: "أحداث 7 أيام",
   activeSessions: "جلسات نشطة",
-  aiRequestsPerMin: "طلبات AI / دقيقة",
-  liveBroadcasts: "بثّ مباشر جارٍ",
+  aiRequestsPerMin: AI_REQUESTS_PER_MIN,
+  liveBroadcasts: "بثّ جارٍ",
   activeExams: "اختبارات جارية",
   totalRequests: "الطلبات",
   totalTokens: "التوكنات",
   successRate: "معدّل النجاح",
   avgLatencyMs: "متوسط الاستجابة",
   avgEnrolment: "متوسط التسجيل",
-  idle: "بلا حصص هذا الفصل",
+  idle: "بلا حصص",
   one: "حصّة واحدة",
   two: "حصّتان",
   three: "3 حصص",
@@ -247,7 +247,7 @@ const KNOWN_LABELS: Record<string, string> = {
   weeklyActive: "نشاط الأسبوع",
   factCount: "حقول مُزامنة",
   staleCount: "حقول قديمة",
-  openCount: "تنبيهات مفتوحة",
+  openCount: OPEN_ALERTS,
   criticalCount: "تنبيهات حرجة",
   critical: "حرجة",
   warning: "تحذيرات",
@@ -328,7 +328,7 @@ export function HonestLedger({
           if (scalars) {
             return (
               <View key={key}>
-                <StatLine label={label} value={countAr(v.length, ["عنصر واحد", "عنصران", "عناصر", "عنصراً"])} />
+                <StatLine label={label} value={countAr(v.length, ["عنصر", "عنصران", "عناصر", "عنصراً"])} />
                 {v.slice(0, 12).map((x, i) => (
                   <StatLine
                     key={`${key}-${i}`}
@@ -341,7 +341,7 @@ export function HonestLedger({
           }
           return (
             <View key={key}>
-              <StatLine label={label} value={countAr(v.length, ["سجلّ واحد", "سجلّان", "سجلّات", "سجلاً"])} />
+              <StatLine label={label} value={countAr(v.length, ["سجلّ", "سجلّان", "سجلّات", "سجلاً"])} />
               {v.slice(0, 10).map((row, i) => (
                 <View key={`${key}-row-${i}`} style={{ paddingStart: depth > 0 ? 0 : sp[12] }}>
                   {row && typeof row === "object" ? (
@@ -522,15 +522,15 @@ export function UserAvatar({
 
 /** Audit-log actions (OwnerActivityPage ACTION_LABEL parity). */
 export const AUDIT_ACTION_LABEL: Record<string, string> = {
-  "user.login": "تسجيل دخول ناجح",
-  "auth.login": "تسجيل دخول ناجح",
+  "user.login": "دخول ناجح",
+  "auth.login": "دخول ناجح",
   "user.logout": "تسجيل خروج",
   "user.created": "إنشاء حساب",
   "user.role_changed": "تغيير صلاحيات",
-  "user.status_changed": "تعديل حالة حساب",
+  "user.status_changed": "تغيير حالة",
   "course.created": "إنشاء مقرّر",
   "course.updated": "تحديث مقرّر",
-  "enrollment.created": "تسجيل في مقرّر",
+  "enrollment.created": "تسجيل مقرّر",
   "material.uploaded": "رفع ملف",
   "material.deleted": "حذف ملف",
   "paper.published": "نشر بحث",
@@ -542,7 +542,7 @@ export const AUDIT_ACTION_LABEL: Record<string, string> = {
   "institution.membership.revoke": "إلغاء عضوية",
   "institution.membership.restore": "استعادة عضوية",
   ROLE_CHANGE: "تغيير صلاحيات",
-  STATUS_CHANGE: "تعديل حالة حساب",
+  STATUS_CHANGE: "تغيير حالة",
   CAPABILITY_OVERRIDE: "تجاوز صلاحية",
   USER_SCOPE_CHANGE: "تعديل نطاق",
   TEACHER_POSITION: "تعيين موقع",
@@ -584,7 +584,7 @@ export const RESOURCE_LABEL: Record<string, string> = {
 /** Feedback inbox grammar (FeedbackInboxPage parity). */
 export const FEEDBACK_STATUS_LABEL: Record<string, string> = {
   open: "مفتوحة",
-  triage: "تحت المعالجة",
+  triage: UNDER_PROCESSING,
   fixed: "أُصلحت",
   dismissed: "مرفوضة",
 };
@@ -643,7 +643,7 @@ export function feedbackStatusLabel(status?: string | null): string {
 
 /** Exam question types (web QTYPE_LABEL parity — exam-moderation rows). */
 export const QUESTION_TYPE_LABEL: Record<string, string> = {
-  MCQ: "اختيار من متعدد",
+  MCQ: MCQ_LABEL,
   TRUE_FALSE: "صح أم خطأ",
   SHORT: "إجابة قصيرة",
   ESSAY: "سؤال مقالي",

@@ -1,3 +1,5 @@
+import { CANCEL, ALL, DASH_REGISTRAR, LABEL_STATUS, LABEL_MAIL, CREATED_AT, REFRESH } from '../../lib/copy';
+
 /**
  * R350 E6 — «البريد»: the admin mail surface.
  *
@@ -13,6 +15,7 @@
  * page. Data: the mail-admin hooks (platform-level, 30s status polling).
  */
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { apiErrorMessage } from '../../lib/format';
 import { toast } from '../../lib/toast';
 import { formatDate } from '../../utils/numbers';
@@ -77,14 +80,36 @@ function StatusPill({ status }: { status: string }) {
 }
 
 export function AdminMailPage() {
+  const queryClient = useQueryClient();
   return (
     <div className="page r305ao">
       <PageHeader
-        title="البريد"
+        title={LABEL_MAIL}
+        /* R369 (C1 · the D11 register): [10] = the ADMIN_NAV console
+         * register's next free slot after settings' 09. */
+        index="10"
+        eyebrow="النظام · البريد"
         breadcrumbs={[
-          { label: 'لوحة المسجل العام', to: '/admin/dashboard' },
-          { label: 'البريد' },
+          { label: DASH_REGISTRAR, to: '/admin/dashboard' },
+          { label: LABEL_MAIL },
         ]}
+        actions={(
+          /* R369 (C1 · the D8 family law + the first-viewport contract):
+           * the console's ONE standing verb rides the accent register
+           * IN THE HEADER — the log-card seat it first shipped in sat
+           * under the fixed bottom nav at 390 (40 of its 44px covered,
+           * unmeasured hover). One verb refreshes the whole console
+           * (every mail-admin query); the test-send submit stays
+           * honestly disabled until the address is typed. */
+          <button
+            type="button"
+            className="btn accent sm"
+            onClick={() => void queryClient.invalidateQueries({ queryKey: ['mail-admin'] })}
+            aria-label="تحديث البريد"
+          >
+            <RefreshCw aria-hidden /> {REFRESH}
+          </button>
+        )}
       />
       <ProviderStatusCard />
       <DeliveryLogCard />
@@ -137,7 +162,7 @@ function ProviderStatusCard() {
       )}
       {!data.configured && (
         <p className="r350-e6-note">
-          لتشغيل الإرسال اضبط <code>MAIL_PROVIDER</code> و<code>MAIL_API_KEY</code> و<code>MAIL_FROM</code> — الدليل في <code>MAIL-SETUP-AR.md</code>. توثيق النطاق خطوة تخصّ المالك.
+          لتشغيل الإرسال اضبط <code>MAIL_PROVIDER</code> و<code>MAIL_API_KEY</code> و<code>MAIL_FROM</code> — الدليل في <code>MAIL-SETUP-AR.md</code>. توثيق النطاق للمالك.
         </p>
       )}
     </Card>
@@ -169,7 +194,7 @@ function DeliveryLogCard() {
       title="سجلّ التسليم"
       icon={Mail}
       actions={
-        <div className="filter-bar" role="group" aria-label="تصفية حسب الحالة">
+        <div className="filter-bar" role="group" aria-label={LABEL_STATUS}>
           {OUTBOX_STATUSES.map((s) => (
             <button
               key={s || 'all'}
@@ -181,7 +206,7 @@ function DeliveryLogCard() {
                 setStatus(s);
               }}
             >
-              {s === '' ? 'الكل' : (STATUS_LABEL_AR[s] ?? s)}
+              {s === '' ? ALL : (STATUS_LABEL_AR[s] ?? s)}
             </button>
           ))}
         </div>
@@ -204,9 +229,9 @@ function DeliveryLogCard() {
                 <th scope="col">الموضوع</th>
                 <th scope="col">إلى</th>
                 <th scope="col">القالب</th>
-                <th scope="col">الحالة</th>
+                <th scope="col">{LABEL_STATUS}</th>
                 <th scope="col">المحاولات</th>
-                <th scope="col">تاريخ الإنشاء</th>
+                <th scope="col">{CREATED_AT}</th>
                 <th scope="col">إجراء</th>
               </tr>
             </thead>
@@ -232,14 +257,14 @@ function DeliveryLogCard() {
                   <td data-label="القالب">
                     <code>{row.template}</code>
                   </td>
-                  <td data-label="الحالة">
+                  <td data-label={LABEL_STATUS}>
                     <StatusPill status={row.status} />
                     {row.lastError && <span className="mail-error">{row.lastError}</span>}
                   </td>
                   <td data-label="المحاولات" className="font-mono admin-table-num">
                     <bdi>{row.attempts}</bdi>
                   </td>
-                  <td data-label="تاريخ الإنشاء">
+                  <td data-label={CREATED_AT}>
                     <time dateTime={row.createdAt}>{formatDate(row.createdAt)}</time>
                   </td>
                   <td data-label="إجراء">
@@ -264,12 +289,12 @@ function DeliveryLogCard() {
                           className="btn ghost sm"
                           onClick={() =>
                             cancel.mutate(row.id, {
-                              onSuccess: () => toast.success('أُلغي الإرسال.', { title: 'إلغاء' }),
+                              onSuccess: () => toast.success('أُلغي الإرسال.', { title: CANCEL }),
                               onError: (err) => toast.error(apiErrorMessage(err, 'تعذّر الإلغاء.'), { title: 'فشل' }),
                             })
                           }
                         >
-                          <XCircle aria-hidden /> إلغاء
+                          <XCircle aria-hidden /> {CANCEL}
                         </button>
                       )}
                     </span>

@@ -1,3 +1,5 @@
+import { VIRTUAL_LABS, LIVE_BROADCAST, SEMINARS_WORKSHOPS, NOUN_SESSIONS, LABS_TECH, LIVE_NOW, UPCOMING_SESSIONS, ONE_SESSION } from '../../lib/copy';
+
 /**
  * Student-facing live sessions list.
  *
@@ -113,8 +115,8 @@ export default function LivePage() {
     <PageFrame width="default">
       <PageHeader
         index="01"
-        eyebrow="المعامل والتقنيات"
-        title="البث المباشر"
+        eyebrow={LABS_TECH}
+        title={LIVE_BROADCAST}
         /* R342-08 — the header CTA pair joins the live-status chip
            (the D11/D8 measured seat; the phone band hides the topbar
            «اسأل AI» ≤920, D6): «الندوات وورش العمل» carries the
@@ -126,11 +128,11 @@ export default function LivePage() {
             {headerStatus}
             <Link to="/student/webinars" className="btn primary sm">
               <Icon icon={Video} size={13} />
-              الندوات وورش العمل
+              {SEMINARS_WORKSHOPS}
             </Link>
             <Link to="/student/labs" className="btn ghost sm">
               <Icon icon={FlaskConical} size={13} />
-              المعامل الافتراضية
+              {VIRTUAL_LABS}
             </Link>
           </>
         )}
@@ -201,11 +203,11 @@ export default function LivePage() {
           <StatLine
             items={[
               {
-                label: 'مباشرة الآن',
+                label: LIVE_NOW,
                 value: formatInt(live.length),
                 tone: live.length > 0 ? 'signal' : 'neutral',
               },
-              { label: 'جلسات قادمة', value: formatInt(upcoming.length) },
+              { label: UPCOMING_SESSIONS, value: formatInt(upcoming.length) },
               { label: 'منتهية', value: formatInt(ended.length) },
             ]}
           />
@@ -226,13 +228,13 @@ export default function LivePage() {
               <section className="ml-sec" aria-labelledby="live-sec-live">
                 <SectionBar
                   index="02"
-                  title="مباشرة الآن"
+                  title={LIVE_NOW}
                   id="live-sec-live"
                   meta={
                     live.length > 0 ? (
                       <BarCount
                         n={live.length}
-                        srLabel={countAr(live.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+                        srLabel={countAr(live.length, [ONE_SESSION, 'جلستان', NOUN_SESSIONS, 'جلسة'])}
                       />
                     ) : undefined
                   }
@@ -263,13 +265,13 @@ export default function LivePage() {
               <section className="ml-sec" aria-labelledby="live-sec-upcoming">
                 <SectionBar
                   index="03"
-                  title="جلسات قادمة"
+                  title={UPCOMING_SESSIONS}
                   id="live-sec-upcoming"
                   meta={
                     upcoming.length > 0 ? (
                       <BarCount
                         n={upcoming.length}
-                        srLabel={countAr(upcoming.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+                        srLabel={countAr(upcoming.length, [ONE_SESSION, 'جلستان', NOUN_SESSIONS, 'جلسة'])}
                       />
                     ) : undefined
                   }
@@ -298,7 +300,7 @@ export default function LivePage() {
                           ENDED total. */
                       <BarCount
                         n={recent.length}
-                        srLabel={countAr(recent.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+                        srLabel={countAr(recent.length, [ONE_SESSION, 'جلستان', NOUN_SESSIONS, 'جلسة'])}
                       />
                     )}
                   />

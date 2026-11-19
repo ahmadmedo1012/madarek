@@ -86,7 +86,7 @@ export default function LibraryScreen() {
   return (
     <Screen scroll={false} padded={false}>
       <AppStatusBar />
-      <StackHeader title="المكتبة" kicker="المكتبة الإلكترونية" />
+      <StackHeader title="المكتبة" />
       <View style={{ paddingHorizontal: sp[20], gap: sp[12], paddingTop: sp[12] }}>
         <Segmented
           options={[
@@ -100,7 +100,7 @@ export default function LibraryScreen() {
           }}
         />
         <SectionNote>
-          كتب المكتبة الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة للاستعارة الفورية والاطّلاع المرجعي.
+          كتب أكاديمية وبحوث منشورة — للاستعارة والاطّلاع.
         </SectionNote>
       </View>
       {tab === "books" ? <BooksTab /> : <ResearchTab />}
@@ -241,7 +241,6 @@ function BooksTab() {
       const dueAt = (res as { dueAt?: string } | null)?.dueAt ?? null;
       toast.success(
         dueAt ? `موعد إرجاع الكتاب: ${fullDate(dueAt)}.` : "استُعير — الموعد في «استعاراتي».",
-        "تمّت الاستعارة",
       );
     },
     onError: (e) => {
@@ -254,7 +253,7 @@ function BooksTab() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["library"] });
       haptics.notify("success");
-      toast.success("أُعيد الكتاب.", "تمّ الإرجاع");
+      toast.success("أُعيد الكتاب.");
     },
     onError: (e) => {
       haptics.notify("error");
@@ -287,7 +286,7 @@ function BooksTab() {
           </T>
           {availability !== "all" ? (
             <T variant="xs" color="muted">
-              تصفية على الكتب الظاهرة أدناه — حمّل المزيد لتوسيع النتيجة.
+              تصفية على الظاهر — حمّل المزيد.
             </T>
           ) : null}
         </View>
@@ -312,7 +311,7 @@ function BooksTab() {
         ) : loans.isError ? (
           <ErrorState message={humanizeError(loans.error)} onRetry={() => loans.refetch()} compact />
         ) : openLoans.length === 0 ? (
-          <SectionNote>لا استعارات نشطة — اضغط «استعارة» على أي كتاب متاح ليظهر هنا.</SectionNote>
+          <SectionNote>لا استعارات نشطة — اضغط «استعارة» على كتاب متاح.</SectionNote>
         ) : (
           <View style={{ borderWidth: 0 }}>
             {openLoans.map((l, i) => (
@@ -552,14 +551,14 @@ function ResearchTab() {
               }}
             />
             {debouncedQ.length === 1 ? (
-              <SectionNote>البحث في البحوث يبدأ من حرفين على الأقل — أضف حرفاً ثانياً وسيبدأ فوراً.</SectionNote>
+              <SectionNote>يبدأ البحث من حرفين على الأقل.</SectionNote>
             ) : null}
             <Card style={{ gap: sp[4] }}>
               <T variant="sm" weight="bold">
                 {`بحوث منشورة: ${num(hits.length)}`}
               </T>
               <T variant="xs" color="muted">
-                تم التحقق من النشر قبل الإدراج — الاستعراض عبر عارض المستندات الموثّق.
+                النشر مُتحقَّق قبل الإدراج — عبر العارض.
               </T>
             </Card>
           </View>
@@ -574,7 +573,7 @@ function ResearchTab() {
             title={debouncedQ ? "لا نتائج للبحث" : NO_FILES}
             message={
               debouncedQ
-                ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
+                ? `لا نتائج لـ«${debouncedQ}» — جرّب كلمات أخرى.`
                 : "بحوث الطلاب فور إجازتها."
             }
           />

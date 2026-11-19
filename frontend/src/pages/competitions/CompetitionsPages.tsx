@@ -1,3 +1,5 @@
+import { RETRY_ACTION, CANCEL, ALL, SAVED, LABEL_LECTURE, LABEL_ADDRESS, FAILED_PUBLISH_DOT, LABEL_COLLEGES, SAVE_CHANGES, BUSY_DOTS, NO_COMPETITIONS, SOON, BE_FIRST, NO_PARTICIPATIONS, DESC_SHORT, DESC, APPLICATION_CLOSED, FAILED_CREATE_DOT, FAILED_SAVE_DOT } from '../../lib/copy';
+
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -56,16 +58,15 @@ function useDocTitle(title: string | null) {
 /* R366 L4 copy diet — one home per repeated action label (the hero
  * CTAs, the modal heads and the confirm dialogs said the same words). */
 const NEW_COMPETITION = 'مسابقة جديدة';
-const PENDING_LABEL = 'جارٍ…';
+const PENDING_LABEL = BUSY_DOTS;
 const CLOSE_COMPETITION = 'إغلاق المسابقة';
 const PUBLISH_RESULTS = 'إعلان النتائج';
 const EDIT_MY_ENTRY = 'تعديل مشاركتي';
 const SUBMIT_ENTRY = 'تقديم مشاركة';
-const NO_ENTRIES = 'لا مشاركات';
-const BE_FIRST = 'كن الأول';
-const RETRY_LABEL = 'إعادة المحاولة';
-const CANCEL_LABEL = 'إلغاء';
-const ENDED_SUBMISSION = 'انتهى التقديم';
+const NO_ENTRIES = NO_PARTICIPATIONS;
+const RETRY_LABEL = RETRY_ACTION;
+const CANCEL_LABEL = CANCEL;
+const ENDED_SUBMISSION = APPLICATION_CLOSED;
 
 const STATUS_LABEL: Record<CompetitionRow['status'], string> = {
   OPEN: 'مفتوحة',
@@ -78,7 +79,7 @@ const STATUS_COLOR: Record<CompetitionRow['status'], 'green' | 'amber' | 'gold'>
   JUDGED: 'gold',
 };
 
-const CATEGORIES = ['بحث', 'برمجة', 'ابتكار', 'تصميم', 'محاضرة', 'ريادة أعمال', 'أخرى'];
+const CATEGORIES = ['بحث', 'برمجة', 'ابتكار', 'تصميم', LABEL_LECTURE, 'ريادة أعمال', 'أخرى'];
 const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '📊']; // allow-emoji: admin icon-picker palette (user-supplied content)
 /* r152a (A6 P3-5): screen readers announce a raw emoji glyph in the
  * SR's OWN language (often English) — these controlled Arabic names
@@ -186,7 +187,7 @@ export function CompetitionsIndexPage() {
           actions={
             <>
               <Link to="/community" className="btn accent sm">المجتمع</Link>
-              <Link to="/colleges" className="btn ghost sm">الكليات</Link>
+              <Link to="/colleges" className="btn ghost sm">{LABEL_COLLEGES}</Link>
               {canRun && (
                 <button type="button" className="btn primary" onClick={() => setCreating(true)}>
                   <Icon icon={Plus} size={14} />
@@ -203,7 +204,7 @@ export function CompetitionsIndexPage() {
       <StatLine
         items={[
           { label: 'مفتوحة', value: kpiValue(stats.open), tone: 'positive' },
-          { label: 'قريباً', value: kpiValue(stats.closingSoon), tone: 'warning' },
+          { label: SOON, value: kpiValue(stats.closingSoon), tone: 'warning' },
           { label: 'المشاركات', value: kpiValue(stats.totalEntries) },
         ]}
       />
@@ -218,9 +219,9 @@ export function CompetitionsIndexPage() {
              colleges.css can lift these primary filter controls to the
              44px touch floor (.comp-filter-pills) without changing the
              compact .pill grade used elsewhere (community/feed). */
-          <div className="comp-filter-pills" role="group" aria-label="تصفية المسابقات بحسب الحالة">
+          <div className="comp-filter-pills" role="group" aria-label="تصفية بحسب الحالة">
             {([
-              ['all', 'الكل'],
+              ['all', ALL],
               ['OPEN', STATUS_LABEL.OPEN],
               ['CLOSED', STATUS_LABEL.CLOSED],
               ['JUDGED', STATUS_LABEL.JUDGED],
@@ -244,7 +245,7 @@ export function CompetitionsIndexPage() {
        visible.length === 0 ? (
         filter === 'all' ? (
           <EmptyState illustration="empty-community"
-            title="لا مسابقات"
+            title={NO_COMPETITIONS}
             description=""
             action={canRun ? (
               <button type="button" className="btn primary sm" onClick={() => setCreating(true)}>
@@ -255,11 +256,11 @@ export function CompetitionsIndexPage() {
           />
         ) : (
           <EmptyState illustration="empty-community"
-            title="لا مسابقات"
+            title={NO_COMPETITIONS}
             description=""
             action={(
               <button type="button" className="btn ghost sm" onClick={() => setFilter('all')}>
-                الكل
+                {ALL}
               </button>
             )}
           />
@@ -451,7 +452,7 @@ export function CompetitionDetailPage() {
               </button>
             )}
             <Link to="/community" className="btn accent sm">المجتمع</Link>
-            <Link to="/colleges" className="btn ghost sm">الكليات</Link>
+            <Link to="/colleges" className="btn ghost sm">{LABEL_COLLEGES}</Link>
             {isOrganizer && c.status === 'OPEN' && (
               <button
                 type="button"
@@ -482,7 +483,7 @@ export function CompetitionDetailPage() {
             <div className="form-error" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
               <Icon icon={AlertTriangle} size={14} />
               <span className="form-error-msg">
-                {closer.isError ? 'تعذَّر الإغلاق.' : 'تعذَّر النشر.'}
+                {closer.isError ? 'تعذَّر الإغلاق.' : FAILED_PUBLISH_DOT}
               </span>
               <button
                 type="button"
@@ -684,7 +685,7 @@ function ScoreInput({
         {score.isSuccess && currentScore !== null && (
           <span role="status" style={{ color: 'var(--success)', display: 'inline-flex', alignItems: 'center' }}>
             <Icon icon={Check} size={14} />
-            <span className="visually-hidden">تمّ الحفظ</span>
+            <span className="visually-hidden">{SAVED}</span>
           </span>
         )}
       </div>
@@ -693,7 +694,7 @@ function ScoreInput({
       {score.isError && (
         <div className="form-error" id={`${inputId}-err`} role="alert" style={{ marginBlockStart: 'var(--sp-1-5)' /* r157: 6px → token */ }}>
           <Icon icon={AlertTriangle} size={13} />
-          <span className="form-error-msg">تعذَّر الحفظ.</span>
+          <span className="form-error-msg">{FAILED_SAVE_DOT}</span>
           <button type="button" className="btn ghost sm" onClick={save}>{RETRY_LABEL}</button>
         </div>
       )}
@@ -705,7 +706,7 @@ function ScoreInput({
 
 const createSchema = z.object({
   title: z.string().min(3, 'العنوان قصير جدّاً').max(200),
-  description: z.string().min(10, 'الوصف قصير').max(4000),
+  description: z.string().min(10, DESC_SHORT).max(4000),
   category: z.string().min(1, 'اختر فئة'),
   prize: z.string().max(200).optional(),
   deadline: z.string().min(1, 'حدِّد الموعد').refine(
@@ -765,10 +766,10 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           aria-invalid + aria-describedby land on the controls (the
           hand-rolled rows rendered visible errors with zero ARIA). */}
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
-        <FormField label="العنوان" error={form.formState.errors.title?.message}>
+        <FormField label={LABEL_ADDRESS} error={form.formState.errors.title?.message}>
           <input type="text" {...form.register('title')} className="input" />
         </FormField>
-        <FormField label="الوصف" error={form.formState.errors.description?.message}>
+        <FormField label={DESC} error={form.formState.errors.description?.message}>
           <textarea rows={4} {...form.register('description')} className="input" style={{ resize: 'vertical' }} />
         </FormField>
         <div className="comp-form-row">
@@ -802,7 +803,7 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         {create.isError && (
-          <div className="form-error" role="alert">تعذَّر الإنشاء.</div>
+          <div className="form-error" role="alert">{FAILED_CREATE_DOT}</div>
         )}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>{CANCEL_LABEL}</button>
@@ -820,7 +821,7 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
 
 const enterSchema = z.object({
   title: z.string().min(3, 'العنوان قصير جدّاً').max(200),
-  body: z.string().min(10, 'الوصف قصير').max(4000),
+  body: z.string().min(10, DESC_SHORT).max(4000),
   fileUrl: z.string().url('رابط فاسد').optional().or(z.literal('')),
 });
 type EnterInputs = z.infer<typeof enterSchema>;
@@ -881,7 +882,7 @@ function EnterCompetitionModal({
           long-form prose; its error state must re-announce on
           re-focus, not only as a one-shot alert). */}
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
-        <FormField label="العنوان" error={form.formState.errors.title?.message}>
+        <FormField label={LABEL_ADDRESS} error={form.formState.errors.title?.message}>
           <input type="text" {...form.register('title')} className="input" />
         </FormField>
         <FormField label="المحتوى" error={form.formState.errors.body?.message}>
@@ -895,7 +896,7 @@ function EnterCompetitionModal({
           <button type="button" className="btn ghost" onClick={requestClose} disabled={enter.isPending}>{CANCEL_LABEL}</button>
           <button type="submit" className="btn primary" disabled={enter.isPending}>
             <Icon icon={Send} size={14} />
-            {enter.isPending ? PENDING_LABEL : existing ? 'حفظ التعديلات' : 'إرسال'}
+            {enter.isPending ? PENDING_LABEL : existing ? SAVE_CHANGES : 'إرسال'}
           </button>
         </div>
       </form>

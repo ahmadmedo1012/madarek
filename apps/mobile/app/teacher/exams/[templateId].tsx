@@ -33,7 +33,7 @@ import {
   StatusBadge,
   arCount,
 } from "@/features/teacher/components";
-import { AWAITING_QUALITY_APPROVAL, SAVED } from "@/lib/copy";
+import {AWAITING_QUALITY_APPROVAL, SAVED, LINK_DELETED} from "@/lib/copy";
 
 /** Wire shape of GET /exams/templates/:id (the ExamTemplateQuestion join rows). */
 type TemplateQuestionWire = {
@@ -221,7 +221,7 @@ export default function ExamTemplateDetail() {
     return (
       <Screen scroll>
         <StackHeader title="قالب الاختبار" />
-        <EmptyState title="القالب غير موجود" message="حُذف أو رابط خاطئ." />
+        <EmptyState title="القالب غير موجود" message={LINK_DELETED} />
       </Screen>
     );
   }
@@ -408,7 +408,7 @@ export default function ExamTemplateDetail() {
       {/* تعديل القالب — the safe fields. */}
       <Sheet open={editing} onClose={() => setEditing(false)} title="تعديل القالب">
         <T variant="sm" color="muted">
-          الأسئلة ونوع الاختبار ونطاقه ثابتة بعد الإنشاء — عدّل بيانات العرض والتوقيت هنا، أو استنسخ القالب لنسخة تُبنى عليها أسئلة مختلفة.
+          الأسئلة والنوع والنطاق ثابتة — عدّل العرض والتوقيت أو استنسخ.
         </T>
         <Field label="عنوان القالب" value={title} onChangeText={setTitle} accessibilityLabel="عنوان القالب" />
         <Field
@@ -496,11 +496,11 @@ export default function ExamTemplateDetail() {
           <View style={{ gap: sp[10] }}>
             <T variant="sm" color="muted">
               {t.title} · الحالة: {ATTEMPT_STATUS_MAP[grading.status]?.label ?? grading.status}
-              {grading.score !== null ? ` · الدرجة الآلية حتى الآن: ${latn(grading.score)} / ${latn(grading.maxScore)}` : ""}
+              {grading.score !== null ? ` · الدرجة الآلية: ${latn(grading.score)} / ${latn(grading.maxScore)}` : ""}
             </T>
             {(grading.pendingAnswers ?? []).length === 0 ? (
               <T variant="sm" color="muted">
-                لا إجابات معلّقة في هذه المحاولة (أسئلتها المقالية تركت بلا إجابة) — حفظ التصحيح يعتدّ بالدرجة الآلية كما هي ويُنهي المحاولة.
+                لا معلّقة — الحفظ يعتدّ بالآلية ويُنهي.
               </T>
             ) : (
               (grading.pendingAnswers ?? []).map((a, i) => (
@@ -519,7 +519,7 @@ export default function ExamTemplateDetail() {
                       </T>
                     ) : (
                       <T variant="sm" color="muted">
-                        لم يكتب الطالب إجابة لهذا السؤال — حكمك يحدد درجته.
+                        لا إجابة — حكمك يحدد درجته.
                       </T>
                     )}
                   </View>

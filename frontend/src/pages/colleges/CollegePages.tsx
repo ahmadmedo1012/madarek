@@ -209,7 +209,7 @@ function useDocTitle(title: string | null) {
 const COLLEGES_LABEL = 'كلّيّات الجامعة';
 /* R368 T5 — the gallery's polite loading announcement (one home for the
  * string; the skeleton bars below stay decorative). */
-const LOADING_COLLEGES = 'جارٍ تحميل الكلّيّات…';
+const LOADING_COLLEGES = 'جارٍ التحميل…';
 /* R366 L4: the leaderboard label — one home for the docTitle, the page
  * header and the CTA (three literals said the same two words). */
 const LEADERBOARD_LABEL = 'منافسة الكلّيّات';
@@ -280,7 +280,7 @@ export function CollegesIndexPage() {
   useLegalMeta({
     title: COLLEGES_LABEL,
     path: '/colleges',
-    description: 'سجلّ الكلّيّات — بيانات اصطناعية للعرض.',
+    description: 'سجلّ الكلّيّات — بيانات عرض اصطناعية.',
   });
   const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({

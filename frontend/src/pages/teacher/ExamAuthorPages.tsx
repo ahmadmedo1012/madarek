@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, CANCEL, EMPTY_COURSES_YET, LABEL_COLLEGE, SAVED, LABEL_THE_COURSE, ONE_POST, SEARCH_PLACEHOLDER, FAILED_PUBLISH_DOT, QUIZ_SHORT, EMPTY_TEMPLATE_QUESTIONS, STATUS_SUSPENDED, EDIT, NOUN_TWO_POINTS, MCQ, TRUE_FALSE, STATUS_AVG, FAILED_DECISION_DOT, BACK_TO_EXAMS, LABEL_SCOPE, DESC, MIDTERM, FINAL, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC, NOUN_POINT, SHORT_ANSWER, ESSAY_QUESTION, PENDING_REVIEW, MINUTE, MINUTES, APPROVING, REJECTING, REJECT_TEMPLATE, PASS_MARK, VIEW, ONE_MINUTE, ONE_POINT, DESC_OPTIONAL } from '../../lib/copy';
+
 /**
  * Unified exam authoring — 18-F1 (audits 15-d P1-4 / 15-a P1-8, D16-1)
  * + the manual-grading surface 18-F2 built on top of it.
@@ -83,10 +85,10 @@ import '../../styles/landing/inner.css';
 /* ═══════════════ Label maps (TS-pinned over the full enums — 15-a) ═══════════════ */
 
 const QTYPE_LABEL: Record<QType, string> = {
-  MCQ: 'اختيار من متعدد',
-  TRUE_FALSE: 'صح أم خطأ',
-  SHORT: 'إجابة قصيرة',
-  ESSAY: 'سؤال مقالي',
+  MCQ: MCQ,
+  TRUE_FALSE: TRUE_FALSE,
+  SHORT: SHORT_ANSWER,
+  ESSAY: ESSAY_QUESTION,
 };
 /* Type chips stay neutral (the moderation rows' kind-badge grammar); the
  * semantic color budget belongs to difficulty + status, so adjacent chips
@@ -94,7 +96,7 @@ const QTYPE_LABEL: Record<QType, string> = {
 
 const DIFFICULTY_LABEL: Record<Difficulty, string> = {
   EASY: 'سهل',
-  MEDIUM: 'متوسط',
+  MEDIUM: STATUS_AVG,
   HARD: 'صعب',
 };
 const DIFFICULTY_COLOR: Record<Difficulty, ThemeColor> = {
@@ -106,9 +108,9 @@ const DIFFICULTY_COLOR: Record<Difficulty, ThemeColor> = {
 /* Byte-identical to the taker's KIND_LABEL (OnlineExamsPages) — one name
  * per exam kind across author and taker surfaces (D17-1). */
 const KIND_LABEL: Record<ExamKindFE, string> = {
-  QUIZ: 'اختبار قصير',
-  MIDTERM: 'نصفي',
-  FINAL: 'نهائي',
+  QUIZ: QUIZ_SHORT,
+  MIDTERM: MIDTERM,
+  FINAL: FINAL,
   PRACTICE: 'تدريبي',
 };
 
@@ -117,10 +119,10 @@ const KIND_LABEL: Record<ExamKindFE, string> = {
  * can never render a raw enum (P1-8's "no status display surface"). */
 export const EXAM_STATUS_LABEL: Record<ExamStatusFE, string> = {
   DRAFT: 'مسودة',
-  PENDING_REVIEW: 'بانتظار المراجعة',
+  PENDING_REVIEW: PENDING_REVIEW,
   APPROVED: 'معتمد',
   REJECTED: 'مرفوض',
-  PUBLISHED: 'منشور',
+  PUBLISHED: ONE_POST,
   CLOSED: 'مُغلق',
 };
 const EXAM_STATUS_COLOR: Record<ExamStatusFE, ThemeColor> = {
@@ -160,16 +162,16 @@ const ATTEMPT_STATUS_COLOR: Record<ExamAttemptStatusFE, ThemeColor> = {
 /* Copy-diet dedupe (r353): the counted-noun lists and the shared
  * validation messages that used to be repeated per call site now
  * count ONCE — identical rendered text, one literal in the file. */
-const COUNT__QUESTIONS: [string, string, string, string] = ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'];
-const COUNT__MINUTES: [string, string, string, string] = ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'];
-const COUNT__POINTS: [string, string, string, string] = ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'];
+const COUNT__QUESTIONS: [string, string, string, string] = ['سؤال واحد', NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC];
+const COUNT__MINUTES: [string, string, string, string] = [ONE_MINUTE, 'دقيقتان', MINUTES, MINUTE];
+const COUNT__POINTS: [string, string, string, string] = [ONE_POINT, NOUN_TWO_POINTS, 'نقاط', NOUN_POINT];
 const COUNT__ATTEMPTS: [string, string, string, string] = ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'];
 const ERR_TITLE_SHORT = 'العنوان قصير — 3 أحرف على الأقل.';
 const ERR_TITLE_LONG = 'العنوان طويل — الحد 200 حرف.';
 const ERR_DURATION = 'المدة عدد صحيح بين 5 و 480 دقيقة.';
 const ERR_PASS = 'درجة النجاح نسبة صحيحة بين 0 و 100.';
 const ERR_WINDOW = 'موعد الإغلاق يجب أن يكون بعد موعد الفتح.';
-const ERR_DECISION = 'تعذَّر تنفيذ القرار.';
+const ERR_DECISION = FAILED_DECISION_DOT;
 const HINT_CALENDAR = 'اختر من تقويم الحقل.';
 const TOGGLE_RANDOM_DESC = 'يُخلط الترتيب لكل طالب عند البدء';
 const TOGGLE_RANDOM_LABEL = 'ترتيب عشوائي للأسئلة';
@@ -179,7 +181,6 @@ const DESC_HINT = 'تعليمات مختصرة لطلابك…';
 const NO_ATTEMPTS = 'لا محاولات بعد';
 const SAVED_PLAIN = 'حُفظت تعديلات القالب.';
 const NEW_TEMPLATE = 'قالب اختبار جديد';
-const LOADING = 'جارٍ التحميل…';
 const TWO_CHOICES_MIN = 'خياران على الأقل.';
 const COUNT__TEMPLATES: [string, string, string, string] = ['قالب واحد', 'قالبان', 'قوالب', 'قالباً'];
 const COUNT__PENDING_REVIEW: [string, string, string, string] = ['إجابة واحدة', 'إجابتان', 'إجابات', 'إجابة'];
@@ -830,7 +831,7 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
       </Link>
       <div className="exa-row-actions">
         <Link className="btn ghost sm" to={detailHref}>
-          عرض
+          {VIEW}
         </Link>
         <PublishButton template={template} viewHref={detailHref} />
       </div>
@@ -941,7 +942,7 @@ function PublishButton({
       </Button>
       {publish.isError && (
         <span role="alert" className="text-xs exa-error-line exa-error-center">
-          {apiErrorMessage(publish.error, 'تعذَّر النشر.')}
+          {apiErrorMessage(publish.error, FAILED_PUBLISH_DOT)}
         </span>
       )}
       <ConfirmDialog
@@ -1448,7 +1449,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
 
             <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={create.isPending}>
-                إلغاء
+                {CANCEL}
               </Button>
               <Button variant="primary" type="submit" loading={create.isPending}>
                 {/* 3-d: the pending label rides Button's visually-hidden
@@ -1710,7 +1711,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                   ))}
                 </select>
               </Field>
-              <Field label="النطاق" htmlFor="tpl-scope" error={errors.scope}>
+              <Field label={LABEL_SCOPE} htmlFor="tpl-scope" error={errors.scope}>
                 <select
                   id="tpl-scope"
                   className="input"
@@ -1732,7 +1733,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
 
             {draft.scope === 'offering' && (
               <Field
-                label="المقرّر"
+                label={LABEL_THE_COURSE}
                 htmlFor="tpl-offering"
                 error={errors.scope}
                 hint={offeringsEmpty ? 'لا مقرّرات مسندة إليك.' : undefined}
@@ -1747,7 +1748,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                   {offerings.isPending ? (
                     <option value="">{LOADING}</option>
                   ) : offeringsEmpty ? (
-                    <option value="">لا مقرّرات بعد</option>
+                    <option value="">{EMPTY_COURSES_YET}</option>
                   ) : (
                     <>
                       <option value="">اختر المقرّر…</option>
@@ -1763,7 +1764,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
             )}
 
             {draft.scope === 'faculty' && (
-              <Field label="الكلّيّة" htmlFor="tpl-faculty" error={errors.scope}>
+              <Field label={LABEL_COLLEGE} htmlFor="tpl-faculty" error={errors.scope}>
                 <select
                   id="tpl-faculty"
                   className="input"
@@ -1871,7 +1872,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
               </p>
             )}
 
-            <Field label="وصف (اختياري)" htmlFor="tpl-desc">
+            <Field label={DESC_OPTIONAL} htmlFor="tpl-desc">
               <textarea
                 id="tpl-desc"
                 className="input"
@@ -1893,7 +1894,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
 
             <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={create.isPending}>
-                إلغاء
+                {CANCEL}
               </Button>
               <Button variant="primary" type="submit" loading={create.isPending}>
                 {create.isPending ? 'جارٍ إنشاء القالب…' : 'إنشاء القالب'}
@@ -1996,7 +1997,7 @@ function QuestionPicker({
           <span className="topbar-search-icon"><Icon icon={Search} size={13} /></span>
           <input
             type="text"
-            placeholder="ابحث…"
+            placeholder={SEARCH_PLACEHOLDER}
             aria-label="البحث في أسئلة البنك"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -2043,7 +2044,7 @@ function QuestionPicker({
         <div className="inline-retry" role="alert">
           <span className="text-sm text-muted">تعذَّر تحميل أسئلة البنك.</span>
           <Button variant="ghost" size="sm" onClick={() => bank.refetch()}>
-            <Icon icon={AlertTriangle} size={12} /> إعادة المحاولة
+            <Icon icon={AlertTriangle} size={12} /> {RETRY_ACTION}
           </Button>
         </div>
       ) : !bank.data || bank.data.length === 0 ? (
@@ -2169,7 +2170,7 @@ export function ExamTemplateDetailPage() {
       <div className="page">
         <Link to="/teacher/exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى الاختبارات
+          {BACK_TO_EXAMS}
         </Link>
         {q.isPending ? (
           <DetailSkeleton />
@@ -2261,7 +2262,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
             {template.questions.length === 0 ? (
               <EmptyState illustration="empty-list"
                 icon={FileQuestion}
-                title="لا أسئلة في القالب"
+                title={EMPTY_TEMPLATE_QUESTIONS}
               />
             ) : (
               <div className="exa-rows">
@@ -2304,7 +2305,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
               <DetailLine label="المدة">
                 {countAr(template.durationMin, COUNT__MINUTES)}
               </DetailLine>
-              <DetailLine label="درجة النجاح">
+              <DetailLine label={PASS_MARK}>
                 <bdi>{template.passingScore}%</bdi>
               </DetailLine>
               <DetailLine label="ترتيب الأسئلة">
@@ -2331,7 +2332,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
                   ? NO_ATTEMPTS
                   : countAr(template._count.attempts, COUNT__ATTEMPTS)}
               </DetailLine>
-              {template.description && <DetailLine label="الوصف">{template.description}</DetailLine>}
+              {template.description && <DetailLine label={DESC}>{template.description}</DetailLine>}
             </div>
           </section>
 
@@ -2391,7 +2392,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
            * template, edit-then-resubmit is the author's live verb; clone
            * and the gated publish stay quiet ghost/primary tier). */
           <Button variant="accent" size="sm" className="hr-cta" onClick={() => setEditing(true)}>
-            <Icon icon={Pencil} size={12} /> تعديل
+            <Icon icon={Pencil} size={12} /> {EDIT}
           </Button>
         )}
         {cloneable && (
@@ -2471,7 +2472,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
           title: 'تمّ حفظ التعديل',
         });
       } else {
-        toast.success(SAVED_PLAIN, { title: 'تمّ الحفظ' });
+        toast.success(SAVED_PLAIN, { title: SAVED });
       }
     } catch {
       /* surfaced inline from update.isError */
@@ -2611,7 +2612,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
               </p>
             )}
 
-            <Field label="وصف (اختياري)" htmlFor="edit-tpl-desc">
+            <Field label={DESC_OPTIONAL} htmlFor="edit-tpl-desc">
               <textarea
                 id="edit-tpl-desc"
                 className="input"
@@ -2638,7 +2639,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
 
             <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={update.isPending}>
-                إلغاء
+                {CANCEL}
               </Button>
               <Button variant="primary" type="submit" loading={update.isPending}>
                 {update.isPending ? 'جارٍ حفظ التعديل…' : 'حفظ التعديل'}
@@ -3025,7 +3026,7 @@ function GradeAttemptModal({
 
             <div className="exa-form-foot">
               <Button variant="ghost" onClick={requestClose} disabled={grade.isPending}>
-                إلغاء
+                {CANCEL}
               </Button>
               {/* Double-submit guard: isPending locks the submit AND the
                   guarded close, so a verdict can never ride twice. */}
@@ -3071,7 +3072,7 @@ function TemplateQuestionRow({
             {countAr(points, COUNT__POINTS)}
             {row.pointsOverride !== null && ' (معدَّلة)'}
           </span>
-          {!q.isApproved && <Badge color="red" icon={Ban}>موقوف</Badge>}
+          {!q.isApproved && <Badge color="red" icon={Ban}>{STATUS_SUSPENDED}</Badge>}
         </div>
         {/* Answer key — the backend nulls correctAnswer for every viewer
             it is not for; null renders nothing (never a fake key). */}
@@ -3118,7 +3119,7 @@ function QuestionModerationActions({ questionId, isApproved }: { questionId: str
         </Button>
       ) : (
         <Button variant="ghost" size="sm" loading={moderateQ.isPending} onClick={() => void run(true)}>
-          <Icon icon={BadgeCheck} size={12} /> {moderateQ.isPending ? 'جارٍ الاعتماد…' : 'اعتماد السؤال'}
+          <Icon icon={BadgeCheck} size={12} /> {moderateQ.isPending ? APPROVING : 'اعتماد السؤال'}
         </Button>
       )}
       {failed && (
@@ -3126,7 +3127,7 @@ function QuestionModerationActions({ questionId, isApproved }: { questionId: str
           <Icon icon={AlertTriangle} size={14} />
           <span className="form-error-msg">{apiErrorMessage(failed.error, ERR_DECISION)}</span>
           <button type="button" className="btn ghost sm" onClick={() => void run(failed.approve)}>
-            إعادة المحاولة
+            {RETRY_ACTION}
           </button>
         </div>
       )}
@@ -3181,7 +3182,7 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
               disabled={acting !== null}
               onClick={() => void run(true)}
             >
-              <Icon icon={CheckCircle2} size={13} /> {acting === true ? 'جارٍ الاعتماد…' : 'اعتماد القالب'}
+              <Icon icon={CheckCircle2} size={13} /> {acting === true ? APPROVING : 'اعتماد القالب'}
             </Button>
             <Button
               variant="danger"
@@ -3189,7 +3190,7 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
               disabled={acting !== null}
               onClick={() => void run(false)}
             >
-              <Icon icon={AlertTriangle} size={13} /> {acting === false ? 'جارٍ الرفض…' : 'رفض القالب'}
+              <Icon icon={AlertTriangle} size={13} /> {acting === false ? REJECTING : REJECT_TEMPLATE}
             </Button>
           </div>
         </>
@@ -3199,7 +3200,7 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
           <Icon icon={AlertTriangle} size={14} />
           <span className="form-error-msg">{apiErrorMessage(failed.error, ERR_DECISION)}</span>
           <button type="button" className="btn ghost sm" onClick={() => void run(failed.approve)}>
-            إعادة المحاولة
+            {RETRY_ACTION}
           </button>
         </div>
       )}

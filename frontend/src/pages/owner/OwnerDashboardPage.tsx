@@ -1,3 +1,5 @@
+import { RETRY_ACTION, NOUN_STUDENTS, LIVE_MONITORING, FAILED_FETCH_ALERTS, LABEL_ACTIONS, LIVE_STREAM, BROADCAST_NOTICE, MANAGE_USERS, LABEL_COLLEGE_SHORT, TOTAL_USERS, LABEL_SYSTEM, CRITICAL_ALERTS, NOUN_PROFS, COURSE, NOUN_TWO_PROFS, NOUN_PROF_ACC, NEEDS_YOUR_ATTENTION, DEPT, VERIFYING, CHANGE_PERMS, CREATE_ACCOUNT, CREATE_COURSE, UPDATE_COURSE, UPLOAD_FILE, DELETE_FILE, PUBLISH_RESEARCH, CREATE_COMPETITION, SKIP_PERM, EDIT_SCOPE, SET_LOCATION, UNENROL, RESOLVE_ALERT, UPDATE_SETTING, TOGGLE_FEATURE, CHANGE_THEME, COMPLETE_PROFILE, ACHIEVE_BADGE, NO_EVENTS, OPEN_ALERTS, FETCHING, TWO_CRITICAL_ALERTS, NOUN_ALERT_ACC, ONE_PROF, ACTIVE_SESSIONS, THE_ALERTS, SESSIONS_ACTIVE, ONGOING_EXAMS, AI_REQ_PER_MIN } from '../../lib/copy';
+
 import {
   Users, GraduationCap, ShieldCheck, FileWarning,
   Clock, Radio, AlertTriangle, Settings, RefreshCw,
@@ -34,25 +36,25 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 /* countAr + formatRelativeAr live in lib/format.ts (wave 9-a). */
 
 const OPEN_ALERT_FORMS: [string, string, string, string] = [
-  'تنبيه مفتوح واحد', 'تنبيهان مفتوحان', 'تنبيهات مفتوحة', 'تنبيهاً مفتوحاً',
+  'تنبيه مفتوح واحد', 'تنبيهان مفتوحان', OPEN_ALERTS, 'تنبيهاً مفتوحاً',
 ];
 
 /* Copy-diet: labels repeated across mutually-exclusive render branches
  * (loading mirror / error / resolved) live ONCE — plus the audit feed's
  * duplicated verb nouns (login/role/status/course pairs below). */
 const PAGE_TITLE = 'لوحة التحكم الرئيسية';
-const STRIP_TITLE = 'يحتاج انتباهك';
-const STRIP_PENDING_SUBTITLE = 'جارٍ التحقق…';
-const BAND_PENDING_TEXT = 'جارٍ الجلب…';
-const LIVE_MONITOR_LABEL = 'المراقبة الحيّة';
+const STRIP_TITLE = NEEDS_YOUR_ATTENTION;
+const STRIP_PENDING_SUBTITLE = VERIFYING;
+const BAND_PENDING_TEXT = FETCHING;
+const LIVE_MONITOR_LABEL = LIVE_MONITORING;
 const USERS_CARD_TITLE = 'توزيع المستخدمين';
 const OPS_CARD_TITLE = 'الحالة التشغيليّة';
 const ENROLL_LABEL = 'تسجيل';
 const L_LOGIN = 'دخول';
-const L_ROLE_CHANGE = 'تغيير صلاحيات';
+const L_ROLE_CHANGE = CHANGE_PERMS;
 const L_STATUS_CHANGE = 'تغيير حالة';
-const L_COURSE_CREATED = 'إنشاء مقرّر';
-const L_COURSE_UPDATED = 'تحديث مقرّر';
+const L_COURSE_CREATED = CREATE_COURSE;
+const L_COURSE_UPDATED = UPDATE_COURSE;
 
 /* formatRelativeAr (counted-plural relative time) is imported from
  * lib/format.ts — identical strings to the former local copy. */
@@ -61,32 +63,32 @@ const ACTION_LABEL: Record<string, string> = {
   'user.login': L_LOGIN,
   'auth.login': L_LOGIN,
   'user.logout': 'خروج',
-  'user.created': 'إنشاء حساب',
+  'user.created': CREATE_ACCOUNT,
   'user.role_changed': L_ROLE_CHANGE,
   'user.status_changed': L_STATUS_CHANGE,
   'course.created': L_COURSE_CREATED,
   'course.updated': L_COURSE_UPDATED,
   'enrollment.created': ENROLL_LABEL,
-  'material.uploaded': 'رفع ملف',
-  'material.deleted': 'حذف ملف',
-  'paper.published': 'نشر بحث',
-  'announcement.created': 'بثّ إعلان',
-  'competition.created': 'إنشاء مسابقة',
+  'material.uploaded': UPLOAD_FILE,
+  'material.deleted': DELETE_FILE,
+  'paper.published': PUBLISH_RESEARCH,
+  'announcement.created': BROADCAST_NOTICE,
+  'competition.created': CREATE_COMPETITION,
   // Real backend audit actions (owner/permissions/teacher routes) —
   // without these the feed shows raw English enums.
   ROLE_CHANGE: L_ROLE_CHANGE,
   STATUS_CHANGE: L_STATUS_CHANGE,
-  CAPABILITY_OVERRIDE: 'تجاوز صلاحية',
-  USER_SCOPE_CHANGE: 'تعديل نطاق',
-  TEACHER_POSITION: 'تعيين موقع',
+  CAPABILITY_OVERRIDE: SKIP_PERM,
+  USER_SCOPE_CHANGE: EDIT_SCOPE,
+  TEACHER_POSITION: SET_LOCATION,
   TEACHER_VERIFY: 'توثيق',
   // The two enrollment audit actions the backend writes (15-a P1-4) —
   // before 17-a2 these rendered raw English in the events table.
   ENROLLMENT_CREATED: ENROLL_LABEL,
-  ENROLLMENT_REMOVED: 'إلغاء تسجيل',
-  ALERT_RESOLVED: 'حلّ تنبيه',
-  SETTING_UPDATED: 'تحديث إعداد',
-  FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
+  ENROLLMENT_REMOVED: UNENROL,
+  ALERT_RESOLVED: RESOLVE_ALERT,
+  SETTING_UPDATED: UPDATE_SETTING,
+  FEATURE_FLAG_TOGGLED: TOGGLE_FEATURE,
   /* R332 W11 audit P1 (no raw technical strings): the catalog/structure
    * actions the backend writes (catalog/users/routes auditLog.create)
    * had no seat in the map — the events row printed the raw enum.
@@ -98,9 +100,9 @@ const ACTION_LABEL: Record<string, string> = {
   FACULTY_CREATED: 'إنشاء كلّيّة',
   OFFERING_CREATED: 'إنشاء شعبة',
   BULK_IMPORT: 'استيراد جماعي',
-  'theme.update': 'تغيير المظهر',
-  'onboarding.complete': 'إكمال التعريف',
-  'milestone.fire': 'تحقيق إنجاز',
+  'theme.update': CHANGE_THEME,
+  'onboarding.complete': COMPLETE_PROFILE,
+  'milestone.fire': ACHIEVE_BADGE,
 };
 
 /* Audit-log resource types as written by the backend (Prisma models).
@@ -114,10 +116,10 @@ const RESOURCE_LABELS: Record<string, string> = {
   OperationalAlert: 'تنبيه',
   PlatformSetting: 'إعداد',
   FeatureFlag: 'ميزة',
-  Course: 'مقرّر',
+  Course: COURSE,
   CourseOffering: 'شعبة',
-  Department: 'قسم',
-  Faculty: 'كلّيّة',
+  Department: DEPT,
+  Faculty: LABEL_COLLEGE_SHORT,
   Enrollment: 'تسجيل',
   Institution: 'مؤسّسة',
 };
@@ -156,10 +158,10 @@ interface OwnerActionRow {
 }
 
 const CRITICAL_ALERT_FORMS: [string, string, string, string] = [
-  'تنبيه حرج واحد', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً',
+  'تنبيه حرج واحد', TWO_CRITICAL_ALERTS, CRITICAL_ALERTS, NOUN_ALERT_ACC,
 ];
 const IDLE_TEACHER_FORMS: [string, string, string, string] = [
-  'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً',
+  ONE_PROF, NOUN_TWO_PROFS, NOUN_PROFS, NOUN_PROF_ACC,
 ];
 
 /* 6A10-2: isCriticalAlert (the critical OR error pair) is the SHARED
@@ -274,8 +276,8 @@ export function OwnerDashboardPage() {
   // visual order and the legend order can never disagree (the QA
   // donut finding: legend legibility, ordered).
   const segments = useMemo(() => statsData ? ([
-    { label: 'طلاب', value: statsData.students },
-    { label: 'أساتذة', value: statsData.teachers },
+    { label: NOUN_STUDENTS, value: statsData.students },
+    { label: NOUN_PROFS, value: statsData.teachers },
     { label: 'إداريون', value: statsData.admins },
     // Person-group noun — «جودة» alone is the function, not the people
     // (15-j P1-8; matches the aria-label's «فريق جودة» phrasing).
@@ -402,11 +404,11 @@ export function OwnerDashboardPage() {
   const alertBand = alertsQuery.isError ? (
     <div className="owner-live-status is-degraded" role="alert">
       <div className="owner-live-pulse" />
-      <span className="status-text">تعذّر جلب التنبيهات</span>
+      <span className="status-text">{FAILED_FETCH_ALERTS}</span>
       <div className="owner-live-tools">
         <button type="button" className="btn ghost sm" onClick={() => alertsQuery.refetch()}>
           <Icon icon={RefreshCw} size={12} />
-          إعادة المحاولة
+          {RETRY_ACTION}
         </button>
       </div>
     </div>
@@ -426,7 +428,7 @@ export function OwnerDashboardPage() {
           band actually wants (the QA finding: a near-empty strip). */}
       <span className="owner-live-meta">
         <span className="owner-live-meta-cell">
-          الجلسات النشطة <bdi className="font-mono">{formatNum(realtimeData.activeSessions)}</bdi>
+          {ACTIVE_SESSIONS} <bdi className="font-mono">{formatNum(realtimeData.activeSessions)}</bdi>
         </span>
         <span className="owner-live-meta-cell">
           آخر نشاط <bdi className="font-mono">{lastActivityLabel}</bdi>
@@ -462,7 +464,7 @@ export function OwnerDashboardPage() {
             </Link>
             <Link to="/owner/alerts" className="btn ghost sm">
               <Icon icon={AlertTriangle} size={13} />
-              التنبيهات
+              {THE_ALERTS}
             </Link>
           </>
         )}
@@ -481,12 +483,12 @@ export function OwnerDashboardPage() {
       <StatLine
         items={[
           {
-            label: 'إجمالي المستخدمين',
+            label: TOTAL_USERS,
             value: <bdi>{formatNum(data.totalUsers)}</bdi>,
             hint: `${formatNum(data.students)} طالبًا · ${formatNum(data.teachers)} أستاذًا`,
           },
           {
-            label: 'الجلسات النشطة',
+            label: ACTIVE_SESSIONS,
             value: <bdi>{formatNum(realtimeData.activeSessions)}</bdi>,
           },
           {
@@ -532,7 +534,7 @@ export function OwnerDashboardPage() {
                   rows (بثّ/اختبارات/طلبات AI all gate on > 0 since
                   22-b 4-A7 P2-1); green claims actual presence. */}
               <div className={`owner-health-dot ${realtimeData.activeSessions > 0 ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">جلسات نشطة</span>
+              <span className="owner-health-label">{SESSIONS_ACTIVE}</span>
               <span className="owner-health-value">
                 <bdi>{formatNum(realtimeData.activeSessions)}</bdi>
               </span>
@@ -543,21 +545,21 @@ export function OwnerDashboardPage() {
                   neutral (the pending/unknown color), amber stays
                   reserved for real thresholds. */}
               <div className={`owner-health-dot ${realtimeData.liveBroadcasts > 0 ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">بثّ مباشر</span>
+              <span className="owner-health-label">{LIVE_STREAM}</span>
               <span className="owner-health-value">
                 <bdi>{formatNum(realtimeData.liveBroadcasts)}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.activeExams > 0 ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">اختبارات جارية</span>
+              <span className="owner-health-label">{ONGOING_EXAMS}</span>
               <span className="owner-health-value">
                 <bdi>{formatNum(realtimeData.activeExams)}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.aiRequestsPerMin > 0 ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">طلبات AI / دقيقة</span>
+              <span className="owner-health-label">{AI_REQ_PER_MIN}</span>
               <span className="owner-health-value">
                 <bdi>{formatNum(realtimeData.aiRequestsPerMin)}</bdi>
               </span>
@@ -595,7 +597,7 @@ export function OwnerDashboardPage() {
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : events.length === 0 ? (
-          <EmptyState illustration="empty-list" title="لا أحداث" icon={FileWarning} />
+          <EmptyState illustration="empty-list" title={NO_EVENTS} icon={FileWarning} />
         ) : (
           <RowList aria-label="الأحداث الأخيرة" density="compact">
             {events.map((ev) => (
@@ -604,7 +606,7 @@ export function OwnerDashboardPage() {
                 title={actionLabel(ev.action)}
                 meta={(
                   <>
-                    {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : 'النظام'}
+                    {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : LABEL_SYSTEM}
                     {ev.resourceType && (
                       <> · {resourceLabel(ev.resourceType)}</>
                     )}
@@ -623,7 +625,7 @@ export function OwnerDashboardPage() {
 
       {/* Quick Actions — WS-F6: wired to real /owner/* routes (the old
           four buttons had no onClick and no destination). */}
-      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>إجراءات</>} icon={ShieldCheck}>
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>{LABEL_ACTIONS}</>} icon={ShieldCheck}>
         <div className="owner-action-bar">
           <Link to="/owner/realtime" className="btn primary">
             <Icon icon={Radio} size={14} />
@@ -631,11 +633,11 @@ export function OwnerDashboardPage() {
           </Link>
           <Link to="/owner/users" className="btn ghost">
             <Icon icon={Users} size={14} />
-            إدارة المستخدمين
+            {MANAGE_USERS}
           </Link>
           <Link to="/owner/alerts" className="btn ghost">
             <Icon icon={AlertTriangle} size={14} />
-            التنبيهات
+            {THE_ALERTS}
           </Link>
           <Link to="/owner/system" className="btn ghost">
             <Icon icon={Settings} size={14} />

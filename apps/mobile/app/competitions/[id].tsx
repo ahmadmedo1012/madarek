@@ -21,7 +21,7 @@ import { toast } from "@/components/ui/toast";
 import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { SignInPrompt, apiMessage, competitionStatus, isUnauthError, submissionEnded } from "@/features/common/components";
-import { NO_DATA, SENDING } from "@/lib/copy";
+import {NO_DATA, SENDING, LOGIN_TO_PARTICIPATE, INCOMPLETE_LINK} from "@/lib/copy";
 
 interface EntryRow {
   id: string;
@@ -60,7 +60,7 @@ export default function CompetitionDetail() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["competitions"] });
       haptics.notify("success");
-      toast.success("وصلت — بالتوفيق!", "المشاركة");
+      toast.success("وصلت — بالتوفيق.");
       setEntering(false);
       setTitle("");
       setBody("");
@@ -72,9 +72,9 @@ export default function CompetitionDetail() {
     // R327 A4: broken deep link → honest state, never a white screen.
     return (
       <Screen scroll>
-        <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
+        <StackHeader title="مسابقة" />
         <EmptyState
-          title="الرابط غير مكتمل"
+          title={INCOMPLETE_LINK}
           message="لا مسابقة — اختر من القائمة."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
@@ -85,7 +85,7 @@ export default function CompetitionDetail() {
   if (q.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
+        <StackHeader title="مسابقة" />
         <SkeletonList rows={5} />
       </Screen>
     );
@@ -93,9 +93,9 @@ export default function CompetitionDetail() {
   if (q.isError) {
     return (
       <Screen scroll>
-        <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
+        <StackHeader title="مسابقة" />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="سجّل الدخول للمشاركة." />
+          <SignInPrompt message={LOGIN_TO_PARTICIPATE} />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}
@@ -106,7 +106,7 @@ export default function CompetitionDetail() {
     // Success-but-null — honest emptiness, never a white screen (R327 A4).
     return (
       <Screen scroll>
-        <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
+        <StackHeader title="مسابقة" />
         <EmptyState
           title={NO_DATA}
           message="ربما انتهت — شاهد الجارية."
@@ -211,7 +211,7 @@ export default function CompetitionDetail() {
       {entries.length === 0 ? (
         <EmptyState
           title="لم يشارك أحد بعد"
-          message={canEnter ? "كن أوّل المشاركين!" : "انتهت المهلة."}
+          message={canEnter ? "كن أوّل المشاركين." : "انتهت المهلة."}
           actionLabel={canEnter ? "قدّم مشاركتك" : undefined}
           onAction={canEnter ? () => setEntering(true) : undefined}
         />
@@ -223,7 +223,7 @@ export default function CompetitionDetail() {
             </T>
           ) : (
             <T variant="xs" color="faint">
-              يظهر العنوان فقط حتى يتمّ التحكيم
+              العنوان فقط حتى التحكيم
             </T>
           )}
           <RowList>
@@ -253,7 +253,7 @@ export default function CompetitionDetail() {
       {/* Scoring is admin-only on the backend and this client has no
           capability contract for it — no score controls are rendered. */}
       <T variant="xs" color="faint" style={{ textAlign: "center" }}>
-        التحكيم يتمّ من منظّم المسابقة — تظهر النتائج هنا فور إعلانها.
+        التحكيم من منظّم المسابقة — النتائج فور إعلانها.
       </T>
 
       <Sheet

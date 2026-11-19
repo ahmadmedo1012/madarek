@@ -19,7 +19,7 @@ import { toast } from "@/components/ui/toast";
 import { dateTime, num } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr, fmtClock } from "@/features/student/more";
-import { LIVE_NOW, UNKNOWN_STATUS } from "@/lib/copy";
+import {LIVE_NOW, UNKNOWN_STATUS, NO_SCHEDULED_SESSIONS} from "@/lib/copy";
 
 /** The backend opens the join window 10 minutes before the scheduled time. */
 const JOIN_WINDOW_MS = 10 * 60 * 1000;
@@ -64,7 +64,7 @@ export default function LiveScreen() {
   const join = useMutation({
     mutationFn: (id: string) => liveApi.join(id),
     onSuccess: (res) => {
-      toast.success("سُجّل حضورك.", "تمّ الانضمام");
+      toast.success("سُجّل حضورك.");
       const url = res?.session?.joinUrl ?? null;
       if (url) {
         void Linking.openURL(url).catch(() => toast.error("تعذّر الفتح."));
@@ -75,9 +75,9 @@ export default function LiveScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title="الحصص المباشرة" kicker="البث المباشر" />
+      <StackHeader title="الحصص المباشرة" />
       <SectionNote>
-        الجلسات الحيّة لمقرّراتك المسجَّلة — تُفتح الغرفة عبر متصفح خارجي (Jitsi)، ويُسجَّل حضورك تلقائياً.
+        جلسات مقرّراتك الحيّة — الغرفة عبر متصفح خارجي، والحضور تلقائيّ.
       </SectionNote>
 
       {feed.isLoading ? (
@@ -87,14 +87,14 @@ export default function LiveScreen() {
       ) : list.length === 0 ? (
         <EmptyState
           title="لا بثوث بعد"
-          message="لا بثوث بعد."
+          message="تظهر فور جدولتها."
         />
       ) : (
         <View style={{ gap: sp[16] }}>
           <SessionSection
             title={LIVE_NOW}
             sessions={live}
-            emptyLabel="لا بثّ مباشرة الآن"
+            emptyLabel="لا بثوث مباشرة"
             emptyNote="لا جلسات نشطة."
             onJoin={live.length > 0 ? (id) => join.mutate(id) : undefined}
             joinPending={join.isPending ? join.variables ?? null : null}
@@ -102,8 +102,8 @@ export default function LiveScreen() {
           <SessionSection
             title="جلسات قادمة"
             sessions={upcoming}
-            emptyLabel="لا جلسات مجدولة"
-            emptyNote="بثوث أساتذتك تظهر هنا."
+            emptyLabel={NO_SCHEDULED_SESSIONS}
+            emptyNote="تظهر فور جدولتها."
           />
           {ended.length > 0 ? (
             <SessionSection title="جلسات منتهية" sessions={ended} emptyLabel="" emptyNote="" />
@@ -193,7 +193,7 @@ function SessionSection({
                 </View>
                 {s.status === "LIVE" && s.joinUrl ? (
                   <T variant="xs" color="faint">
-                    تُفتح الغرفة عبر متصفح خارجي (Jitsi) — الحضور يُسجَّل تلقائياً.
+                    الغرفة عبر متصفح خارجي — والحضور تلقائي.
                   </T>
                 ) : null}
               </LedgerRow>
@@ -203,7 +203,7 @@ function SessionSection({
       )}
       {sessions.length > 0 ? (
         <T variant="xs" color="faint">
-          {countAr(sessions.length, ["جلسة واحدة", "جلستان", "جلسات", "جلسة"])}
+          {countAr(sessions.length, ["جلسة", "جلستان", "جلسات", "جلسة"])}
         </T>
       ) : null}
     </View>

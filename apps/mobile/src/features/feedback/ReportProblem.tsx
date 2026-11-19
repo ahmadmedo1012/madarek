@@ -42,7 +42,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
       post("/feedback", { kind, note: note.trim(), route: pathname, role: user?.role ?? undefined }),
     onSuccess: () => {
       haptics.notify("success");
-      toast.success("وصلتنا ملاحظتك — شكرًا لمساعدتك.", "ملاحظة الطيار");
+      toast.success("وصلتنا ملاحظتك.");
       setNote("");
       setError(null);
       onClose();
@@ -56,7 +56,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
   const onSubmit = () => {
     if (note.trim().length < 10) {
       haptics.notify("error");
-      setError("اشرحها في 10 أحرف على الأقل لنفهمها.");
+      setError("10 أحرف على الأقل.");
       return;
     }
     setError(null);
@@ -83,7 +83,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
     >
       <View style={{ gap: sp[12], paddingBottom: sp[8] }}>
         <T variant="body" color="secondary">
-          رأيك يصل فريق الطيار مباشرة — صف المشكلة أو الاقتراح وسيُرفَق مسار الشاشة تلقائيًا.
+          صف المشكلة — يُرفَق مسار الشاشة ويصل فريق الطيار.
         </T>
 
         {/* النوع — مشكلة أم اقتراح */}
@@ -128,7 +128,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
 
         <SheetTextInput
           accessibilityLabel="نص الملاحظة"
-          placeholder="اشرح المشكلة أو الاقتراح (10 أحرف على الأقل)…"
+          placeholder="اشرح المشكلة (10 أحرف على الأقل)…"
           placeholderTextColor={p.textFaint}
           value={note}
           onChangeText={setNote}
@@ -153,7 +153,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
         ) : null}
 
         <T variant="xs" color="faint">
-          يُرفَق مسار الشاشة تلقائيًا ({pathname}). لقطة الشاشة وسجل وحدة التحكم غير متاحين في نسخة الجوال.
+          يُرفَق مسار الشاشة تلقائيًا ({pathname}) — لا لقطة شاشة ولا سجل وحدة تحكّم في الجوال.
         </T>
       </View>
     </AppSheet>

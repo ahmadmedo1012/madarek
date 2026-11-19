@@ -24,7 +24,7 @@ import { Field, Segmented, SelectField } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { MATERIAL_TYPE_LABEL, OfferingPicker, useTeacherOfferings } from "@/features/teacher/components";
-import { ADDED } from "@/lib/copy";
+import {ADDED, NO_FILES_YET} from "@/lib/copy";
 
 type MaterialWire = {
   id: string;
@@ -127,10 +127,7 @@ export default function Materials() {
   return (
     <Screen scroll>
       <StackHeader title="الملفات التعليمية" />
-      <PageHeader
-        title="الملفات التعليمية"
-        kicker="ملفاتك — المشاهدات والتحميلات."
-      />
+      <PageHeader title="الملفات التعليمية" />
       <SectionBar
         index={1}
         title="ملفاتك"
@@ -144,7 +141,7 @@ export default function Materials() {
         <ErrorState message={humanizeError(materials.error)} onRetry={() => materials.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
-          title="لا ملفات بعد"
+          title={NO_FILES_YET}
           message="أضف أول مادة."
           actionLabel="إضافة مادة"
           onAction={() => setSheetOpen(true)}
@@ -225,7 +222,7 @@ export default function Materials() {
             />
             <T variant="sm" color="muted">
               {file
-                ? `تم اختيار الملف — جاهز للرفع (${sizeLabel(file.size)})`
+                ? `الملف جاهز للرفع (${sizeLabel(file.size)})`
                 : "PDF فقط — 20 ميغابايت كحدّ أقصى."}
             </T>
             {uploadPdf.isPending ? (

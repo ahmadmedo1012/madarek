@@ -98,7 +98,7 @@ export function planAnswerSave(isOnline: boolean): "direct" | "queue" {
 
 /** «لديك سؤالان بدون إجابة.» — the confirm-sheet warning (web grammar). */
 export function unansweredNoteAr(n: number): string {
-  return `لديك ${countAr(n, ["سؤال واحد بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])}.`;
+  return `لديك ${countAr(n, ["سؤال بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])}.`;
 }
 
 /** One navigator cell: every state the grid needs, derived purely. */
@@ -389,7 +389,7 @@ export default function ExamTakerScreen() {
         if (!alive) return;
         const detail = humanizeError(e);
         if (detail === "لم يفتح بابه بعد" && listedExam?.openAt) {
-          setStartError(`لم يفتح بابه بعد — يفتح ${dateTime(listedExam.openAt)}.`);
+          setStartError(`لم يفتح بعد — يفتح ${dateTime(listedExam.openAt)}.`);
         } else {
           setStartError(detail || "تعذّر البدء — تحقّق من اتصالك.");
         }
@@ -440,7 +440,7 @@ export default function ExamTakerScreen() {
         });
       }
       if (announce && report.sent > 0) {
-        toast.success("تمت المزامنة.", "عاد الاتصال");
+        toast.success("عاد الاتصال وتمت المزامنة.");
       }
       return report;
     },
@@ -655,7 +655,7 @@ export default function ExamTakerScreen() {
         status: r.status,
       });
       haptics.notify("success");
-      toast.success("سُلّم اختبارك.", "تمّ التسليم");
+      toast.success("سُلّم اختبارك.");
       void qc.invalidateQueries({ queryKey: ["exams"] });
       void qc.invalidateQueries({ queryKey: ["me", "results"] });
     } catch (e) {
@@ -690,7 +690,7 @@ export default function ExamTakerScreen() {
 
   const finalityNote =
     listedExam?.kind === "PRACTICE"
-      ? "بعد التسليم لا تعديل — المحاولة التدريبية متاحة لاحقًا."
+      ? "لا تعديل بعد التسليم."
       : "لا تعديل ولا إعادة بعد التسليم.";
 
   /* ── render: post-submit result ─────────────────────────────────── */
@@ -718,7 +718,7 @@ export default function ExamTakerScreen() {
             <EmptyState
               icon={<Hourglass size={28} color={tones.yellow.ink} />}
               title="انتهت مدة المحاولة"
-              message="انتهى الوقت — لا نتيجة ولا إعادة."
+              message="انتهى الوقت — لا إعادة."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -818,8 +818,8 @@ export default function ExamTakerScreen() {
             <AlertTriangle size={14} color={tones.rose.ink} />
             <T variant="sm" style={{ color: tones.rose.deep }}>
               {failedNumbers.length === 1
-                ? `تعذَّر حفظ إجابة السؤال ${latn(failedNumbers[0])} — أعد الإجابة عليه`
-                : `تعذَّر حفظ إجابات الأسئلة ${failedNumbers.slice(0, 3).map(latn).join(" و")} — أعد الإجابة عليها`}
+                ? `تعذَّر حفظ إجابة ${latn(failedNumbers[0])} — أعد الإجابة`
+                : `تعذَّر حفظ إجابات ${failedNumbers.slice(0, 3).map(latn).join(" و")} — أعد الإجابة`}
             </T>
           </View>
         </View>
@@ -828,7 +828,7 @@ export default function ExamTakerScreen() {
       {total > 0 ? (
         <PressableScale
           accessibilityRole="button"
-          accessibilityLabel={`خريطة الأسئلة — ${latn(answeredCount)} مُجاب و${latn(flaggedQids.size)} معلَّم للمراجعة من ${latn(total)}`}
+          accessibilityLabel={`خريطة الأسئلة — ${latn(answeredCount)} مُجاب · ${latn(flaggedQids.size)} معلَّم`}
           onPress={() => {
             haptics.selection();
             setNavPick(qIndex);
@@ -861,7 +861,7 @@ export default function ExamTakerScreen() {
         {total === 0 || !current ? (
           <EmptyState
             title="لا أسئلة في الاختبار"
-            message="لم يُعتمد سؤال — سلّم كما هي."
+            message="لم يُعتمد سؤال — سلّم."
           />
         ) : (
           <Card style={{ gap: sp[10] }}>
@@ -954,7 +954,7 @@ export default function ExamTakerScreen() {
                 value={answers[current.id]?.answerText ?? ""}
                 onChangeText={(t) => onTextChange(current.id, t)}
                 onBlur={() => flushText(current.id)}
-                placeholder="اكتب إجابتك هنا…"
+                placeholder="اكتب إجابتك…"
                 placeholderTextColor={p.textFaint}
                 multiline
                 maxLength={TEXT_MAX}
@@ -1079,12 +1079,12 @@ export default function ExamTakerScreen() {
           <View style={{ flex: 1 }}>
             {queuedQids.size > 0 ? (
               <T variant="sm" style={{ color: tones.yellow.deep }}>
-                {`${countAr(queuedQids.size, ["إجابة واحدة في الانتظار", "إجابتان في الانتظار", "إجابات في الانتظار", "إجابةً في الانتظار"])} — دون اتصال`}
+                {`${countAr(queuedQids.size, ["إجابة معلّقة", "إجابتان معلّقتان", "إجابات معلّقة", "إجابةً معلّقة"])} — دون اتصال`}
               </T>
             ) : (
               <T variant="sm" color={unanswered > 0 ? "danger" : "muted"}>
                 {unanswered > 0
-                  ? countAr(unanswered, ["سؤال بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])
+                  ? `${countAr(unanswered, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بدون إجابة`
                   : "أُجيب عن كل الأسئلة"}
               </T>
             )}
@@ -1105,7 +1105,7 @@ export default function ExamTakerScreen() {
           scrollable
           footer={
             <Button
-              label={navPick == null ? "اختر سؤالاً" : `انتقال إلى السؤال ${latn(navPick + 1)}`}
+              label={navPick == null ? "اختر سؤالاً" : `السؤال ${latn(navPick + 1)}`}
               kind="primary"
               disabled={navPick == null}
               onPress={() => {
@@ -1196,7 +1196,7 @@ export default function ExamTakerScreen() {
         <ConfirmSheet
           open={confirming}
           onClose={() => setConfirming(false)}
-          title="التسليم نهائي — تأكيد؟"
+          title="تسليم الاختبار؟"
           message={unanswered > 0 ? `${unansweredNoteAr(unanswered)} ${finalityNote}` : finalityNote}
           confirmLabel="تسليم نهائي"
           destructive
@@ -1215,7 +1215,7 @@ export default function ExamTakerScreen() {
           open={exitOpen}
           onClose={() => setExitOpen(false)}
           title="مغادرة الاختبار؟"
-          message="محفوظة — أكمل قبل انتهاء الوقت."
+          message="محفوظة — أكمل قبل الانتهاء."
           confirmLabel="مغادرة"
           destructive
           onConfirm={() => {
@@ -1277,7 +1277,7 @@ function ExamNetGate({
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
         <Clock size={14} color={tones.yellow.ink} />
         <T variant="sm" style={{ color: tones.yellow.deep }}>
-          أنت دون اتصال — إجاباتك تُحفظ وستُرسل تلقائياً عند عودة الشبكة.
+          دون اتصال — محفوظة وتُرسل تلقائياً.
         </T>
       </View>
     </View>
@@ -1376,7 +1376,7 @@ function ResultBody({
           awaitingManual
             ? "سُلّم اختبارك"
             : result.passed
-              ? "مبروك — اجتزت الاختبار!"
+              ? "اجتزت الاختبار"
               : "الاختبار انتهى"
         }
         message={
@@ -1404,7 +1404,7 @@ function ResultBody({
           </View>
           <T variant="sm" color="muted" align="center">
             {result.needsManual > 0
-              ? `${countAr(result.needsManual, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.`
+              ? `${countAr(result.needsManual, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بحاجة لتقييم يدوي — بعد المراجعة.`
               : "احتُسبت فورًا."}
           </T>
         </Card>
@@ -1412,7 +1412,7 @@ function ResultBody({
 
       {awaitingManual ? (
         <T variant="sm" color="muted" align="center">
-          ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.
+          المراجعة بعد اكتمال التصحيح.
         </T>
       ) : (
         <View style={{ gap: sp[8] }}>
@@ -1436,7 +1436,7 @@ function ResultBody({
                 ))}
                 {(review.data?.questions ?? []).length === 0 ? (
                   <T variant="sm" color="muted">
-                    لا توجد تفاصيل مراجعة لهذه المحاولة.
+                    لا تفاصيل لهذه المحاولة.
                   </T>
                 ) : null}
               </View>

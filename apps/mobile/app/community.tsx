@@ -37,7 +37,7 @@ import {
   isUnauthError,
   membersAr,
 } from "@/features/common/components";
-import { CREATING } from "@/lib/copy";
+import {CREATING, NO_POSTS_YET, BE_FIRST_PARTICIPANT} from "@/lib/copy";
 
 type Tab = "posts" | "announcements" | "events" | "rooms";
 
@@ -72,7 +72,7 @@ export default function Community() {
     <>
       <StackHeader title="المجتمع الجامعي" kicker="الحياة الأكاديمية" />
       <T variant="body" color="secondary">
-        إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية.
+        إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية.
       </T>
       <Segmented
         options={[
@@ -206,8 +206,8 @@ function PostsPanel({ header }: { header: ReactNode }) {
         }
         emptySlot={
           <EmptyState
-            title="لا منشورات بعد"
-            message="كن أول المشاركين."
+            title={NO_POSTS_YET}
+            message={BE_FIRST_PARTICIPANT}
             icon={<MessageCircle size={20} color={p.textMuted} />}
             actionLabel={user ? "اكتب منشورًا" : undefined}
             onAction={user ? () => setComposing(true) : undefined}
@@ -395,7 +395,7 @@ function AnnouncementsPanel() {
         </RowList>
       )}
       <T variant="xs" color="faint" style={{ textAlign: "center" }}>
-        إنشاء الإعلانات متاح للإدارة وهيئة التدريس من لوحاتها — يظهر هنا آخر تحديثات الجامعة.
+        إنشاء الإعلانات للإدارة وهيئة التدريس — من لوحاتها.
       </T>
     </View>
   );

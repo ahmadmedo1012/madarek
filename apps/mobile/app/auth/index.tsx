@@ -87,7 +87,7 @@ export default function Welcome() {
               style={({ pressed }) => ({ minHeight: 44, justifyContent: "center", opacity: pressed ? 0.6 : 1 })}
             >
               <T variant="body" weight="medium" color="secondary" style={{ textAlign: "center" }}>
-                إنشاء حساب جديد
+                إنشاء حساب
               </T>
             </Pressable>
           </Animated.View>
@@ -95,7 +95,7 @@ export default function Welcome() {
           <Animated.View entering={enter(3)} style={{ marginTop: sp[24], gap: sp[8] }}>
             <Hairline />
             <T variant="xs" color="faint">
-              مدارك منصّة تعليمية مستقلّة عربية-أولًا من ليبيا — بيانات مؤسّسة العرض المرجعية بوضع الطيار الحالي.
+              منصّة تعليمية عربية من ليبيا — بيانات المؤسسة بوضع الطيار.
             </T>
           </Animated.View>
         </View>

@@ -18,7 +18,7 @@ export default function PaymentScreen() {
   const p = usePalette();
   return (
     <Screen scroll>
-      <StackHeader title="الشؤون المالية" kicker="رسومك الجامعية" />
+      <StackHeader title="الشؤون المالية" />
 
       <EmptyState
         icon={<Wallet size={26} color={p.textFaint} />}
@@ -27,16 +27,16 @@ export default function PaymentScreen() {
 
       <Card style={{ gap: sp[8] }}>
         <T variant="body" color="secondary">
-          تكامل الدفع الإلكترونيّ مع نظام الخزينة الجامعيّة قيد التطوير، والمنصّة لا تعرض أيّ مبالغ تقديريّة.
+          الدفع الإلكترونيّ قيد التطوير — لا مبالغ تقديريّة.
         </T>
         <T variant="sm" color="muted">
-          رصيدك الفعليّ وسجلّ سدادك مصدرهما مكتب الشؤون الماليّة — راجعه في كليّتك عند الحاجة.
+          رصيدك وسجلّ سدادك من الشؤون الماليّة بكليّتك.
         </T>
       </Card>
 
       <View style={{ gap: sp[4] }}>
         <T variant="xs" color="faint">
-          الإعلانات الرسميّة الخاصّة بالرسوم ومواعيدها تُنشر على لوحة المجتمع الجامعيّ.
+          إعلانات الرسوم ومواعيدها في لوحة المجتمع.
         </T>
       </View>
     </Screen>

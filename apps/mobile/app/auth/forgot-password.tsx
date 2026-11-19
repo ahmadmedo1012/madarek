@@ -67,14 +67,14 @@ export default function ForgotPassword() {
               accessibilityRole="link"
               style={{ paddingVertical: sp[8] }}
             >
-              رجوع إلى تسجيل الدخول
+              رجوع
             </T>
           </View>
         }
       >
         <T variant="h2" weight="bold">استعادة كلمة المرور</T>
         <T variant="body" color="secondary">
-          أدخل بريدك المسجّل وسنرسل رابط إعادة تعيين كلمة المرور إذا كان الحساب موجودًا.
+          أدخل بريدك المسجّل — يصلك رابط الاستعادة إن وُجد.
         </T>
         <Field
           {...form.field("email")}

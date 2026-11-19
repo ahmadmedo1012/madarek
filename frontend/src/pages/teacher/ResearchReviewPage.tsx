@@ -1,3 +1,5 @@
+import { SAVED, EMPTY_POSTS_YET, FAILED_VERIFICATION, OPEN, GOOD, NOW, PENDING_CHECK, CHECKING, SCIENTIFIC_RESEARCH, AWAITING_YOUR_RATING } from '../../lib/copy';
+
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -44,11 +46,11 @@ import '../../styles/shared/research-heron.css';
  * discard guard (15-e P1-6) and the error-language guard (15-j P0-1). */
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
-  UPLOADED: 'بانتظار الفحص',
-  SCANNING: 'جارٍ الفحص',
+  UPLOADED: PENDING_CHECK,
+  SCANNING: CHECKING,
   CHECKS_PASSED: 'بانتظار التقييم',
   // r134 فشل→تعذّر family canon — see the student twin (ResearchPage).
-  CHECKS_FAILED: 'تعذّر اجتياز الفحص',
+  CHECKS_FAILED: FAILED_VERIFICATION,
   GRADED: 'مُقيَّم',
   PUBLISHED: 'مُنشور',
 };
@@ -117,12 +119,12 @@ type Tab = 'review' | 'mine';
 function reviewKpiCells(passed: number, failed: number, readyToPublish: number, down: boolean): StatLineItem[] {
   return [
     {
-      label: 'بانتظار تقييمك',
+      label: AWAITING_YOUR_RATING,
       value: down ? '—' : formatInt(passed),
       tone: passed > 0 ? 'signal' : 'neutral',
     },
     {
-      label: 'تعذّر اجتياز الفحص',
+      label: FAILED_VERIFICATION,
       value: down ? '—' : formatInt(failed),
       tone: failed > 0 ? 'danger' : 'neutral',
     },
@@ -270,7 +272,7 @@ export default function ResearchReviewPage() {
     try {
       await grade.mutateAsync({ id: selected.id, grade: draftScore, feedback: draftFeedback || undefined });
       toast.success('انشره من «جاهزة للنشر».', {
-        title: 'تمّ الحفظ',
+        title: SAVED,
       });
     } catch (err) {
       setGradeError(apiErrorMessage(err, 'تعذَّر حفظ التقييم — أعد المحاولة.'));
@@ -329,7 +331,7 @@ export default function ResearchReviewPage() {
     <div className="r305rp">
       <PageFrame width="default">
         <PageHeader
-          title="البحث العلمي"
+          title={SCIENTIFIC_RESEARCH}
           /* R342-09 — the numeral gutter register (the R319 PageHeader
            * index seat) + the workflow classification eyebrow: the
            * review surface reads on the same [nn] grammar the done
@@ -392,7 +394,7 @@ export default function ResearchReviewPage() {
                 <div className="rs-review-queue">
                   <section className="flex-col gap-2" aria-label="بانتظار التقييم">
                     <SectionHeader
-                      title="بانتظار تقييمك"
+                      title={AWAITING_YOUR_RATING}
                       as="h2"
                     />
                     {passed.length === 0 ? (
@@ -721,7 +723,7 @@ function ReviewWorkspace({
                 value={
                   score >= 17 ? 'ممتاز' :
                   score >= 14 ? 'جيد جداً' :
-                  score >= 12 ? 'جيد' :
+                  score >= 12 ? GOOD :
                   score >= 10 ? 'مقبول' : 'ضعيف'
                 }
                 disabled
@@ -752,7 +754,7 @@ function ReviewWorkspace({
             {next ? (
               <div className="r305rp-rev-decision-flow">
                 <div className="r305rp-rev-decision-state">
-                  <span className="r305rp-eyebrow">الآن</span>
+                  <span className="r305rp-eyebrow">{NOW}</span>
                   <StatusChip status={paper.status} />
                 </div>
                 <Icon icon={ArrowLeft} size={14} className="r305rp-rev-decision-arrow" />
@@ -943,7 +945,7 @@ function MyPublications() {
         {publications.length === 0 ? (
           <EmptyState illustration="empty-research"
             icon={Microscope}
-            title="لا منشورات بعد"
+            title={EMPTY_POSTS_YET}
             action={
               <RouterLink to="/teacher/profile" className="btn outline sm">
                 <Icon icon={FileText} size={13} />
@@ -965,7 +967,7 @@ function MyPublications() {
                      the new tab (G201). */
                   <a href={p.url} target="_blank" rel="noreferrer" className="btn ghost sm"
                     aria-label="فتح — يفتح في نافذة جديدة">
-                    فتح
+                    {OPEN}
                   </a>
                 ) : undefined}
               />

@@ -1,51 +1,54 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — Training & gamification surfaces
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Owner: the training wave (Task 3-b). One visual system for:
-     · TrainingCatalogPage / TrainingTrackPage / TrainingLessonPage /
-       AchievementsPage  (pages/student/TrainingPages.tsx)
-     · GamificationPage achievements/XP surfaces
-       (pages/student/MorePages.tsx — §gamification only)
+   · TrainingCatalogPage / TrainingTrackPage / TrainingLessonPage /
+    AchievementsPage  (pages/student/TrainingPages.tsx)
+   · GamificationPage achievements/XP surfaces
+    (pages/student/MorePages.tsx — §gamification only)
 
    Design notes (craft floor):
-     · Elevation: hairline borders at rest; soft shadows only on hover
-       (the incumbent .card convention — ruling #1).
-     · RTL: logical properties only; XP/progress fills are plain blocks
-       that anchor inline-start (right in RTL) — correct growth direction.
-     · Medal treatment for leaderboard top-3 uses the existing pastel
-       families, no new colors: gold → --c-yellow-*, silver → --c-grey-*,
-       bronze → --c-peach-*.
-     · API-supplied track/theme hexes are never painted behind text:
-       they arrive as the --track-accent custom property and are always
-       consumed through color-mix tints over var(--surface), with
-       var(--text) labels — AA-safe in both themes by construction.
-     · All motion consumes tokens; keyframes carry their own
-       prefers-reduced-motion off-switches (guardrail #6).
-     · `.back-link` was an unowned class family (audit 0-d P0-2) — it is
-       defined here once and also serves the teacher/admin/exams pages
-       that render the same markup.
+   · Elevation: hairline borders at rest; soft shadows only on hover
+    (the incumbent .card convention — ruling #1).
+   · RTL: logical properties only; XP/progress fills are plain blocks
+    that anchor inline-start (right in RTL) — correct growth direction.
+   · Medal treatment for leaderboard top-3 uses the existing pastel
+    families, no new colors: gold → --c-yellow-*, silver → --c-grey-*,
+    bronze → --c-peach-*.
+   · API-supplied track/theme hexes are never painted behind text:
+    they arrive as the --track-accent custom property and are always
+    consumed through color-mix tints over var(--surface), with
+    var(--text) labels — AA-safe in both themes by construction.
+   · All motion consumes tokens; keyframes carry their own
+    prefers-reduced-motion off-switches (guardrail #6).
+   · `.back-link` was an unowned class family (audit 0-d P0-2) — it is
+    defined here once and also serves the teacher/admin/exams pages
+    that render the same markup.
 
    r305 (2-c — training/community register pass):
-     · .track-hero-title drops to the product header register (24px —
-       the r304 ruling in patterns.css .pf-page-title); the summary
-       speaks --fs-body; lesson-row titles speak the pf-row-title voice.
-     · Touch floors key on (pointer: coarse) like the r170-e belt —
-       .back-link's ≤640px rule was min-block-height (invalid property)
-       and never applied anywhere; restored + belt added.
-     · Shared-family classes (.filter-pill / .back-link / the .leaderboard-* family /
-       .tier-orb/.achievement-*) serve other owners' pages too — changes
-       stay register-level and are reported in the wave worklog.
-   ═════════════════════════════════════════════════════════════════════ */
+   · .track-hero-title drops to the product header register (24px —
+    the r304 ruling in patterns.css .pf-page-title); the summary
+    speaks --fs-body; lesson-row titles speak the pf-row-title voice.
+   · Touch floors key on (pointer: coarse) like the r170-e belt —
+    .back-link's ≤640px rule was min-block-height (invalid property)
+    and never applied anywhere; restored + belt added.
+   · Shared-family classes (.filter-pill / .back-link / the .leaderboard-* family /
+    .tier-orb/.achievement-*) serve other owners' pages too — changes
+    stay register-level and are reported in the wave worklog.
+   ═══
+*/
 
 @layer pages {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  §catalog — track grid, track cards, filter pills              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   §catalog — track grid, track cards, filter pills
+   ╚╚╚
+*/
 
   /* Filter pills — segmented-control feel on a wrapping row. The
-     pressed pill is the ink chip (dark theme: accent chip), mirroring
-     the .pill.on language in components.css. */
+   pressed pill is the ink chip (dark theme: accent chip), mirroring
+   the .pill.on language in components.css.
+*/
   .filter-pill-row {
     display: flex;
     flex-wrap: wrap;
@@ -55,7 +58,8 @@
   .filter-pill {
     display: inline-flex;
     align-items: center;
-    gap: var(--sp-1-5); /* r149 (R3-A2 #1): النصف-درجة الموثقة */
+    gap: var(--sp-1-5); /* r149 (R3-A2 #1): النصف-درجة الموثقة
+*/
     min-block-size: 36px;
     padding-inline: var(--sp-4);
     border-radius: var(--r-full);
@@ -96,19 +100,23 @@
     cursor: not-allowed;
   }
   @media (max-width: 640px) {
-    .filter-pill { min-block-size: 44px; } /* touch target (craft floor) */
+    .filter-pill { min-block-size: 44px; } /* touch target (craft floor)
+*/
   }
   /* r305 (2-c): حزام المؤشّر الخشن (عرف r170-e) — أرضية اللمس تُقاس
-     بقدرة الإدخال لا بالعرض، فتُغطى أجهزة اللمس الأوسع من 640px
-     (اللوحات) التي لا يبلغها نطاق 640 أعلاه. */
+   بقدرة الإدخال لا بالعرض، فتُغطى أجهزة اللمس الأوسع من 640px
+   (اللوحات) التي لا يبلغها نطاق 640 أعلاه.
+*/
   @media (pointer: coarse) {
     .filter-pill { min-block-size: 44px; }
   }
 
-  /* My-summary level band (catalog). */
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  §track-detail — back link, hero, lesson rows, lesson prose    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* My-summary level band (catalog).
+*/
+  /* ╔╔╔
+   §track-detail — back link, hero, lesson rows, lesson prose
+   ╚╚╚
+*/
 
   .back-link {
     display: inline-flex;
@@ -117,7 +125,8 @@
     min-block-size: 40px;
     padding: var(--sp-2) var(--sp-3);
     /* negative inline-start so the label optically aligns with the
-       page edge while the padding keeps the hit area */
+    page edge while the padding keeps the hit area
+*/
     margin-inline-start: calc(var(--sp-3) * -1);
     border-radius: var(--r-sm);
     color: var(--text-muted);
@@ -136,38 +145,51 @@
   }
   @media (max-width: 640px) {
     /* r305 (2-c): كان min-block-height — خاصية غير موجودة في CSS
-       (المنطقية min-block-size) فلم يُطبَّق أرضية اللمس 44px أبدًا
-       على أي سطح مستعرِض للعائلة (التدريب/الأستاذ/الامتحانات/المسجل العام).
-       إصلاح يُحيي القاعدة الموثّقة كما هي. */
-    .back-link { min-block-size: 44px; } /* touch target (craft floor) */
+    (المنطقية min-block-size) فلم يُطبَّق أرضية اللمس 44px أبدًا
+    على أي سطح مستعرِض للعائلة (التدريب/الأستاذ/الامتحانات/المسجل العام).
+    إصلاح يُحيي القاعدة الموثّقة كما هي.
+*/
+    .back-link { min-block-size: 44px; } /* touch target (craft floor)
+*/
   }
   /* r305 (2-c): حزام المؤشّر الخشن — نفس عرف r170-e في components.css
-     (.btn): الأرضية تُقاس بقدرة الإدخال لا بعرض الشاشة، فتغطي أجهزة
-     اللمس الأوسع من 640px التي يفوّتها النطاق أعلاه. */
+   (.btn): الأرضية تُقاس بقدرة الإدخال لا بعرض الشاشة، فتغطي أجهزة
+   اللمس الأوسع من 640px التي يفوّتها النطاق أعلاه.
+*/
   @media (pointer: coarse) {
     .back-link { min-block-size: 44px; }
   }
 
   /* Track hero — tinted band. Hierarchy via tint + hairline, not a
-     colored side-stripe (the 3px borderRight is gone — ruling #4). */
+   colored side-stripe (the 3px borderRight is gone — ruling #4).
+*/
   /* Themed primary CTA — tinted ground + neutral ink, never a raw API
-     hex under white text (0-d P2 contrast fix). Used on the track hero
-     and the lesson completion actions. */
+   hex under white text (0-d P2 contrast fix). Used on the track hero
+   and the lesson completion actions.
+*/
 
-  /* Lesson rows — locked / next (available) / done states. */
-  /* first uncompleted lesson — the "continue here" affordance */
-  /* Lesson prose — measured reading column. */
+  /* Lesson rows — locked / next (available) / done states.
+*/
+  /* first uncompleted lesson — the "continue here" affordance
+*/
+  /* Lesson prose — measured reading column.
+*/
   /* Checkpoint quiz — tinted panel (the 3px borderRight stripe is gone,
-     ruling #4; hierarchy via tint + hairline + icon chip). */
-  /* Lesson page action row (completion CTA + next-lesson ghost). */
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  §lesson-reward — completion feedback + badge-earned pulse     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+   ruling #4; hierarchy via tint + hairline + icon chip).
+*/
+  /* Lesson page action row (completion CTA + next-lesson ghost).
+*/
+  /* ╔╔╔
+   §lesson-reward — completion feedback + badge-earned pulse
+   ╚╚╚
+*/
   /* pills sit on the card surface inside the tinted banner so both
-     badge + point chips stay legible */
+   badge + point chips stay legible
+*/
   /* THE authored moment — a one-shot scale + ring pulse on newly
-     earned badges only (the class renders exclusively on the reward
-     feedback of a fresh completion; no idle glow anywhere). */
+   earned badges only (the class renders exclusively on the reward
+   feedback of a fresh completion; no idle glow anywhere).
+*/
   @keyframes madarek-badge-earned {
     0% {
       transform: scale(0.6);
@@ -183,8 +205,9 @@
     }
   }
   /* (r313: the mid-flight gold ring box-shadow frames retired with
-     the decorative-shadow sweep — the scale/opacity ping carries the
-     earned feedback alone, per the reference's shadow-free motion.) */
+   the decorative-shadow sweep — the scale/opacity ping carries the
+   earned feedback alone, per the reference's shadow-free motion.)
+*/
 
   @keyframes madarek-reward-in {
     from {
@@ -197,40 +220,47 @@
     }
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  §achievements — badge tiles + leaderboard                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* earned — full color + subtle lift */
-  /* locked — desaturated tile, ghost icon well */
+  /* ╔╔╔
+   §achievements — badge tiles + leaderboard
+   ╚╚╚
+*/
+  /* earned — full color + subtle lift
+*/
+  /* locked — desaturated tile, ghost icon well
+*/
   /* r171c (WCAG 1.4.3): was var(--text-faint) — the 12px fs-xs
-     description on the tile surface sat marginal for the AA floor.
-     --text-muted keeps it comfortably (measured 5.26:1 light on the
-     white tile, 6.33:1 dark on #0D1428 — browser-computed) and
-     matches the locked title's tier, so the title/desc hierarchy
-     rests on size+weight, not a sub-AA color. --text-faint itself
-     keeps its other consumers. */
+   description on the tile surface sat marginal for the AA floor.
+   --text-muted keeps it comfortably (measured 5.26:1 light on the
+   white tile, 6.33:1 dark on #0D1428 — browser-computed) and
+   matches the locked title's tier, so the title/desc hierarchy
+   rests on size+weight, not a sub-AA color. --text-faint itself
+   keeps its other consumers.
+*/
   .badge-tile.locked .badge-tile-desc { color: var(--text-muted); }
   .badge-tile.earned .badge-tile-rarity {
     background: color-mix(in srgb, var(--rarity) 12%, var(--surface));
     /* r171c (WCAG 1.4.3, browser-measured): the text mix was 60%
-       rarity — LEGENDARY gold measured 4.47:1 in light (11px/600,
-       under the 4.5 floor; COMMON grey sat marginal at 4.79).
-       45% rarity + 55% --text darkens the ink in light AND lightens
-       it in dark (the text token flips with the theme), landing every
-       rarity ≥6.2:1 light / ≥7.1:1 dark — margin, not a pass-by-
-       rounding. The chip BACKGROUND mix stays 12% (the badge grammar:
-       fills keep the base tokens). */
+    rarity — LEGENDARY gold measured 4.47:1 in light (11px/600,
+    under the 4.5 floor; COMMON grey sat marginal at 4.79).
+    45% rarity + 55% --text darkens the ink in light AND lightens
+    it in dark (the text token flips with the theme), landing every
+    rarity ≥6.2:1 light / ≥7.1:1 dark — margin, not a pass-by-
+    rounding. The chip BACKGROUND mix stays 12% (the badge grammar:
+    fills keep the base tokens).
+*/
     color: color-mix(in srgb, var(--rarity) 45%, var(--text));
   }
   /* locked chips: surface-3 + --text-muted — measured 4.58:1 light /
-     5.44:1 dark (≥4.5 both, kept as the locked grammar). */
+   5.44:1 dark (≥4.5 both, kept as the locked grammar).
+*/
   .badge-tile.locked .badge-tile-rarity {
     background: var(--surface-3);
     color: var(--text-muted);
   }
   /* Leaderboard — ranked list. Rank chips for the top 3 use the
-     existing pastel families (no new colors): gold = --c-yellow-*,
-     silver = --c-grey-*, bronze = --c-peach-*. */
+   existing pastel families (no new colors): gold = --c-yellow-*,
+   silver = --c-grey-*, bronze = --c-peach-*.
+*/
 
   @keyframes madarek-lb-row-in {
     from {
@@ -250,11 +280,13 @@
     align-items: center;
     justify-content: center;
     /* r313: a SQUARE index tile — hairline frame, transparent ground,
-       mono numeral (the reference's map-number grammar; the pastel
-       medal discs and the --surface-3 well are retired with the tint
-       sweep). */
+    mono numeral (the reference's map-number grammar; the pastel
+    medal discs and the --surface-3 well are retired with the tint
+    sweep).
+*/
     border: 1px solid var(--rule);
-    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    border-radius: var(--r-sm); /* 0 — the r313 ladder
+*/
     background: transparent;
     color: var(--text-muted);
     font-family: var(--font-mono);
@@ -263,8 +295,9 @@
     font-variant-numeric: tabular-nums;
   }
   /* Podium — top 3: same square tile one step larger; the ONLY tiered
-     ink is gold on rank 1 (the r197 gold discipline — achievements
-     and nothing else); 2 and 3 stay neutral ink on the hairline. */
+   ink is gold on rank 1 (the r197 gold discipline — achievements
+   and nothing else); 2 and 3 stay neutral ink on the hairline.
+*/
   .leaderboard-rank.rank-1,
   .leaderboard-rank.rank-2,
   .leaderboard-rank.rank-3 {
@@ -283,29 +316,34 @@
     color: var(--text-secondary);
   }
   @media (max-width: 640px) {
-    /* protect name + points on narrow screens */
+    /* protect name + points on narrow screens
+*/
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  §gamification — XP economy + achievement rows                 ║
-     ║  (GamificationPage in MorePages.tsx shares this system;        ║
-     ║   ProfilePage renders the same achievement markup)             ║
-     ╚═══════════════════════════════════════════════════════════════╝
-     R369 A-debt: this banner's RULES (.xp-track/.xp-fill, .tier-orb,
-     .achievement*, .cert-icon, the reduced-motion off-switches) live
-     in student/training-anatomy.css — restored there verbatim by the
-     r368 T6-a wave. The old inline copies were removed when the
-     anatomy sheet was rebuilt; this pointer replaces the orphaned
-     per-rule comments that jscpd was counting as duplicate blocks. */
+  /* ╔╔╔
+   §gamification — XP economy + achievement rows
+   (GamificationPage in MorePages.tsx shares this system;
+   ProfilePage renders the same achievement markup)
+   ╚╚╚
+   R369 A-debt: this banner's RULES (.xp-track/.xp-fill, .tier-orb,
+   .achievement*, .cert-icon, the reduced-motion off-switches) live
+   in student/training-anatomy.css — restored there verbatim by the
+   r368 T6-a wave. The old inline copies were removed when the
+   anatomy sheet was rebuilt; this pointer replaces the orphaned
+   per-rule comments that jscpd was counting as duplicate blocks.
+*/
   /* r265 — صفوف المسارات: شريط التقدّم المضغوط داخل عمود الطرف
-     (عرض مضبوط لا يشدّ الصف) والسطر الثانوي عمودٌ من سطرين — البقية
-     من عقد patterns (§CP ROWS في components.css). G: القواعد تعود
-     داخل @layer pages (كانت خارجها — شذوذ وزن مقابل §CP في
-     components.css). */
-  /* ── G النهائية — وصفات كانت سطرية في TrainingPages ─────────────── */
+   (عرض مضبوط لا يشدّ الصف) والسطر الثانوي عمودٌ من سطرين — البقية
+   من عقد patterns (§CP ROWS في components.css). G: القواعد تعود
+   داخل @layer pages (كانت خارجها — شذوذ وزن مقابل §CP في
+   components.css).
+*/
+  /* ── G النهائية — وصفات كانت سطرية في TrainingPages ───────────────
+*/
 
   /* بطاقة الشهادة (بطاقة الإنجازات): أيقونة + جسم — القيم نفسها التي
-     كانت inline (r186/r148) على المحاور المفروضة. */
+   كانت inline (r186/r148) على المحاور المفروضة.
+*/
   .cert-row {
     display: flex;
     gap: var(--sp-3);
@@ -317,7 +355,8 @@
   .cert-title {
     font-size: var(--fs-md);
     font-family: var(--font-display);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (card title; was 700) */
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (card title; was 700)
+*/
     line-height: 1.3;
     margin: var(--sp-1) 0 var(--sp-1-5);
   }
@@ -327,12 +366,14 @@
     margin-block-start: var(--sp-2);
     flex-wrap: wrap;
   }
-  /* زرّ توسيع/طيّ الترتيب (الهاتف): عرض كامل فوق القائمة. */
+  /* زرّ توسيع/طيّ الترتيب (الهاتف): عرض كامل فوق القائمة.
+*/
   .ach-lb-toggle {
     inline-size: 100%;
     margin-block-start: var(--sp-3);
   }
-  /* ملخّص الدرس تحت عنوانه — المسافة كانت inline. */
+  /* ملخّص الدرس تحت عنوانه — المسافة كانت inline.
+*/
   .lesson-summary {
     margin-block-end: var(--sp-3);
   }

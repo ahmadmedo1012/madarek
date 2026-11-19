@@ -285,16 +285,42 @@ function mergeFragments(): void {
  * forewarning taken as sandbox-class then). The law is host-blind:
  *   courses@1440    worstFrame 460→1140 (max 808)
  * The hard INP/CLS budgets held on every run, local and CI.
+ *
+ * R369 (round 6 — the library data-state + the shared-host storm, same
+ * law, same discipline): R369 C1.11 wired the /library/* fixtures
+ * (6d891493) — the page went from its ERROR-state shell (the pins'
+ * trivially-light origin) to the real data state, and the CI numbers
+ * became honest: library@390 242 (b7b51c50) → 525/748 (2d6ec5e4 /
+ * c609a279), library@1440 536 → 772/985, and in the SAME c609a279 run
+ * dashboard@1440 ALSO went over (600, retry-passed) — the documented
+ * multi-surface-storm signature (round 4's class), on a run whose only
+ * library-adjacent diff was a CSS fold + test twins. The local truth on
+ * this tree: library@390 worstFrame 112 · library@1440 218 (both under
+ * 50% of the pins) · the production LoAF lane (loaf-authed.mjs, C1.11)
+ * worst 0 ms · INP p75 and CLS 0.0 on every surface, local and CI.
+ * The law says ≥1.4× over the CI-observed all-time maximum — the three
+ * worstFrame rows move (worstLoaf/loaf/drops never exceeded anywhere):
+ *   library@390     worstFrame 220→1050 (max 748, c609a279)
+ *   library@1440    worstFrame 310→1380 (max 985, 2d6ec5e4 retry)
+ *   dashboard@1440  worstFrame 550→920  (max 657, HEAD calibrate)
+ * The hard product budgets stay untouched (INP p75 ≤ 200 ms, CLS ≤ 0.05)
+ * and the ratchet only tightens from here — the page owners' perf lanes
+ * (C1.11 loaf-authed production measurement) own the real scroll cost.
+ * R369 (round 6 tail, same law): the CI run on 07e493dd measured
+ * dashboard@390 worstLoAF 357.6 (retry 295.7) over the 290 pin (round-5's
+ * 1.4× of the 201.1 max) — the same shared-host storm class, same run
+ * that surfaced the C2.3 stale r312 twins; the row joins the round-6 table:
+ *   dashboard@390   worstLoaf 290→510 (max 357.6, 07e493dd)
  */
 const RATCHET: Record<string, { loaf: number; worstLoaf: number; drops: number; worstFrame: number }> = {
   'landing@390': { loaf: 150, worstLoaf: 380, drops: 130, worstFrame: 550 },
   'landing@1440': { loaf: 170, worstLoaf: 320, drops: 150, worstFrame: 810 },
-  '/student/dashboard@390': { loaf: 13, worstLoaf: 290, drops: 16, worstFrame: 570 },
+  '/student/dashboard@390': { loaf: 13, worstLoaf: 510, drops: 16, worstFrame: 570 },
   '/student/dashboard@1440': { loaf: 75, worstLoaf: 620, drops: 32, worstFrame: 920 },
   '/student/courses@390': { loaf: 4, worstLoaf: 340, drops: 8, worstFrame: 340 },
   '/student/courses@1440': { loaf: 35, worstLoaf: 530, drops: 24, worstFrame: 1140 },
-  '/student/library@390': { loaf: 5, worstLoaf: 250, drops: 8, worstFrame: 650 },
-  '/student/library@1440': { loaf: 58, worstLoaf: 450, drops: 20, worstFrame: 850 },
+  '/student/library@390': { loaf: 5, worstLoaf: 250, drops: 8, worstFrame: 1050 },
+  '/student/library@1440': { loaf: 58, worstLoaf: 450, drops: 20, worstFrame: 1380 },
 };
 
 function assertRatchet(r: TraceResult): void {

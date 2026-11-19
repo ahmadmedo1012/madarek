@@ -1,6 +1,6 @@
-/* ════════════════════════════════════════════════════════════════════
+/* ═══
    مدارك — /help (R341 · task D3 · W7 dedup)
-   ════════════════════════════════════════════════════════════════════
+   ═══
    الأسئلة التسعة — the FAQ sheet. The pattern library owns the frame
    (pf-page · pf-page-header · pf-eyebrow · pf-page-actions) and the
    shared guest-sheet chrome grammar seats in patterns.css §G (header,
@@ -10,19 +10,23 @@
    sheet's one invention: the nine-question native details/summary
    accordion (the R333 P-G3a grammar) and its print contract. Every
    rule is help-scoped hp-*.
-   ──────────────────────────────────────────────────────── */
+   ───
+*/
 
 @layer pages {
 
-  /* ══ 1 · THE FAQ ACCORDION — nine native details/summary ════════ */
+  /* ══ 1 · THE FAQ ACCORDION — nine native details/summary ════════
+*/
 
   /* the hairline slab: radius 0, 1px rule, the paper wash — the sheet's
-     one list container (the [nn] numerals + the h2 questions inside
-     keep the document outline the R320 §D pins demand). */
+   one list container (the [nn] numerals + the h2 questions inside
+   keep the document outline the R320 §D pins demand).
+*/
   .hp-faq {
     border: 1px solid var(--rule);
     background: color-mix(in srgb, var(--surface) 55%, transparent);
-    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    border-radius: var(--r-sm); /* 0 — the r313 ladder
+*/
   }
 
   .hp-faq-item {
@@ -33,9 +37,10 @@
   .hp-faq-item + .hp-faq-item { border-block-start: 1px solid var(--rule); }
 
   /* the accordion affordance IS the summary row: full-width, 44px+
-     touch floor, the [nn] index on the inline start, a hairline caret
-     on the inline end that rotates with the open state (the motion
-     ladder's short token). The native marker retires. */
+   touch floor, the [nn] index on the inline start, a hairline caret
+   on the inline end that rotates with the open state (the motion
+   ladder's short token). The native marker retires.
+*/
   .hp-faq-q {
     margin: 0;
     display: flex;
@@ -48,7 +53,8 @@
     font-weight: var(--fw-semibold);
     color: var(--text);
     cursor: pointer;
-    list-style: none; /* the hairline caret replaces the native marker */
+    list-style: none; /* the hairline caret replaces the native marker
+*/
   }
 
   .hp-faq-q::-webkit-details-marker { display: none; }
@@ -61,10 +67,11 @@
   }
 
   /* the question text takes the remaining measure; the caret pins to
-     the inline end whatever the question's length. PI-REC: the text is
-     an <h2> (the R320 §D nine-heading outline law) — the UA heading
-     font/margin reset rides here so the summary row is pixel-identical
-     to a plain span. */
+   the inline end whatever the question's length. PI-REC: the text is
+   an <h2> (the R320 §D nine-heading outline law) — the UA heading
+   font/margin reset rides here so the summary row is pixel-identical
+   to a plain span.
+*/
   .hp-faq-q-text { flex: 1 1 auto; min-inline-size: 0; margin: 0; font: inherit; }
 
   .hp-faq-caret {
@@ -75,10 +82,11 @@
     border-inline-end: 1.5px solid currentColor;
     border-block-end: 1.5px solid currentColor;
     /* physical rotate is deliberate: the caret is a glyph, not a
-       layout box — it points DOWN closed, UP open, in both reading
-       directions (border-inline-end mirrors with the direction,
-       keeping the v-shape anchored to the inline end in RTL and LTR
-       alike). */
+    layout box — it points DOWN closed, UP open, in both reading
+    directions (border-inline-end mirrors with the direction,
+    keeping the v-shape anchored to the inline end in RTL and LTR
+    alike).
+*/
     transform: rotate(45deg);
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
@@ -86,7 +94,8 @@
   .hp-faq-item[open] .hp-faq-caret { transform: rotate(225deg); }
 
   /* the answer indents to the question's text edge (past the [nn]
-     index) and keeps the loose prose leading */
+   index) and keeps the loose prose leading
+*/
   .hp-faq-a {
     margin: 0;
     padding: 0 var(--sp-5) var(--sp-4);
@@ -94,7 +103,8 @@
     font-size: var(--fs-body);
     line-height: var(--lh-loose);
     color: var(--text-secondary);
-    overflow-wrap: anywhere; /* a long Latin run never escapes the cell */
+    overflow-wrap: anywhere; /* a long Latin run never escapes the cell
+*/
   }
 
   @media (max-width: 640px) {
@@ -102,11 +112,13 @@
   }
 
   /* ══ 2 · HOVER — the accordion row alone (the shared CTA/link
-     hovers ride patterns.css §G·HOVER) ═════════════════════════════ */
+   hovers ride patterns.css §G·HOVER) ═════════════════════════════
+*/
 
   @media (hover: hover) and (pointer: fine) {
     /* the summary row's affordance: ink + paper wash together (the B1
-       pair discipline — two measured channels on a real pointer) */
+    pair discipline — two measured channels on a real pointer)
+*/
     .hp-faq-q:hover {
       color: var(--accent-ink);
       background: color-mix(in srgb, var(--surface) 70%, transparent);
@@ -114,13 +126,15 @@
   }
 
   /* ══ 3 · PRINT — every answer visible (the shared collapse rides
-     patterns.css §G·PRINT) ══════════════════════════════════════════ */
+   patterns.css §G·PRINT) ══════════════════════════════════════════
+*/
 
   @media print {
     /* the accordion prints as a DOCUMENT — every answer on paper
-       regardless of its screen open-state (the ::details-content slot
-       is what hides closed answers; browsers without the pseudo simply
-       print the open items). */
+    regardless of its screen open-state (the ::details-content slot
+    is what hides closed answers; browsers without the pseudo simply
+    print the open items).
+*/
     .hp-faq-item::details-content {
       content-visibility: visible;
       display: contents;

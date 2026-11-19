@@ -1,3 +1,5 @@
+import { LABEL_COLLEGES, MY_RESEARCH } from '../lib/copy';
+
 import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { createPortal } from 'react-dom';
@@ -68,7 +70,7 @@ function safeBackPath(raw: string | null, role: AppRole): string {
  *  trap door and a way back. Unknown destinations keep the generic
  *  label (never guess a place we cannot name). */
 export function backDestinationLabel(path: string): string {
-  if (path.startsWith('/student/research')) return 'بحوثي';
+  if (path.startsWith('/student/research')) return MY_RESEARCH;
   if (path.startsWith('/student/library') || path.startsWith('/teacher/library')) return LIBRARY_LABEL;
   if (path.startsWith('/teacher/research')) return 'مراجعة البحوث';
   if (path.startsWith('/student/courses') || path.startsWith('/teacher/materials')) return 'المقرر';
@@ -308,7 +310,7 @@ export default function DocumentViewerPage() {
             <span className="fo-mono" dir="ltr">READER</span>
           </p>
           <Link to="/community" className="btn accent sm">المجتمع</Link>
-          <Link to="/colleges" className="btn ghost sm">الكليات</Link>
+          <Link to="/colleges" className="btn ghost sm">{LABEL_COLLEGES}</Link>
         </div>
       </header>
 

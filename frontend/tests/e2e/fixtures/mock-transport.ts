@@ -62,10 +62,16 @@ import {
   PERSON_HISTORY,
   RESUME,
   DISCOVER_RESULTS,
+  LIBRARY_BOOKS,
+  LIBRARY_RESEARCH,
   STUDENT_DASHBOARD,
   STUDENT_PERSON,
   STUDENT_USER,
   TEACHER_OFFERINGS,
+  MAIL_ADMIN_STATUS,
+  MAIL_OUTBOX_PAGE,
+  MAIL_SUPPRESSION_PAGE,
+  MAIL_TEMPLATES,
   TEACHER_PERMISSIONS,
   TEACHER_RISKS,
   TEACHER_STUDENTS,
@@ -158,6 +164,16 @@ export function standardRoutes(): MockRouteDef[] {
     { method: 'POST', path: '/notifications/read-all', json: ok({ updated: UNREAD_COUNT }) },
 
     { method: 'GET', path: '/search/discover', json: ok(DISCOVER_RESULTS) },
+    /* R369 (C1 · the mail-fixture precedent): the library's three GETs
+     * 501'd in every hermetic run — the /student/library conformance
+     * cells measured the ERROR state while the fixtures existed unused
+     * (LIBRARY_BOOKS/LIBRARY_RESEARCH exported since r165h, never
+     * wired). Honest corpus: 2 books + 1 published paper + empty
+     * loans. */
+    { method: 'GET', path: '/library/books', json: ok(LIBRARY_BOOKS) },
+    { method: 'GET', path: '/me/loans', json: ok([]) },
+    { method: 'GET', path: '/research/published', json: ok(LIBRARY_RESEARCH) },
+
 
     /* r165h: r164c's resume-hero fallback arm reads the training
      * catalog on every student dashboard visit — the integrated tree
@@ -202,6 +218,7 @@ export function standardRoutes(): MockRouteDef[] {
     { method: 'GET', path: '/teacher/risks', json: ok(TEACHER_RISKS) },
 
     /* /admin/people/:id — the directory + person + fields + history */
+    { method: 'GET', path: '/directory', json: DIRECTORY_PAGE },
     { method: 'GET', path: '/people', json: DIRECTORY_PAGE },
     { method: 'GET', path: '/people/:id', json: ok(STUDENT_PERSON) },
     { method: 'GET', path: '/people/:id/history', json: ok(PERSON_HISTORY) },
@@ -212,6 +229,18 @@ export function standardRoutes(): MockRouteDef[] {
     /* /admin/permissions/:id — the users roster + one user's caps */
     { method: 'GET', path: '/admin/users', json: ADMIN_USERS_PAGE },
     { method: 'GET', path: '/admin/users/:id/permissions', json: ok(TEACHER_PERMISSIONS) },
+
+    /* /admin/mail — the registrar mail console (R369-C: the page
+     * measured its error state since R350 — status/outbox/
+     * suppression/templates now ride the real wire shapes). */
+    { method: 'GET', path: '/admin/mail/status', json: ok(MAIL_ADMIN_STATUS) },
+    { method: 'GET', path: '/admin/mail/outbox', json: MAIL_OUTBOX_PAGE },
+    { method: 'GET', path: '/admin/mail/suppression', json: MAIL_SUPPRESSION_PAGE },
+    { method: 'GET', path: '/admin/mail/templates', json: ok(MAIL_TEMPLATES) },
+    { method: 'POST', path: '/admin/mail/test-send', json: ok({ ok: true }) },
+    { method: 'POST', path: '/admin/mail/outbox/:id/retry', json: ok({ ok: true }) },
+    { method: 'POST', path: '/admin/mail/outbox/:id/cancel', json: ok({ ok: true }) },
+    { method: 'DELETE', path: '/admin/mail/suppression/:id', json: ok({ ok: true }) },
 
     /* /owner/institutions/:slug — the console list + the per-slug tree */
     { method: 'GET', path: '/owner/institutions', json: ok(OWNER_INSTITUTIONS) },

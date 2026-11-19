@@ -77,6 +77,7 @@ import { humanizeError } from "@/lib/errors";
 import { arabicIndic, latn, sizeLabel, useNumerals, type NumeralsPreference } from "@/lib/format";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { AR_CHOICE_LETTERS, countAr } from "@/features/student/more";
+import {LOADING, TRY_OTHER_WORD} from "@/lib/copy";
 import {
   ScrollBody,
   cueClock,
@@ -359,7 +360,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
           const target = Math.max(0, we.watchedSec - 3);
           const dur2 = player.duration;
           seekPlayer(player, clampSeek(target, dur2));
-          toast.info("من حيث توقفت", "استئناف المشاهدة");
+          toast.info("من حيث توقفت");
         }
       }
     });
@@ -654,7 +655,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
         {loadError ? (
           <Card style={{ gap: sp[8] }}>
             <T variant="body" color="danger">
-              تعذّر تحميل الفيديو — تحقّق من اتصالك ثم أعد المحاولة.
+              تعذّر تحميل الفيديو — تحقّق من الاتصال.
             </T>
             <Button label="إعادة التحميل" kind="ghost" small onPress={loadSource} />
           </Card>
@@ -694,7 +695,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
               {`${fmt(watchPct)}٪`}
             </T>
           </View>
-          <ProgressBar ratio={watchPct / 100} accent label={`تقدّم مشاهدة المحاضرة ${fmt(watchPct)}٪`} />
+          <ProgressBar ratio={watchPct / 100} accent label={`تقدّم المشاهدة ${fmt(watchPct)}٪`} />
           {checkpoints.length > 0 ? (
             <T variant="xs" color={allAnswered ? "muted" : "accentInk"}>
               {`أُجيب عن ${fmt(checkpointsAnswered)} من ${countAr(checkpoints.length, [
@@ -749,12 +750,12 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
             </View>
           ) : siblings.isLoading ? (
             <View style={{ flex: 1 }}>
-              <Button label="جارٍ التحميل…" kind="primary" small disabled loading />
+              <Button label={LOADING} kind="primary" small disabled loading />
             </View>
           ) : (
             <View style={{ flex: 1 }}>
               <Button
-                label="عُد إلى المقرّر"
+                label="رجوع للمقرّر"
                 kind="primary"
                 small
                 onPress={() => router.push(`/student/courses/${lecture.offeringId}` as never)}
@@ -813,7 +814,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
 
           {(lecture.chapters ?? []).length === 0 ? (
             <T variant="sm" color="muted">
-              لا فصول مقسَّمة — شاهد المحاضرة كاملة دون تنقّل.
+              لا فصول مقسَّمة — شاهد المحاضرة كاملة.
             </T>
           ) : (
             <RowList>
@@ -875,7 +876,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                 <SearchBar
                   value={cueQuery}
                   onChange={setCueQuery}
-                  placeholder="ابحث في النص…"
+                  placeholder="بحث…"
                 />
                 {/* M5 — virtualized cue list (nested, height-capped):
                     FULL data in, windowed views out. The old shape mounted
@@ -904,7 +905,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                   windowing={{ initialNumToRender: 8, maxToRenderPerBatch: 8, windowSize: 9 }}
                   scrollProps={{ nestedScrollEnabled: true, showsVerticalScrollIndicator: true }}
                   emptyTitle="لا نتائج في النص."
-                  emptyMessage="جرّب كلمة أخرى."
+                  emptyMessage={TRY_OTHER_WORD}
                 />
               </>
             )}
@@ -1036,7 +1037,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
             </View>
             {answerErr ? (
               <T variant="sm" color="danger">
-                تعذّر إرسال الإجابة — تحقّق من اتصالك ثم أعد المحاولة.
+                تعذّر إرسال الإجابة — تحقّق من الاتصال.
               </T>
             ) : null}
             {reveal ? (
@@ -1050,7 +1051,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                 }}
               >
                 <T variant="body" weight="bold" style={{ color: reveal.correct ? tones.mint.deep : tones.rose.deep }}>
-                  {reveal.correct ? "إجابة صحيحة!" : "إجابة غير صحيحة."}
+                  {reveal.correct ? "إجابة صحيحة." : "إجابة غير صحيحة."}
                 </T>
                 {reveal.explanation ? (
                   <T variant="sm" style={{ color: reveal.correct ? tones.mint.deep : tones.rose.deep }}>
@@ -1256,7 +1257,7 @@ function VideoStage({
       <Pressable
         style={StyleSheet.absoluteFill}
         accessibilityLabel="إظهار/إخفاء الأدوات"
-        accessibilityHint="نقرتان على الجانب = عشر ثوانٍ"
+        accessibilityHint="نقرتان = عشر ثوانٍ"
         onPress={(e) => handleTap(e.nativeEvent.locationX)}
       />
 
@@ -1443,7 +1444,7 @@ function SeekBar({
       onLayout={(e) => (widthRef.current = e.nativeEvent.layout.width)}
       accessibilityRole="adjustable"
       accessibilityLabel="شريط التقدّم"
-      accessibilityHint="اسحب للانتقال — نقرتان على الجانب = عشر ثوانٍ"
+      accessibilityHint="اسحب للانتقال — نقرتان = عشر ثوانٍ"
       onAccessibilityAction={(e) => {
         const step = e.nativeEvent.actionName === "increment" ? 10 : e.nativeEvent.actionName === "decrement" ? -10 : 0;
         if (step !== 0) player.seekBy(step);

@@ -44,6 +44,7 @@ import { CountUp, PressableScale, RingProgress, useStaggerEntrance } from "@/mot
 import { haptics } from "@/haptics";
 import { arCount, useTeacherOfferings } from "@/features/teacher/components";
 import { parseFeed, parsePendingGroups, parseTrend } from "@/features/teacher/wire";
+import {NO_ATTENDANCE_DATA, NO_LECTURES_TODAY, APPEARS_ONCE_ASSIGNED} from "@/lib/copy";
 
 const NO_OFFERINGS: Awaited<ReturnType<typeof teacherApi.offerings>> = [];
 
@@ -161,7 +162,7 @@ export default function TeacherDashboard() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="لوحة الأستاذ"
-        kicker="تدخّلات اليوم بالأولوية."
+        kicker="تدخّلات اليوم"
       />
 
       {/* إحصاءات الفصل — hierarchy: one hero card, no card grid.
@@ -195,7 +196,7 @@ export default function TeacherDashboard() {
               accessibilityLabel={
                 kpi?.attendancePct != null
                   ? `نسبة الحضور ${pct(kpi.attendancePct)}`
-                  : "لا بيانات حضور"
+                  : NO_ATTENDANCE_DATA
               }
             >
               <T variant="sm" weight="bold">
@@ -258,12 +259,7 @@ export default function TeacherDashboard() {
         action={
           pendingTotal > 0 ? (
             <Badge
-              label={arCount(pendingTotal, [
-                "تسليم بانتظار التصحيح",
-                "تسليمان بانتظار التصحيح",
-                "تسليمات بانتظار التصحيح",
-                "تسليماً بانتظار التصحيح",
-              ])}
+              label={arCount(pendingTotal, ["تسليم", "تسليمان", "تسليمات", "تسليماً"])}
               tone="yellow"
             />
           ) : undefined
@@ -301,12 +297,7 @@ export default function TeacherDashboard() {
            group detail — render the honest count, never a fake list. */
         <Card>
           <T variant="body" color="muted">
-            {arCount(pendingTotal, [
-              "تسليم بانتظار درجتك",
-              "تسليمان بانتظار درجتك",
-              "تسليمات بانتظار درجتك",
-              "تسليماً بانتظار درجتك",
-            ])}
+            {arCount(pendingTotal, ["تسليم", "تسليمان", "تسليمات", "تسليماً"])} بانتظار درجتك
           </T>
         </Card>
       ) : (
@@ -330,7 +321,7 @@ export default function TeacherDashboard() {
         ) : slots.length === 0 ? (
           <EmptyState
             room="lecture-hall"
-            title="لا محاضرات اليوم"
+            title={NO_LECTURES_TODAY}
             message="فارغ — راجع الأسبوعيّ."
             actionLabel="الجدول الأسبوعيّ"
             onAction={() => router.push("/teacher/schedule" as never)}
@@ -390,7 +381,7 @@ export default function TeacherDashboard() {
         <SectionBar index={3} title="الأداء والحضور" />
         <Card>
         <T variant="sm" color="muted">
-          متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية
+          متوسط الأداء والحضور — آخر 6 أسابيع
         </T>
         {!trendDrawable ? (
           <EmptyState
@@ -424,7 +415,7 @@ export default function TeacherDashboard() {
             label={
               visible.length === 0
                 ? "لا عناصر للمتابعة"
-                : arCount(visible.length, ["عنصر للمتابعة", "عنصران للمتابعة", "عناصر للمتابعة", "عنصرًا للمتابعة"])
+                : `${arCount(visible.length, ["عنصر", "عنصران", "عناصر", "عنصرًا"])} للمتابعة`
             }
             tone={visible.length === 0 ? "mint" : "yellow"}
           />
@@ -446,7 +437,7 @@ export default function TeacherDashboard() {
       {visible.length === 0 ? (
         <EmptyState
           room="building"
-          title="لا متطلبات — أحسنت!"
+          title="لا متطلبات"
           message="تظهر فور وصولها."
         />
       ) : (
@@ -493,7 +484,7 @@ export default function TeacherDashboard() {
           <EmptyState
             room="library"
             title="لم تُسند إليك مقرّرات"
-            message="تظهر فور إسنادها."
+            message={APPEARS_ONCE_ASSIGNED}
           />
         ) : (
         <RowList>
@@ -512,7 +503,7 @@ export default function TeacherDashboard() {
                   </T>
                   <T variant="xs" color="muted">
                     {o.course.code} · {o.term}
-                    {o.studentsCount !== undefined ? ` · ${arCount(o.studentsCount, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}` : ""}
+                    {o.studentsCount !== undefined ? ` · ${arCount(o.studentsCount, ["طالب", "طالبان", "طلاب", "طالباً"])}` : ""}
                   </T>
                 </View>
               </View>

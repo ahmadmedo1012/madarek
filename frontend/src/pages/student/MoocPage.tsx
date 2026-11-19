@@ -1,4 +1,7 @@
+import { NO_RESULTS, SELF_DEV, STATUS_AVG } from '../../lib/copy';
+
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import {
   GraduationCap, Award, Users2, Clock, Star,
   Code, Database, Palette, Languages, Briefcase,
@@ -37,7 +40,7 @@ const moocIcon = (cat: string): LucideIcon => {
  *  raw string isolated in a bdi. */
 const LEVEL_LABEL: Record<string, string> = {
   BEGINNER: 'مبتدئ',
-  INTERMEDIATE: 'متوسط',
+  INTERMEDIATE: STATUS_AVG,
   ADVANCED: 'متقدم',
 };
 
@@ -146,7 +149,38 @@ export default function MoocPage() {
     <PageFrame width="default">
       <PageHeader
         title="دورات خارجية"
-        description="التسجيل من موقع المنصّة."
+        description="التسجيل خارجيّ."
+        actions={(
+          /* R369 (C1 · the R342-08 header-CTA precedent): the phone
+           * band hides the topbar «اسأل AI» ≤920 (D6) — the external
+           * catalog's honest sibling is the internal tracks family
+           * that grows the same skills (navigation-only). */
+          <Link to="/training" className="btn accent sm">
+            <Icon icon={GraduationCap} size={13} />
+            {SELF_DEV}
+          </Link>
+        )}
+      />
+
+      {/* R319 (c3-S1): the catalog region opens with the §B2
+          mono-indexed title bar — [01] + the honest course count as
+          quiet mono meta (countAr for assistive tech).
+          R369 (C1): the bar renders in EVERY state (pending/empty/
+          error/data) — the section exists while it loads or sits
+          empty; the measured pattern axis read the seeded page (the
+          transport has no /me/moocs fixture, so it stays pending) as
+          numeral-less. The count meta arrives only with data. */}
+      <SectionBar
+        index="01"
+        title="الدورات المتاحة"
+        meta={
+          !isPending && !isError && (data?.length ?? 0) > 0 ? (
+            <BarCount
+              n={data.length}
+              srLabel={countAr(data.length, ['دورة واحدة', 'دورتان', 'دورات', 'دورة'])}
+            />
+          ) : undefined
+        }
       />
 
       {isPending ? (
@@ -157,24 +191,13 @@ export default function MoocPage() {
         /* R319 (c3-S1): the empty catalog is the hatched EmptyCell —
            the sheet's reserved-but-empty region. */
         <EmptyCell
-          label="لا توجد دورات خارجية مرتبطة"
-          note="يربطها المسجّل العام بمقرّراتك."
+          label="لا دورات مرتبطة"
+          note="يربطها المسجّل بمقرّراتك."
         />
       ) : (
         <>
-          {/* R319 (c3-S1): the catalog region opens with the §B2
-              mono-indexed title bar — [01] + the honest course count as
-              quiet mono meta (countAr for assistive tech). */}
-          <SectionBar
-            index="01"
-            title="الدورات المتاحة"
-            meta={
-              <BarCount
-                n={data.length}
-                srLabel={countAr(data.length, MOOC_UNIT)}
-              />
-            }
-          />
+          {/* the section's own bar moved to the state-independent
+              seat above — the count rides it in the data state. */}
           <FilterBar
             search={{
               value: query,
@@ -202,7 +225,7 @@ export default function MoocPage() {
             /* R319 (c3-S1): the no-hits search answer is the hatched
                EmptyCell — the sheet's reserved-but-empty region. */
             <EmptyCell
-              label="لا نتائج مطابقة للبحث"
+              label={NO_RESULTS}
               note="جرّب كلمة أقصر."
             />
           ) : (

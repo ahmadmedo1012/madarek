@@ -35,7 +35,7 @@ import {
   StatusBadge,
   arCount,
 } from "@/features/teacher/components";
-import { AWAITING_QUALITY_APPROVAL, PUBLISH_FINAL_CONFIRM, SENDING } from "@/lib/copy";
+import {AWAITING_QUALITY_APPROVAL, PUBLISH_FINAL_CONFIRM, SENDING, QB_AND_EXAMS, PICK_CORRECT_BEFORE_SAVE} from "@/lib/copy";
 
 type QuestionCategory = { id: string; title?: string; name?: string };
 
@@ -77,7 +77,7 @@ export default function Exams() {
     mutationFn: (id: string) => examsApi.cloneTemplate(id),
     onSuccess: (row) => {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
-      toast.success(`أُستنسخ القالب إلى مسودة جديدة — «${row.title}».`, "تمّ الاستنساخ");
+      toast.success(`أُستنسخ إلى مسودة — «${row.title}».`);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الاستنساخ"),
   });
@@ -87,7 +87,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       qc.invalidateQueries({ queryKey: ["exams", "template", publishTarget?.id] });
       setPublishTarget(null);
-      toast.success("نُشر حسب النطاق.", "نُشر");
+      toast.success("نُشر حسب النطاق.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -106,7 +106,7 @@ export default function Exams() {
 
   const createQuestion = useMutation({
     mutationFn: async () => {
-      if (prompt.trim().length < 3) throw new Error("كما يظهر للطالب.");
+      if (prompt.trim().length < 3) throw new Error("نص السؤال 3 أحرف على الأقل.");
       const pts = Number(points);
       if (points.trim() === "" || Number.isNaN(pts) || pts < 1 || pts > 20) {
         throw new Error("النقاط بين 1 و20.");
@@ -114,8 +114,8 @@ export default function Exams() {
       let correctAnswer: unknown = undefined;
       if (type === "MCQ") {
         const filled = choices.map((c) => c.trim()).filter((c) => c !== "");
-        if (filled.length < 2) throw new Error("خياران على الأقل للمتعدد.");
-        if (correctIndex === null || correctIndex >= filled.length) throw new Error("حدِّد الصحيحة قبل الحفظ.");
+        if (filled.length < 2) throw new Error("خياران على الأقل.");
+        if (correctIndex === null || correctIndex >= filled.length) throw new Error(PICK_CORRECT_BEFORE_SAVE);
         correctAnswer = correctIndex;
       } else if (type === "TRUE_FALSE") {
         if (correctIndex === null) throw new Error("حدِّد الصحيحة (صواب/خطأ).");
@@ -140,10 +140,7 @@ export default function Exams() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "question-bank"] });
-      toast.success(
-        "أُرسل — يظهر بعد الاعتماد.",
-        "أُرسل السؤال",
-      );
+      toast.success("أُرسل — يظهر بعد الاعتماد.");
       setCreating(false);
       setPrompt("");
       setChoices(["", ""]);
@@ -164,15 +161,12 @@ export default function Exams() {
 
   return (
     <Screen scroll>
-      <StackHeader title="بنك الأسئلة والاختبارات" />
+      <StackHeader title={QB_AND_EXAMS} />
       {/* T-50 (review-3 §4.1): exams authoring was a zero-motion seat —
           header + segmented filter take the kit stagger; tab/row presses
           fire selection haptics. */}
       <Animated.View entering={entering(0)}>
-      <PageHeader
-        title="بنك الأسئلة والاختبارات"
-        kicker="تأليف الأسئلة وبناء القوالب."
-      />
+      <PageHeader title={QB_AND_EXAMS} />
       <Segmented
         options={[
           { id: "templates", label: "القوالب" },
@@ -196,7 +190,7 @@ export default function Exams() {
             <EmptyState
               art={<Illustration id="r342/role-teacher" width={216} />}
               title="لا قوالب بعد"
-              message="ابنِ قالبًا (من لوحة الويب) ثم أرسله للجودة."
+              message="الإنشاء من لوحة الويب — ثم الجودة."
             />
           ) : (
             <RowList>
@@ -218,8 +212,8 @@ export default function Exams() {
                           {t.title}
                         </T>
                         <T variant="xs" color="muted">
-                          {arCount(t.durationMin, ["دقيقة واحدة", "دقيقتان", "دقائق", "دقيقة"])}
-                          {t.questionCount !== undefined ? ` · ${arCount(t.questionCount, ["سؤال واحد", "سؤالان", "أسئلة", "سؤالاً"])}` : ""}
+                          {arCount(t.durationMin, ["دقيقة", "دقيقتان", "دقائق", "دقيقة"])}
+                          {t.questionCount !== undefined ? ` · ${arCount(t.questionCount, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])}` : ""}
                           {t.openAt ? ` · يفتح ${dateTime(t.openAt)}` : ""}
                         </T>
                       </View>
@@ -271,7 +265,7 @@ export default function Exams() {
               <Button label="سؤال جديد" kind="accent" small onPress={() => setCreating(true)} />
             }
           />
-          <SearchBar value={q} onChange={setQ} placeholder="ابحث في نص الأسئلة…" />
+          <SearchBar value={q} onChange={setQ} placeholder="بحث…" />
           {bank.isLoading ? (
             <SkeletonList rows={5} />
           ) : bank.isError ? (
@@ -281,7 +275,7 @@ export default function Exams() {
               title={q.trim() !== "" ? "لا أسئلة تطابق البحث" : "البنك فارغ"}
               message={
                 q.trim() !== ""
-                  ? "جرّب كلمات أخرى أو أزل التصفية."
+                  ? "جرّب كلمات أخرى."
                   : "أنشئ أول سؤال — بعد الاعتماد."
               }
             />
@@ -307,7 +301,7 @@ export default function Exams() {
                       tone={question.isApproved ? "mint" : "yellow"}
                     />
                     <T variant="xs" color="muted">
-                      {arCount(question.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
+                      {arCount(question.points, ["نقطة", "نقطتان", "نقاط", "نقطة"])}
                     </T>
                   </View>
                 </LedgerRow>
@@ -376,7 +370,7 @@ export default function Exams() {
           {type === "MCQ" ? (
             <View style={{ gap: sp[6] }}>
               <T variant="sm" weight="medium" color="secondary">
-                الخيارات — اضغط «صحيحة» لتحديد الإجابة
+                الخيارات — علّم «صحيحة»
               </T>
               {choices.map((c, i) => (
                 <View key={i} style={{ flexDirection: "row", gap: sp[6], alignItems: "center" }}>
@@ -443,7 +437,7 @@ export default function Exams() {
           ) : null}
           {type === "ESSAY" ? (
             <T variant="sm" color="muted">
-              الأسئلة المقالية تُصحَّح يدوياً — سجّل معيار التصحيح من لوحة الويب إن لزم.
+              المقالية تُصحَّح يدوياً — المعيار من لوحة الويب.
             </T>
           ) : null}
           <SelectField

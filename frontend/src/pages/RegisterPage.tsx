@@ -47,7 +47,7 @@ export const registerPasswordSchema = z
   .min(12, '12 حرفًا على الأقل')
   .max(72)
   .refine((pw) => !isCommonPassword(pw), {
-    message: 'كلمة المرور شائعة جدًا — اختر واحدة أقل توقّعًا',
+    message: 'كلمة مرور شائعة — اختر أقل توقّعًا',
   });
 
 const studentSchema = z.object({
@@ -111,13 +111,13 @@ type StepDir = 'forward' | 'back';
  *  DID answer, its own Arabic message shows verbatim (authErrorView,
  *  r157 F5 / D17-3), and a 409 adds the login link. */
 const GENERIC_REGISTER_ERROR =
-  'تعذَّر إنشاء الحساب — راجع البيانات وأعد المحاولة.';
+  'تعذَّر إنشاء الحساب — راجع الحقول.';
 
 /** r157 F5: honest empty state for a faculty whose department list is
  *  empty — 21 of 25 live faculties ship zero departments; the old dead
  *  select promised a choice that does not exist. */
 const NO_DEPARTMENTS_TEXT =
-  'لا أقسام في هذه الكلّيّة — اختر كلّيّة أخرى.';
+  'لا أقسام هنا — اختر كلّيّة أخرى.';
 
 /** r305 (2-a): the institution lookup gets the same honesty contract
  *  (audit 0-b P0-4 — never a silently empty select): a ready-but-empty
@@ -125,7 +125,13 @@ const NO_DEPARTMENTS_TEXT =
  *  «اختر…» select that promises options no deployment can offer.
  *  Platform-administration voice per r177 (إدارة المنصّة). */
 const NO_INSTITUTIONS_TEXT =
-  'لا مؤسسات متاحة للتسجيل — تواصل مع إدارة المنصّة.';
+  /* R369 fix: the C2.2 diet's reworded tail tripped the R321 rename
+   * ledger (the guarded term, with the article, is off-limits in live
+   * copy); the r177 platform-administration voice is the bare two-word
+   * form — restored at the SAME word count (6) by dropping the
+   * redundant «متاحة» (the register context implies availability),
+   * keeping the diet's ceiling untouched. */
+  'لا مؤسسات — تواصل مع إدارة المنصّة.';
 
 /* ═─ r170-e: password strength hint (ASVS 2.1.8 advisory) ────────────
  *
@@ -149,9 +155,9 @@ export function passwordStrengthTier(password: string): PasswordTier | null {
 }
 
 const TIER_TEXT: Record<PasswordTier, string> = {
-  weak: 'قوة كلمة المرور: ضعيفة',
-  medium: 'قوة كلمة المرور: متوسطة',
-  strong: 'قوة كلمة المرور: قوية',
+  weak: 'القوة: ضعيفة',
+  medium: 'القوة: متوسطة',
+  strong: 'القوة: قوية',
 };
 
 function PasswordStrengthHint({ password }: { password: string }) {
@@ -472,7 +478,7 @@ export default function RegisterPage() {
                       compressed to one line — the appointment channel is
                       the message; the enumeration of seats lives in the
                       FAQ/onboarding, not the chooser. */}
-                  <span>تعيين القيادة والمسجلين بدعوة من مالك المنصة</span>
+                  <span>تعيين القيادة والمسجّلين بدعوة المالك</span>
                 </div>
 
                 {/* R341/D1 — the returning-visitor door at the chooser
@@ -567,7 +573,7 @@ function useInviteHint(): InviteHint {
         text: res.scopeLabel ? `الكود صحيح — ستُضاف إلى ${res.scopeLabel}.` : 'الكود صحيح.',
       });
     } catch (e) {
-      setState({ kind: 'bad', text: authErrorView(e).serverMessage ?? 'تعذّر التحقق — الحسم عند إنشاء الحساب.' });
+      setState({ kind: 'bad', text: authErrorView(e).serverMessage ?? 'تعذّر التحقق — الحسم عند الإنشاء.' });
     }
   };
   return { ...state, check };

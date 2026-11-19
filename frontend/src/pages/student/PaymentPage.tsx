@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LABEL_COLLEGE, CAMPUS_GUIDE, LABEL_NAME, LABEL_ADDRESS, OPEN_COMMUNITY, ON_COMMUNITY_BOARD, FAILED_LOAD_YOUR_DATA, LABEL_PHONE, UPDATED, MODEL_INSTITUTION, FINANCE, UNI_ID_DOT, OFFICE_HOURS } from '../../lib/copy';
+
 import {
   Wallet, Building2, Phone, Mail, ArrowLeft, Info, Megaphone, MapPin,
 } from 'lucide-react';
@@ -51,7 +53,7 @@ export default function PaymentPage() {
     if (profile.isError) hadLoadError.current = true;
     else if (profile.isSuccess && hadLoadError.current) {
       hadLoadError.current = false;
-      toast.success('تمّ التحميل.', { title: 'تمّ التحديث' });
+      toast.success('تمّ التحميل.', { title: UPDATED });
     }
   }, [profile.isError, profile.isSuccess]);
 
@@ -59,7 +61,7 @@ export default function PaymentPage() {
     <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
-        title="الشؤون الماليّة"
+        title={FINANCE}
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6): the
            university-services family's honest siblings — «الجامعة
@@ -70,11 +72,11 @@ export default function PaymentPage() {
           <>
             <Link to="/student/university" className="btn primary sm">
               <Icon icon={Building2} size={13} />
-              المؤسسة النموذجية
+              {MODEL_INSTITUTION}
             </Link>
             <Link to="/student/map" className="btn ghost sm">
               <Icon icon={MapPin} size={13} />
-              دليل الحرم الجامعيّ
+              {CAMPUS_GUIDE}
             </Link>
           </>
         )}
@@ -86,16 +88,16 @@ export default function PaymentPage() {
       <SectionBar index="01" title="بياناتك" />
       <Card>
         <div className="grid-3" style={{ gap: 'var(--sp-3)' }}>
-          <FactRow label="الاسم" value={fullName} />
-          <FactRow label="الرقم الجامعيّ" value={universityId} mono pending={profile.isPending} />
-          <FactRow label="الكلّيّة" value={facultyName} pending={profile.isPending} />
+          <FactRow label={LABEL_NAME} value={fullName} />
+          <FactRow label={UNI_ID_DOT} value={universityId} mono pending={profile.isPending} />
+          <FactRow label={LABEL_COLLEGE} value={facultyName} pending={profile.isPending} />
         </div>
         {profile.isError && (
           <div className="fact-error" role="status">
             <Icon icon={Info} size={13} />
-            <span>تعذّر تحميل بياناتك.</span>
+            <span>{FAILED_LOAD_YOUR_DATA}</span>
             <button type="button" className="btn ghost sm" onClick={() => profile.refetch()}>
-              إعادة المحاولة
+              {RETRY_ACTION}
             </button>
           </div>
         )}
@@ -152,7 +154,7 @@ export default function PaymentPage() {
               </span>
             }
             title="تابع إعلانات الإدارة الماليّة"
-            meta="على لوحة المجتمع"
+            meta={ON_COMMUNITY_BOARD}
           />
         </RowList>
       </section>
@@ -162,15 +164,15 @@ export default function PaymentPage() {
         <SectionBar index="04" title="مكتب الشؤون الماليّة" />
         <Card>
           <div className="flex-col gap-3">
-            <ContactRow icon={Phone} label="الهاتف" value="+218 23 762659" mono />
+            <ContactRow icon={Phone} label={LABEL_PHONE} value="+218 23 762659" mono />
             <ContactRow icon={Phone} label="هاتف بديل" value="+218 23 762882" mono />
             <ContactRow icon={Mail} label="البريد الإلكترونيّ" value="info@demo.madarek.ly" mono />
-            <ContactRow icon={Building2} label="العنوان" value="مؤسسة مدارك النموذجية — بيانات عرض" />
+            <ContactRow icon={Building2} label={LABEL_ADDRESS} value="مؤسسة مدارك النموذجية — بيانات عرض" />
           </div>
         </Card>
         </div>
         <div>
-        <SectionBar index="05" title="ساعات العمل" />
+        <SectionBar index="05" title={OFFICE_HOURS} />
         <Card>
           <div className="flex-col gap-2">
             <div className="list-row">
@@ -194,7 +196,7 @@ export default function PaymentPage() {
       <Card>
         <Link to="/community" className="btn primary sm">
           <Icon icon={ArrowLeft} size={13} />
-          فتح المجتمع
+          {OPEN_COMMUNITY}
         </Link>
       </Card>
     </PageFrame>

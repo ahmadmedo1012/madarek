@@ -37,7 +37,7 @@ export default function OwnerContent() {
     <Screen scroll>
       <StackHeader title="المحتوى والعلامة التجاريّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="المحتوى والعلامة التجاريّة" kicker="الهويّة وأصول العلامة" />
+        <PageHeader title="المحتوى والعلامة التجاريّة" />
 
         <Card>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
@@ -47,7 +47,7 @@ export default function OwnerContent() {
                 علامة مدارك
               </T>
               <T variant="xs" color="muted">
-                مربَّع + معوّل بخطوط شعرية، وعقدة برتقالية واحدة
+                مربَّع بمعوّل وعقدة برتقالية
               </T>
             </View>
             <Badge label="SVG" tone="grey" mono />
@@ -67,8 +67,7 @@ export default function OwnerContent() {
             ))}
           </RowList>
           <T variant="xs" color="faint">
-            المصادر الرسميّة تعيش في مستودع الويب (frontend/public/brand) — التطبيق يرسم توأمه
-            المتجهيّ الخاص من الهندسة ذاتها.
+            المصادر في مستودع الويب (frontend/public/brand) — والتطبيق يرسم توأمه.
           </T>
         </View>
 
@@ -81,9 +80,7 @@ export default function OwnerContent() {
               </T>
             </View>
             <T variant="sm" color="muted">
-              تعديل ألوان العلامة التجاريّة (الأساسيّ، الثانويّ، التمييز) ومحتوى الصفحة الرئيسيّة
-              قيد التطوير. حالياً تُعتمَد ألوان علامة مدارك الرسميّة المعتمدة في نظام التصميم —
-              ومحرّر العنوان والوصف الفرعيّ محدَّد في كود الصفحة الرئيسيّة.
+              قيد التطوير — الألوان من نظام التصميم والعنوان في كود الصفحة.
             </T>
           </View>
         </Card>
@@ -99,11 +96,10 @@ export default function OwnerContent() {
                 </T>
               </View>
               <T variant="sm" color="muted">
-                إدارة المحتوى (بثّ الإعلانات، أعلام الميزات، صياغة الصفحة الرئيسيّة) تُدار
-                من لوحة الويب — التطبيق يعرض هوية المنصّة كما هي معرَّفة في الشيفرة والتصميم.
+                والصفحة الرئيسيّة — كلها من لوحة الويب.
               </T>
               <Button
-                label="عن مدارك — الهويّة"
+                label="عن مدارك"
                 kind="ghost"
                 small
                 icon={<ArrowRight size={14} color={p.text} />}
@@ -118,8 +114,7 @@ export default function OwnerContent() {
           <Card>
             <View style={{ gap: sp[8] }}>
               <T variant="sm" color="muted">
-                صندوق تقارير «أبلغ عن مشكلة / اقتراح» الواردة من مستخدمي المنصّة، مع حالتها الكاملة
-                وطريقها.
+                تقارير «أبلغ عن مشكلة / اقتراح» — بحالتها وطريقها.
               </T>
               <Button
                 label={FEEDBACK}

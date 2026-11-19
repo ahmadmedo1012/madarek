@@ -28,7 +28,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { initials, num } from "@/lib/format";
 import { pageOf, textOf, UserAvatar, avatarUrlOf, type FacultyNode } from "@/features/governance/components";
-import { SAVING, SEARCH_NAME_OR_EMAIL, UPDATE_FAILED } from "@/lib/copy";
+import {SAVING, SEARCH_NAME_OR_EMAIL, UPDATE_FAILED, NO_MATCHING_RESULTS, NO_TEACHERS_YET, PICK_DEPARTMENT} from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -91,9 +91,6 @@ export default function AdminTeachers() {
               onPress={() => router.push("/admin/directory" as never)}
             />
           </View>
-          <T variant="body" color="muted">
-            توثيق الملفات الأكاديمية وتعيين المناصب القيادية لكل أستاذ.
-          </T>
         </View>
 
         <StatLine
@@ -125,7 +122,7 @@ export default function AdminTeachers() {
           hasNextPage={roster.hasNextPage}
           loadMoreError={roster.loadMoreError}
           onRetryLoadMore={roster.retryLoadMore}
-          emptyTitle={appliedQ ? "لا نتائج مطابقة" : "لا أساتذة بعد"}
+          emptyTitle={appliedQ ? NO_MATCHING_RESULTS : NO_TEACHERS_YET}
           emptyMessage={
             appliedQ
               ? "لا أساتذة تطابق البحث."
@@ -226,7 +223,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       qc.invalidateQueries({ queryKey: ["admin", "teachers"] });
-      toast.success("تمّ حفظ التعيين.", "المنصب القياديّ");
+      toast.success("تمّ حفظ التعيين.");
       onClose();
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ التعيين"),
@@ -306,7 +303,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       ) : (
         <View style={{ gap: 12 }}>
           <T variant="sm" color="muted">
-            يُمنح المنصب بالتعيين الإداريّ — يضاف فوق دور الأستاذ ولا يستبدله.
+            يُمنح بالتعيين — فوق دور الأستاذ لا يستبدله.
           </T>
           <Segmented options={POSITION_OPTIONS} selectedId={position ?? ""} onSelect={(id) => setPosition(id as PositionChoice)} />
           {needsFaculty ? (
@@ -329,7 +326,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
               options={departmentOptions}
               onSelect={setDepartmentId}
               disabled={!facultyId}
-              placeholder="اختر القسم…"
+              placeholder={PICK_DEPARTMENT}
             />
           ) : null}
           <Button
@@ -350,7 +347,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       <ConfirmDialog
         open={unverifyConfirm}
         title="إلغاء التوثيق"
-        message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق، ويُسجَّل الإجراء في سجلّ النشاط.`}
+        message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق — ويُسجَّل.`}
         confirmLabel="إلغاء التوثيق"
         danger
         loading={verify.isPending}

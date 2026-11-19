@@ -1,3 +1,5 @@
+import { CANCEL, LABEL_COLLEGE, NOUN_STUDENT, LABEL_DEPT, LABEL_COLLEGE_SHORT, LABEL_ADDRESS, FAILED_LOAD_DOT, FAILED_PUBLISH_DOT, LABEL_COLLEGES, NOUN_PROF, STATUS_ACTIVE_F, FAILED_ENROL_DOT, EMPTY_COURSES_DOT, LABEL_SCOPE, CAPACITY, BUSY_DOTS, DEPT, NO_COMPETITIONS, SOON, BE_FIRST, NO_PARTICIPATIONS, DESC_SHORT, DESC, APPLICATION_CLOSED, FAILED_CREATE_DOT } from '../../lib/copy';
+
 /**
  * Real community / social layer.
  *
@@ -77,18 +79,18 @@ import '../../styles/student/community.css';
 
 /* R366 L4 copy diet: the boards' shared status strings — one home
  * each (تعذَّر التحميل ran three times; جارٍ… and اختر… twice). */
-const LOAD_FAILED = 'تعذَّر التحميل.';
-const PENDING_LABEL = 'جارٍ…';
+const LOAD_FAILED = FAILED_LOAD_DOT;
+const PENDING_LABEL = BUSY_DOTS;
 const CHOOSE_LABEL = 'اختر…';
 
 const SCOPE_LABEL: Record<string, string> = {
-  PLATFORM: 'المنصّة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
+  PLATFORM: 'المنصّة', FACULTY: LABEL_COLLEGE_SHORT, DEPARTMENT: DEPT, OFFERING: 'مقرر',
 };
 const SCOPE_COLOR: Record<string, 'brand' | 'green' | 'gold' | 'purple'> = {
   PLATFORM: 'brand', FACULTY: 'green', DEPARTMENT: 'purple', OFFERING: 'gold',
 };
 const ROLE_LABEL: Record<string, string> = {
-  STUDENT: 'طالب', TEACHER: 'أستاذ', QUALITY: 'الجودة',
+  STUDENT: NOUN_STUDENT, TEACHER: NOUN_PROF, QUALITY: 'الجودة',
 };
 /* R320 §B: ADMIN (and any future role) resolves through the shared map —
    the local entries keep the community page's established wording for
@@ -204,7 +206,7 @@ export default function CommunityPage() {
               المسابقات
             </Link>
             <Link to="/colleges" className="btn ghost sm">
-              الكليات
+              {LABEL_COLLEGES}
             </Link>
             {tab === 'announcements' && canAnnounce && (
               <button type="button" className="btn primary" onClick={() => setCreatingAnnouncement(true)}>
@@ -255,7 +257,7 @@ export default function CommunityPage() {
           القيم الصادقة نفسها (…/—/formatNum) بلا آبار أيقونات. */}
       <StatLine
         items={[
-          { label: 'نشطة', value: annCount, tone: 'signal' },
+          { label: STATUS_ACTIVE_F, value: annCount, tone: 'signal' },
           { label: 'مفتوحة', value: compsCount },
           { label: 'قادمة', value: eventsCount, tone: 'positive' },
         ]}
@@ -320,7 +322,7 @@ export default function CommunityPage() {
             <RowList
               aria-label="قائمة المسابقات"
               loading={comps.isPending}
-              empty={<EmptyCell label="لا مسابقات" />}
+              empty={<EmptyCell label={NO_COMPETITIONS} />}
             >
               {comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
             </RowList>
@@ -439,7 +441,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           : days <= 10 ? `${days} أيام`
             : `${days} يوماً`
       : hours >= 1 ? `بعد ${arUnit(hours, 'ساعة', 'ساعتين', 'ساعات')}`
-        : 'قريباً';
+        : SOON;
   return (
     /* r262 (اتجاه Superlist): صفّ هادئ والعنوان هو باب الصف (عرف
        «الاسم هو باب الصفّ») — رابط حقيقي إلى تفاصيل المسابقة بدل
@@ -463,7 +465,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           ) : c.status === 'JUDGED' ? (
             <Badge color="gold">محكّمة</Badge>
           ) : (
-            <Badge color="amber">انتهى التقديم</Badge>
+            <Badge color="amber">{APPLICATION_CLOSED}</Badge>
           )}
           {/* 5-D3: --gold measured 2.30:1 on the light card — the amber
               graphics tier (chart-6) instead. */}
@@ -477,7 +479,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           <span className="cp-inline">
             <Icon icon={Users} size={12} />
             {c._count.entries === 0
-              ? (isOpen ? 'كن الأول' : 'لا مشاركات')
+              ? (isOpen ? BE_FIRST : NO_PARTICIPATIONS)
               : arUnit(c._count.entries, 'مشترك', 'مشتركان', 'مشتركين')}
           </span>
         </span>
@@ -595,7 +597,7 @@ function EventRsvpControls({ mine, failed, rsvpPending, rsvpTo }: {
       </button>
       {failed && (
         <span className="event-rsvp-fail" role="alert">
-          <Icon icon={AlertTriangle} size={12} aria-hidden /> تعذَّر التسجيل.
+          <Icon icon={AlertTriangle} size={12} aria-hidden /> {FAILED_ENROL_DOT}
         </span>
       )}
     </span>
@@ -683,7 +685,7 @@ function ComposerModalActions({ requestClose, pending, pendingLabel, submitLabel
 }) {
   return (
     <div className="comp-modal-actions">
-      <button type="button" className="btn ghost" onClick={requestClose} disabled={pending}>إلغاء</button>
+      <button type="button" className="btn ghost" onClick={requestClose} disabled={pending}>{CANCEL}</button>
       <button type="submit" className="btn primary" disabled={pending}>
         <Icon icon={Send} size={14} />
         {pending ? pendingLabel : submitLabel}
@@ -782,7 +784,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
           aria-describedby on every error-carrying control (the census
           measured all four announcement controls unwired). */}
         <div className="comp-form-row">
-          <FormField label="النطاق">
+          <FormField label={LABEL_SCOPE}>
             <select
               className="auth-input"
               {...scopeRegistration}
@@ -805,7 +807,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
           </FormField>
           {(scope === 'FACULTY' || scope === 'DEPARTMENT') && (
             <FormField
-              label={scope === 'FACULTY' ? 'الكلّيّة' : 'القسم'}
+              label={scope === 'FACULTY' ? LABEL_COLLEGE : LABEL_DEPT}
               error={form.formState.errors.scopeId?.message}
             >
               <select {...form.register('scopeId')} className="auth-input">
@@ -828,7 +830,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
           )}
         </div>
 
-        <FormField label="العنوان" error={form.formState.errors.title?.message}>
+        <FormField label={LABEL_ADDRESS} error={form.formState.errors.title?.message}>
           <input type="text" {...form.register('title')} className="auth-input" />
         </FormField>
         <FormField label="نصّ الإعلان" error={form.formState.errors.body?.message}>
@@ -857,7 +859,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
           </div>
         </div>
 
-        {create.isError && <div className="auth-error">تعذَّر النشر.</div>}
+        {create.isError && <div className="auth-error">{FAILED_PUBLISH_DOT}</div>}
 
         <ComposerModalActions
           requestClose={requestClose}
@@ -890,7 +892,7 @@ function OfferingScopeSelect({
     : offerings.isError
       ? LOAD_FAILED
       : (offerings.data?.length ?? 0) === 0
-        ? 'لا مقرّرات.'
+        ? EMPTY_COURSES_DOT
         : undefined;
   return (
     <FormField label="المقرر" id={id} error={error} hint={hint}>
@@ -908,7 +910,7 @@ function OfferingScopeSelect({
 
 const eventSchema = z.object({
   title: z.string().min(3, 'العنوان قصير').max(200),
-  description: z.string().min(10, 'الوصف قصير').max(4000),
+  description: z.string().min(10, DESC_SHORT).max(4000),
   location: z.string().min(2, 'حدِّد المكان').max(200),
   startsAt: z.string().min(1, 'حدِّد البداية'),
   endsAt: z.string().min(1, 'حدِّد النهاية'),
@@ -975,10 +977,10 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
     >
       {/* 5-C4 (A10 P2-3): platform FormField on the event form too —
           same association contract as the announcement composer. */}
-        <FormField label="العنوان" error={form.formState.errors.title?.message}>
+        <FormField label={LABEL_ADDRESS} error={form.formState.errors.title?.message}>
           <input type="text" {...form.register('title')} className="auth-input" />
         </FormField>
-        <FormField label="الوصف" error={form.formState.errors.description?.message}>
+        <FormField label={DESC} error={form.formState.errors.description?.message}>
           <textarea rows={3} {...form.register('description')} className="auth-input" style={{ resize: 'vertical' }} />
         </FormField>
         <FormField label="المكان" error={form.formState.errors.location?.message}>
@@ -993,7 +995,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
           </FormField>
         </div>
         <div className="comp-form-row">
-          <FormField label="السعة">
+          <FormField label={CAPACITY}>
             <input type="number" min={1} max={10000} {...form.register('capacity')} className="auth-input" />
           </FormField>
           {/* R321 B4: the ×2 palette group rides the ONE shared
@@ -1007,7 +1009,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
             onPick={(ic) => form.setValue('iconEmoji', ic)}
           />
         </div>
-        {create.isError && <div className="auth-error">تعذَّر الإنشاء.</div>}
+        {create.isError && <div className="auth-error">{FAILED_CREATE_DOT}</div>}
         <ComposerModalActions
           requestClose={requestClose}
           pending={create.isPending}

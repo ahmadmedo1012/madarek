@@ -298,11 +298,11 @@ describe('AdminPermissionsPage — self-edit guard (blocked-action explanation)'
     // R355 copy diet: the guard's long sentence became the short amber
     // AlertRow — title «لا تُعدَّل من هنا» + description naming the 403.
     expect(
-      await screen.findByText('لا تُعدَّل من هنا'),
+      await screen.findByText('للعرض فقط'),
     ).toBeInTheDocument();
     // R355 copy diet: the «حرس الحاكمية» explainer was cut — the
     // surviving description still names the 403 reason.
-    expect(screen.getByText('اطلب من غيرك تطبيقه (403).')).toBeInTheDocument();
+    expect(screen.getByText('طبّقه من غيرك (403).')).toBeInTheDocument();
     // Every grant/revoke affordance is disabled — no dead clicks
     // bouncing off the backend guard.
     const grantButtons = screen.getAllByRole('button', { name: 'منح' });
@@ -317,8 +317,8 @@ describe('AdminPermissionsPage — self-edit guard (blocked-action explanation)'
     renderPermissionsPage('other1');
     // R355 copy diet: the stat line's label lost «صلاحيات» — «فعلية» is it.
     expect(await screen.findByText('فعلية')).toBeInTheDocument();
-    // R355 copy diet: the guard now reads «لا تُعدَّل من هنا».
-    expect(screen.queryByText('لا تُعدَّل من هنا')).toBeNull();
+    // R369 copy trim (018024e0): the guard reads «للعرض فقط».
+    expect(screen.queryByText('للعرض فقط')).toBeNull();
     const grantButtons = screen.getAllByRole('button', { name: 'منح' });
     expect(grantButtons.length).toBeGreaterThan(0);
     for (const b of grantButtons) expect(b).toBeEnabled();
@@ -329,8 +329,8 @@ describe('AdminPermissionsPage — self-edit guard (blocked-action explanation)'
     renderPermissionsPage('other1');
     // R355 copy diet: the stat line's label lost «صلاحيات» — «فعلية» is it.
     expect(await screen.findByText('فعلية')).toBeInTheDocument();
-    // R355 copy diet: the guard now reads «لا تُعدَّل من هنا».
-    expect(screen.queryByText('لا تُعدَّل من هنا')).toBeNull();
+    // R369 copy trim (018024e0): the guard reads «للعرض فقط».
+    expect(screen.queryByText('للعرض فقط')).toBeNull();
     await waitFor(() => {
       expect(screen.getAllByRole('button', { name: 'منح' })[0]).toBeEnabled();
     });

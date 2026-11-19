@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'node:path';
@@ -8,10 +8,75 @@ import path from 'node:path';
 // dist/bundle-report.html. Zero cost when the flag is absent.
 const enableBundleReport = !!process.env.BUNDLE_REPORT;
 
+/* R369 C2.3 — the public front-door preload.
+ *
+ * Diagnosis (Lighthouse 12.8.2 mobile, prod build + gzip mirror, the
+ * wave5 protocol): the four Lighthouse-target public routes measured
+ * PERF 83-84 with LCP 4.0-4.2 s of which 89 % was RENDER DELAY — the
+ * SPA boot chain serializes the lazy page chunks: index.js mounts →
+ * router resolves → the page chunk is DISCOVERED → its dep chunks
+ * (LegalSheet js+css, useReveal, …) discovered after that, each hop a
+ * simulated-1.6Mbps/150ms-RTT round trip. /auth (a shallower chunk
+ * graph) measured 96/2.5 s on the same build — proof the deficit is
+ * the discovery chain, not the boot itself.
+ *
+ * The fix: emit <link rel="modulepreload"> (+ rel=preload as=style
+ * for the family's lazy CSS) for the whole public family graph at
+ * HTML parse time. Zero entry growth, zero boot TBT growth (preload
+ * fetches but never executes — unlike eager imports), and the lazy
+ * imports resolve from the HTTP cache the moment the router asks.
+ * ~10 KB gz on the wire for every visitor — the public pages are the
+ * app's front door (auth + features + help + app). */
+function publicPagesPreload(): Plugin {
+  const FAMILY =
+    /^(AuthPage|AuthDoor|authErrors|PublicPages|AppDownloadPage|CapabilityPages|LegalSheet|useReveal|usePageTitle|colleges[.]config)$/;
+  return {
+    name: 'r369-public-pages-preload',
+    apply: 'build',
+    enforce: 'post',
+    generateBundle(_opts, bundle) {
+      const jsFiles = new Set<string>();
+      const visit = (file: string) => {
+        if (jsFiles.has(file)) return;
+        const chunk = bundle[file];
+        if (!chunk || chunk.type !== 'chunk') return;
+        // only preload the family's own chunks and their STATIC import
+        // graph — the same set __vitePreload__ would fetch at runtime
+        jsFiles.add(file);
+        for (const imp of chunk.imports ?? []) visit(imp);
+      };
+      for (const [file, chunk] of Object.entries(bundle)) {
+        if (chunk.type === 'chunk' && FAMILY.test(chunk.name ?? '')) visit(file);
+      }
+      if (jsFiles.size === 0) return;
+      /* modulepreload ONLY. The family's lazy CSS must NOT ride as
+       * head stylesheets (measured: 7 render-blocking sheets pushed
+       * FCP 2.1→3.0 s and LCP up on every route — the sheets compete
+       * for the 6-connection pool at 150 ms RTT), and NOT as
+       * rel=preload as=style either (Chrome's preload-as-style
+       * defaults CORS-anonymous vs vite's no-cors runtime injection —
+       * "credentials mode does not match", the preloads never hit and
+       * the CSS refetched on the simulated critical path). The lazy
+       * CSS re-fetch at chunk-execution time is the cheaper evil. */
+      const tags = [...[...jsFiles].map((f) => `<link rel="modulepreload" crossorigin href="/${f}">`)].join('\n    ');
+      // post-enforce: vite's own html plugin has already emitted the
+      // final index.html asset — patch it directly
+      const idx = bundle['index.html'];
+      if (idx && idx.type === 'asset' && typeof idx.source === 'string') {
+        idx.source = idx.source.replace(
+          '</head>',
+          `<!-- R369 C2.3: the public front-door preload (see vite.config.ts) -->\n    ${tags}\n  </head>`,
+        );
+      }
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    publicPagesPreload(),
     ...(enableBundleReport
       ? [visualizer({ filename: 'dist/bundle-report.html', template: 'sunburst', gzipSize: true })]
       : []),

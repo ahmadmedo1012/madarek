@@ -1,0 +1,4 @@
+role=owner
+theme=light
+font_scale=1.0
+viewport=standard

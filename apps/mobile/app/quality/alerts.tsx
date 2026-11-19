@@ -38,7 +38,7 @@ export default function QualityAlerts() {
     return (
       <NotificationsScreen
         title="بريدي"
-        kicker="بريدك"
+       
         stacked
         onBack={() => setTab("board")}
       />
@@ -68,7 +68,7 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
       <StackHeader title="تنبيهات الجودة" kicker={QUALITY_SECTOR} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <T variant="body" color="muted">
-          أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريًا من بيانات المنصّة.
+          أحداث تستوجب تدخّل الجودة — من بيانات المنصّة.
         </T>
 
         <Segmented
@@ -122,7 +122,7 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
             </RowList>
             {rows.length >= 20 ? (
               <T variant="xs" color="faint">
-                تُعرض أول {latn(20)} تنبيهًا — حدّ الخادم لهذا اللوح.
+                تُعرض أول {latn(20)} تنبيهًا — حدّ الخادم.
               </T>
             ) : null}
           </>

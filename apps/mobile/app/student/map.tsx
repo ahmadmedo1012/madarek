@@ -24,6 +24,7 @@ import { latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 import { PushFrame } from "@/features/student/components";
+import {NO_FACULTIES_YET, NO_INSTITUTION, PICK_INSTITUTION_FIRST} from "@/lib/copy";
 
 /** Faculties whose city is null/blank bucket here — never dropped. */
 const UNKNOWN_CITY = "مدينة غير محدّدة";
@@ -72,22 +73,22 @@ export default function CampusMapScreen() {
       ) : !slug ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لم تُحدَّد مؤسستك"
-          message="اختر مؤسستك أولًا."
+          title={NO_INSTITUTION}
+          message={PICK_INSTITUTION_FIRST}
         />
       ) : faculties.isLoading ? (
         <SkeletonList rows={5} rowHeight={64} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا كليات بعد"
+          title={NO_FACULTIES_YET}
           message="لا كليات — تظهر فور الإضافة."
         />
       ) : (
         <>
           <SectionNote>
-            {countAr(rows.length, ["كلّيّة واحدة", "كلّيّتان", "كليّات", "كلّيّة"])} في مؤسّستك، موزَّعة على{" "}
-            {countAr(byCity.length, ["مدينة واحدة", "مدينتين", "مدن", "مدينة"])}.
+            {countAr(rows.length, ["كلّيّة", "كلّيّتان", "كليّات", "كلّيّة"])} في مؤسّستك، موزَّعة على{" "}
+            {countAr(byCity.length, ["مدينة", "مدينتين", "مدن", "مدينة"])}.
           </SectionNote>
 
           {byCity.map(([city, list], idx) => (
@@ -114,7 +115,7 @@ export default function CampusMapScreen() {
                         </T>
                         {f.departments && f.departments.length > 0 ? (
                           <T variant="xs" color="muted">
-                            {countAr(f.departments.length, ["قسم واحد", "قسمان", "أقسام", "قسماً"])}
+                            {countAr(f.departments.length, ["قسم", "قسمان", "أقسام", "قسماً"])}
                           </T>
                         ) : null}
                       </View>
@@ -126,8 +127,7 @@ export default function CampusMapScreen() {
           ))}
 
           <T variant="xs" color="faint">
-            خريطة الحرم التفاعليّة قيد التطوير — يعرض هذا الدليل الكليّات المسجَّلة فعلياً في مؤسّستك بحسب
-            مدينتها.
+            الخريطة قيد التطوير — الكليات بحسب مدينتها.
           </T>
         </>
       )}

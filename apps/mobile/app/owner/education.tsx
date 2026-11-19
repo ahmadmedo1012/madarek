@@ -46,7 +46,7 @@ export default function OwnerEducation() {
     <Screen scroll>
       <StackHeader title="النظرة التعليميّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة للمقرّرات والطلاب." />
+        <PageHeader title="النظرة التعليميّة" />
 
         {edu.isLoading ? (
           <SkeletonList rows={5} rowHeight={48} />
@@ -72,7 +72,7 @@ export default function OwnerEducation() {
               <SectionBar index={2} title="المقرّرات حسب الكلّيّة" />
               {(e?.byFaculty ?? []).length === 0 ? (
                 <T variant="body" color="muted">
-                  لا مقرّرات بعد — ستظهر هنا حين تُسجَّل مقرّرات على نظام الكلّيّات.
+                  لا مقرّرات بعد — تُحصى فور تسجيلها.
                 </T>
               ) : (
                 <RowList>
@@ -90,7 +90,7 @@ export default function OwnerEducation() {
               <SectionBar index={3} title="الأكثر تسجيلًا" />
               {(e?.topCourses ?? []).length === 0 ? (
                 <T variant="body" color="muted">
-                  لا تسجيلات بعد — ستظهر المقرّرات الأكثر تسجيلاً فور تسجيل الطلاب في العروض.
+                  لا تسجيلات — يُرتَّب الأكثر فور تسجيل الطلاب.
                 </T>
               ) : (
                 <RowList>
@@ -123,7 +123,7 @@ export default function OwnerEducation() {
               <SectionBar index={4} title="حِمل هيئة التدريس" />
               {totalTeachers === 0 ? (
                 <T variant="body" color="muted">
-                  لا يوجد أساتذة بعد — يُحسب التوزيع فور إسناد أوّل عرض لمقرّر.
+                  لا أساتذة بعد — التوزيع فور أول إسناد.
                 </T>
               ) : (
                 <RowList>
@@ -146,7 +146,7 @@ export default function OwnerEducation() {
               <SectionBar index={5} title="اتّجاه الحضور" />
               {(e?.attendanceTrend ?? []).length === 0 ? (
                 <T variant="body" color="muted">
-                  لا توجد سجلّات حضور بعد — يبدأ الحساب فور تسجيل أوّل جلسة حضور على المنصّة.
+                  لا سجلّات حضور — يبدأ الحساب من أول جلسة.
                 </T>
               ) : (
                 <RowList>
@@ -161,7 +161,7 @@ export default function OwnerEducation() {
                 </RowList>
               )}
               <T variant="xs" color="faint">
-                يُحسب من سجلات الحضور الفعليّة على المنصّة.
+                يُحسب من سجلّات الحضور الفعليّة.
               </T>
             </View>
           </View>

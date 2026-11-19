@@ -1,3 +1,5 @@
+import { DASH_OWNER, LABEL_TODAY, LIVE_MONITORING, NO_DATA_YET, DETAILS, PASS_RATE, SYSTEM_OPS } from '../../lib/copy';
+
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { Bot, Sparkles } from 'lucide-react';
@@ -112,7 +114,7 @@ export function OwnerAiPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="مركز الذكاء الاصطناعيّ"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'مركز الذكاء الاصطناعيّ' }]}
+        breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: 'مركز الذكاء الاصطناعيّ' }]}
         /* R341 D11: the [09] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
         index="09"
@@ -126,8 +128,8 @@ export function OwnerAiPage() {
             Navigation-only; monitoring writes nothing. */
         actions={(
           <>
-            <Link to="/owner/system" className="btn accent sm">النظام والتشغيل</Link>
-            <Link to="/owner/realtime" className="btn ghost sm">المراقبة الحيّة</Link>
+            <Link to="/owner/system" className="btn accent sm">{SYSTEM_OPS}</Link>
+            <Link to="/owner/realtime" className="btn ghost sm">{LIVE_MONITORING}</Link>
             {aiConfig.data && (
               /* r299: brand, not gold — R197 reserves gold for
                  achievements; this badge names the provider (a fact,
@@ -148,7 +150,7 @@ export function OwnerAiPage() {
             <Card title="حسب الميزة"><ChartSkeleton height={240} /></Card>
             <Card title="اتّجاه الاستخدام"><ChartSkeleton height={240} /></Card>
           </div>
-          <Card title="التفاصيل"><TableSkeleton rows={4} cols={4} /></Card>
+          <Card title={DETAILS}><TableSkeleton rows={4} cols={4} /></Card>
         </>
       ) : aiMetrics.isError || !data ? (
         <Card>
@@ -173,7 +175,7 @@ export function OwnerAiPage() {
                   : <bdi>{formatNum(data.totalTokens)}</bdi>,
               },
               {
-                label: 'معدّل النجاح',
+                label: PASS_RATE,
                 value: <bdi>{Math.round(data.successRate)}%</bdi>,
                 trend: data.successRate >= 90 ? 'مستقرّ' : 'راجع الأعطال',
                 trendTone: data.successRate >= 90 ? 'up' : 'down',
@@ -223,14 +225,14 @@ export function OwnerAiPage() {
 
             <Card title="اتّجاه الاستخدام">
               {data.trend.length === 0 ? (
-                <EmptyState illustration="empty-list" title="لا بيانات بعد" />
+                <EmptyState illustration="empty-list" title={NO_DATA_YET} />
               ) : (
                 <ChartFrame
                   ariaLabel="مخطط خطّي لاتّجاه الاستخدام — الطلبات اليوميّة على مدى 7 أيّام"
                   summary={`الذروة: ${formatNum(Math.max(...data.trend.map((t) => t.count)))}`}
                   table={{
                     caption: 'الاتّجاه اليومي',
-                    columns: ['اليوم', 'الطلبات'],
+                    columns: [LABEL_TODAY, 'الطلبات'],
                     rows: data.trend.map((t) => [t.date, t.count]),
                   }}
                   height={240}
@@ -242,7 +244,7 @@ export function OwnerAiPage() {
           </div>
 
           {data.byFeature.length > 0 && (
-            <Card title="التفاصيل">
+            <Card title={DETAILS}>
               <div className="table-wrap">
                 <table className="table tbl-stack">
                   <thead>

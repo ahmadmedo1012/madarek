@@ -1,3 +1,5 @@
+import { DASH_OWNER, OPEN_COMMUNITY } from '../../lib/copy';
+
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -110,7 +112,7 @@ export function OwnerContentPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="المحتوى والعلامة التجاريّة"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المحتوى والعلامة التجاريّة' }]}
+        breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: 'المحتوى والعلامة التجاريّة' }]}
         /* R341 D11: the [06] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). The page's body cards
          * already carry their own primary links both bands. */
@@ -124,7 +126,7 @@ export function OwnerContentPage() {
           </p>
           <Link to="/community" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />
-            فتح المجتمع
+            {OPEN_COMMUNITY}
           </Link>
         </Card>
 

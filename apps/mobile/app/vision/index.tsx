@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { APPEARS_ONCE_PUBLISHED } from "@/lib/copy";
 import { router } from "expo-router";
 import Sparkles from "lucide-react-native/icons/sparkles";
 import { usePalette } from "@/design/theme";
@@ -44,10 +45,10 @@ export default function VisionIndex() {
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">
-          {latn(total)} ابتكارًا قادمًا، نبني التعليم في يدك خطوة بخطوة.
+          {latn(total)} ابتكارًا قادمًا — نبنيها خطوة بخطوة.
         </T>
         <T variant="body" color="secondary">
-          هذه نظرة على المسار التقني للمنصّة — من الذكاء الاصطناعي والميتافيرس إلى البلوكشين والترجمة الفورية.
+          المسار التقني — الذكاء الاصطناعي والميتافيرس والبلوكشين والترجمة.
         </T>
       </View>
 
@@ -62,7 +63,7 @@ export default function VisionIndex() {
       {total === 0 ? (
         <EmptyState
           title="لا ابتكارات معروضة بعد"
-          message="خارطة الطريق تظهر هنا حين تُنشر."
+          message={APPEARS_ONCE_PUBLISHED}
           icon={<Sparkles size={20} color={p.textMuted} />}
         />
       ) : (

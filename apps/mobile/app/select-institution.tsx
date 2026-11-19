@@ -17,6 +17,7 @@ import { PressableScale } from "@/motion";
 import { haptics } from "@/haptics";
 import { unregisterPushDevices } from "@/lib/push";
 import { humanizeError } from "@/lib/errors";
+import { LOGOUT_ACTION } from "@/lib/copy";
 
 /**
  * /select-institution — the multi-institution context gate.
@@ -89,7 +90,7 @@ export default function SelectInstitution() {
     <Screen scroll>
       <PageHeader title="اختيار المؤسّسة" kicker="سياق الحساب" compact />
       <T variant="body" color="secondary">
-        حسابك لديه أكثر من عضوية نشطة — اختر المؤسّسة التي ستعمل ضمنها الآن.
+        لحسابك أكثر من عضوية نشطة — اختر المؤسّسة.
       </T>
 
       {active.length > 1 ? (
@@ -166,14 +167,14 @@ export default function SelectInstitution() {
             room="building"
             title="لا عضوية نشطة بعد"
             message="لا عضوية مفعّلة — تواصل مع الإدارة."
-            actionLabel="تسجيل الخروج"
+            actionLabel={LOGOUT_ACTION}
             onAction={() => void doLogout()}
           />
         ) : null}
       </View>
 
       {active.length > 0 ? (
-        <Button label="تسجيل الخروج" kind="ghost" small onPress={() => void doLogout()} />
+        <Button label={LOGOUT_ACTION} kind="ghost" small onPress={() => void doLogout()} />
       ) : null}
     </Screen>
   );

@@ -1,6 +1,6 @@
-/* ════════════════════════════════════════════════════════════════════
+/* ═══
    مدارك — /about (R341 · task D2 · W7 dedup)
-   ════════════════════════════════════════════════════════════════════
+   ═══
    عن مدارك — the identity sheet. patterns.css carries everything the
    four guest sheets share: the §G chrome grammar (header, measure,
    section bar, hairline cell, voices, CTA pair, colophon, hover,
@@ -10,31 +10,37 @@
    What stays HERE is the about-only furniture: the --fs-h3
    section-bar rung and the statement seat. Every rule is
    about-scoped ab-*.
-   ──────────────────────────────────────────────── */
+   ───
+*/
 
 @layer pages {
 
-  /* ══ 1 · THE SECTION BAR — about's own rung ═══════════════════════ */
+  /* ══ 1 · THE SECTION BAR — about's own rung ═══════════════════════
+*/
 
   /* The D2 finding: about's bars answer at the card-title D3 register
-     (--fs-h3 — the same 33.3 @1440 value st resolves) while the
-     app/legal bars ride --fs-st (§G's grouped body). Same layer, later
-     import, equal specificity — the overlay wins, the anatomy stays
-     shared. */
+   (--fs-h3 — the same 33.3 @1440 value st resolves) while the
+   app/legal bars ride --fs-st (§G's grouped body). Same layer, later
+   import, equal specificity — the overlay wins, the anatomy stays
+   shared.
+*/
   .ab-bar { font-size: var(--fs-h3); }
 
-  /* ══ 2 · THE STATEMENT — about's own prose seat ═══════════════════ */
+  /* ══ 2 · THE STATEMENT — about's own prose seat ═══════════════════
+*/
 
   /* the verbatim statement — the landing's identity paragraph in its
-     own display seat (the lead step, primary ink). */
+   own display seat (the lead step, primary ink).
+*/
   .ab-p-statement {
     font-size: var(--fs-body-lg);
     color: var(--text);
   }
 
   /* ══ 3 · PRINT — about's keep-together list. The shared collapse
-     (chrome display:none, main/cell resets) seats in §G·PRINT.
-     ═════════════════════════════════════════════════════════════════ */
+   (chrome display:none, main/cell resets) seats in §G·PRINT.
+     ═══
+*/
 
   @media print {
     .ab-bar,

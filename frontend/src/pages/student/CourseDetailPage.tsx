@@ -1,3 +1,5 @@
+import { ALL, LABEL_STUDENTS, LABEL_LECTURES, NEXT_STEP, LABEL_LECTURE, ONE_SEMESTER, CREDIT_HOURS, ONE_LECTURE, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC, STATUS_DONE_F, ONE_INTERACTION_POINT, NOT_AVAILABLE_YET, THE_LECTURES, ONE_FILE, NOUN_FILE_ACC, HOMEWORK, TWO_CREDIT_HOURS, ONE_CREDIT_HOUR, MY_COURSES_SHORT, TWO_INTERACTION_POINTS, INTERACTION_POINTS, INTERACTION_POINT, NOUN_TWO_HOMEWORK, NOUN_HOMEWORK_ACC } from '../../lib/copy';
+
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
@@ -52,9 +54,9 @@ function fmtDuration(sec: number) {
    client-side filtering of the already-loaded list. */
 type LectureFilter = 'all' | 'open' | 'done';
 const LECTURE_FILTERS: Array<{ key: LectureFilter; label: string }> = [
-  { key: 'all', label: 'الكل' },
+  { key: 'all', label: ALL },
   { key: 'open', label: 'لم تكتمل' },
-  { key: 'done', label: 'مكتملة' },
+  { key: 'done', label: STATUS_DONE_F },
 ];
 function lectureBucket(lec: { watchEvents?: Array<{ completed: boolean }>; answeredCheckpoints?: number; _count: { checkpoints: number } }): 'open' | 'done' {
   const we = lec.watchEvents?.[0];
@@ -198,13 +200,13 @@ export default function CourseDetailPage() {
       <PageHeader
         title={data.course.name}
         breadcrumbs={[
-          { label: 'مقرّراتي', to: '/student/courses' },
+          { label: MY_COURSES_SHORT, to: '/student/courses' },
           { label: data.course.name },
         ]}
         description={
           <>
             د. {data.teacher.firstName} {data.teacher.lastName} ·{' '}
-            {countAr(data.course.credits, ['ساعة معتمدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'])} · الفصل <bdi>{data.term}</bdi>
+            {countAr(data.course.credits, [ONE_CREDIT_HOUR, TWO_CREDIT_HOURS, CREDIT_HOURS, ONE_CREDIT_HOUR])} · الفصل <bdi>{data.term}</bdi>
           </>
         }
         meta={<><Badge><bdi className="font-mono">{data.course.code}</bdi></Badge> · {data.course.department.name}</>}
@@ -224,7 +226,7 @@ export default function CourseDetailPage() {
       >
         <div className="course-continue-progress">
           <p className="r305s-eyebrow">
-            {nextLec ? 'الخطوة التالية' : data.lectures.length > 0 ? 'اكتمل المنهج' : 'خطة المنهج'}
+            {nextLec ? NEXT_STEP : data.lectures.length > 0 ? 'اكتمل المنهج' : 'خطة المنهج'}
           </p>
           <div className="course-hero-progress-head">
             <span className="course-hero-progress-label">تقدّمك في المنهج</span>
@@ -266,10 +268,10 @@ export default function CourseDetailPage() {
           KPI wall). */}
       <StatLine
         items={[
-          { label: 'المحاضرات', value: formatInt(data.lectures.length) },
+          { label: THE_LECTURES, value: formatInt(data.lectures.length) },
           { label: 'المواد المرفقة', value: formatInt(data.materials.length) },
           { label: 'الواجبات', value: formatInt(data.assignments.length) },
-          { label: 'الطلاب', value: formatInt(data._count.enrollments) },
+          { label: LABEL_STUDENTS, value: formatInt(data._count.enrollments) },
         ]}
       />
 
@@ -284,7 +286,7 @@ export default function CourseDetailPage() {
       <section aria-label="محاضرات المقرر" className="course-lectures">
         <SectionBar
           index="01"
-          title="المحاضرات"
+          title={THE_LECTURES}
           meta={
             data.lectures.length > 0 ? (
               <span className="r319s-bar-meta">
@@ -292,7 +294,7 @@ export default function CourseDetailPage() {
                   {formatInt(watchedCount)}/{formatInt(data.lectures.length)}
                 </bdi>
                 <span className="sr-only">
-                  أكملت {countAr(watchedCount, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])} من {countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}
+                  أكملت {countAr(watchedCount, [ONE_LECTURE, 'محاضرتين', LABEL_LECTURES, LABEL_LECTURE])} من {countAr(data.lectures.length, [ONE_LECTURE, 'محاضرتين', LABEL_LECTURES, LABEL_LECTURE])}
                 </span>
               </span>
             ) : undefined
@@ -368,9 +370,9 @@ export default function CourseDetailPage() {
                           <Icon icon={Clock} size={11} /> <bdi className="font-mono">{fmtDuration(lec.durationSec)}</bdi>
                         </span>
                         <span>·</span>
-                        <span>{countAr(lec._count.chapters, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}</span>
+                        <span>{countAr(lec._count.chapters, [ONE_SEMESTER, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC])}</span>
                         <span>·</span>
-                        <span>{countAr(lec._count.checkpoints, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}</span>
+                        <span>{countAr(lec._count.checkpoints, [ONE_INTERACTION_POINT, TWO_INTERACTION_POINTS, INTERACTION_POINTS, INTERACTION_POINT])}</span>
                       </div>
                       {watchedPct > 0 && watchedPct < 100 && (
                         <div style={{ marginTop: 'var(--sp-1-5)', maxWidth: 240 }}>
@@ -389,7 +391,7 @@ export default function CourseDetailPage() {
                         </div>
                       )}
                     </div>
-                    {completed && <Badge color="green">مكتملة</Badge>
+                    {completed && <Badge color="green">{STATUS_DONE_F}</Badge>
                     /* r164d: checkpoint-pending state — the row's open
                      * loop, visible where the decision is made (watch
                      * done ≠ lecture done). */}
@@ -424,7 +426,7 @@ export default function CourseDetailPage() {
             data.materials.length > 0 ? (
               <BarCount
                 n={data.materials.length}
-                srLabel={countAr(data.materials.length, ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'])}
+                srLabel={countAr(data.materials.length, [ONE_FILE, 'ملفان', 'ملفات', NOUN_FILE_ACC])}
               />
             ) : undefined
           }
@@ -474,7 +476,7 @@ export default function CourseDetailPage() {
                 return (
                   <div key={m.id} className="list-row">
                     {body}
-                    <span className="text-xs text-subtle" role="note">غير متوفر بعد</span>
+                    <span className="text-xs text-subtle" role="note">{NOT_AVAILABLE_YET}</span>
                   </div>
                 );
               })}
@@ -529,7 +531,7 @@ export default function CourseDetailPage() {
           data.assignments.length > 0 ? (
             <BarCount
               n={data.assignments.length}
-              srLabel={countAr(data.assignments.length, ['واجب واحد', 'واجبان', 'واجبات', 'واجباً'])}
+              srLabel={countAr(data.assignments.length, ['واجب واحد', NOUN_TWO_HOMEWORK, HOMEWORK, NOUN_HOMEWORK_ACC])}
             />
           ) : undefined
         }

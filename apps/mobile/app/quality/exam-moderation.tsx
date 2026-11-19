@@ -88,12 +88,9 @@ export default function QualityExamModeration() {
 
   return (
     <Screen scroll>
-      <StackHeader title="مراجعة الاختبارات" kicker="قطاع ضمان الجودة" />
+      <StackHeader title="مراجعة الاختبارات" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader
-          title="مراجعة الاختبارات"
-          kicker="مراجعة القوالب — حصرية."
-        />
+        <PageHeader title="مراجعة الاختبارات" />
 
         <RowList>
           <LedgerRow last>
@@ -169,7 +166,7 @@ export default function QualityExamModeration() {
         <View style={{ gap: 12 }}>
           <SectionBar index={2} title="أسئلة بانتظار الاعتماد" />
           <T variant="xs" color="muted">
-            من بنك الأسئلة — الأسئلة غير المعتمدة فقط.
+            غير المعتمدة فقط.
           </T>
           {questionBank.isLoading ? (
             <SkeletonList rows={2} />
@@ -199,7 +196,7 @@ export default function QualityExamModeration() {
                   </T>
                   <T variant="xs" color="muted">
                     {questionTypeLabel(q.type)} · {difficultyLabel(q.difficulty)} ·{" "}
-                    {countAr(q.points ?? 0, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
+                    {countAr(q.points ?? 0, ["نقطة", "نقطتان", "نقاط", "نقطة"])}
                   </T>
                 </LedgerRow>
               ))}
@@ -252,7 +249,7 @@ export default function QualityExamModeration() {
         title="رفض القرار"
         message={
           rejectConfirm
-            ? `سيُرفض «${rejectConfirm.title}» ويخرج من الطابور بلا تراجع. هل أنت متأكد؟`
+            ? `سيُرفض «${rejectConfirm.title}» — بلا تراجع.`
             : ""
         }
         confirmLabel="رفض نهائي"

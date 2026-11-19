@@ -39,10 +39,10 @@ export type ExamStatusTone = "accent" | StatusToneName;
 export function fmtUntilAr(msLeft: number): string {
   const mins = Math.floor(Math.max(0, msLeft) / 60_000);
   if (mins < 1) return "أقل من دقيقة";
-  if (mins < 60) return countAr(mins, ["دقيقة واحدة", "دقيقتين", "دقائق", "دقيقة"]);
+  if (mins < 60) return countAr(mins, ["دقيقة", "دقيقتين", "دقائق", "دقيقة"]);
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return countAr(hours, ["ساعة واحدة", "ساعتين", "ساعات", "ساعة"]);
-  return countAr(Math.floor(hours / 24), ["يوم واحد", "يومين", "أيام", "يوماً"]);
+  if (hours < 24) return countAr(hours, ["ساعة", "ساعتين", "ساعات", "ساعة"]);
+  return countAr(Math.floor(hours / 24), ["يوم", "يومين", "أيام", "يوماً"]);
 }
 
 /**
@@ -241,7 +241,7 @@ export default function OnlineExamsScreen() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="الاختبارات الإلكترونية" kicker="مركز الاختبارات" />
+      <StackHeader title="الاختبارات الإلكترونية" />
       {/* T-50 (review-1 T13): the exam center was a motionless seat —
           header + filter now take the standard staggered entrance. */}
       <Animated.View entering={entering(0)} style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
@@ -258,11 +258,11 @@ export default function OnlineExamsScreen() {
           }}
         />
         <T variant="sm" color="muted">
-          اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات — لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية.
+          اختبارات معتمدة موحَّدة — لا إعادة بعد التسليم إلا للتدريبية.
         </T>
         {visible.length > 0 ? (
           <T variant="xs" color="faint">
-            {countAr(visible.length, ["اختبار واحد", "اختباران", "اختبارات", "اختباراً"])}
+            {countAr(visible.length, ["اختبار", "اختباران", "اختبارات", "اختباراً"])}
           </T>
         ) : null}
       </Animated.View>

@@ -49,6 +49,7 @@ export function GuestReveal({ children }: GuestRevealProps): JSX.Element {
       <div
         className="guest-reveal-inner"
         key={location.pathname}
+        data-cold={delay === 0 ? '1' : undefined}
         style={{ '--gr-delay': `${delay}ms` } as React.CSSProperties}
       >
         {children}

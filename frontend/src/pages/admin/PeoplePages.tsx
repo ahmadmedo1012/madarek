@@ -1,3 +1,5 @@
+import { LOADING, CANCEL, NO_RESULTS, PREV, NEXT, LABEL_STUDENTS, LABEL_STATUS, FAILED_LOAD, MANAGE_STUDENTS, LABEL_NAME, LABEL_ADDRESS, LABEL_SYSTEM, STATUS_SUSPENDED, SAVE, EDIT, LABEL_TYPE, STATUS_ACTIVE_M, LABEL_RANK, LABEL_CITY, LABEL_THE_STUDENT, DELETE_PERMANENTLY, ORG_SERVICES, LABEL_PHONE, ATTENDANCE, SEM } from '../../lib/copy';
+
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import {
@@ -47,7 +49,7 @@ const STUDY_TYPE_LABELS: Record<string, string> = {
   MORNING: 'صباحي', EVENING: 'مسائي', PARALLEL: 'موازي',
 };
 const ENROLLMENT_LABELS: Record<string, string> = {
-  ACTIVE: 'مقيّد', SUSPENDED: 'موقوف', DEFERRED: 'مؤجّل',
+  ACTIVE: 'مقيّد', SUSPENDED: STATUS_SUSPENDED, DEFERRED: 'مؤجّل',
   GRADUATED: 'متخرّج', WITHDRAWN: 'منسحب',
 };
 const ENROLLMENT_TONES: Record<string, 'green' | 'amber' | 'red' | undefined> = {
@@ -68,7 +70,7 @@ const FIELD_TYPE_LABELS: Record<FieldDefinition['type'], string> = {
   SELECT: 'اختيار', MULTI_SELECT: 'متعدد',
 };
 const FIELD_ENTITY_LABELS: Record<FieldDefinition['entity'], string> = {
-  STUDENT: 'الطالب', TEACHER: 'المدرّس',
+  STUDENT: LABEL_THE_STUDENT, TEACHER: 'المدرّس',
 };
 
 /** The admin/owner seat — mirrors the POST/PATCH/DELETE role guards. */
@@ -136,6 +138,11 @@ export function PeopleDirectoryPage() {
     <PageFrame width="default">
       <PageHeader
         title="الدليل"
+        /* R369 (C1 · the D11 register): [08] = the ADMIN_NAV console
+         * register's free slot (01–07, 09 taken); the sector eyebrow
+         * classifies the surface like the owner detail precedent. */
+        index="08"
+        eyebrow={ORG_SERVICES}
         actions={(
           <>
             {canEditFields && (
@@ -148,8 +155,11 @@ export function PeopleDirectoryPage() {
                 {fieldsOpen ? 'إخفاء الحقول' : 'الحقول المخصصة'}
               </button>
             )}
+            {/* R369 (C1 · the D8 family law): the roster's ONE standing
+             * verb rides the accent register (primary/accent share the
+             * same token seat — zero visual change, the CTA registers). */}
             <button
-              type="button" className="btn primary sm" disabled={exporting !== null}
+              type="button" className="btn accent sm" disabled={exporting !== null}
               onClick={() => void doExport('xlsx')}
             >
               <Icon icon={FileSpreadsheet} size={13} />
@@ -176,7 +186,7 @@ export function PeopleDirectoryPage() {
         value={kind}
         onChange={(k) => { setKind(k as 'student' | 'teacher'); setPage(1); }}
         items={[
-          { value: 'student', label: 'الطلاب' },
+          { value: 'student', label: LABEL_STUDENTS },
           { value: 'teacher', label: 'المدرّسون' },
         ]}
       />
@@ -196,7 +206,7 @@ export function PeopleDirectoryPage() {
             <select
               className="admin-students-input" value={studyType}
               onChange={(e) => { setStudyType(e.target.value); setPage(1); }}
-              aria-label="تصفية حسب وضع الدراسة"
+              aria-label="وضع الدراسة"
             >
               <option value="">كل الأوضاع</option>
               <option value="MORNING">{STUDY_TYPE_LABELS.MORNING}</option>
@@ -206,7 +216,7 @@ export function PeopleDirectoryPage() {
             <select
               className="admin-students-input" value={enrollmentStatus}
               onChange={(e) => { setEnrollmentStatus(e.target.value); setPage(1); }}
-              aria-label="تصفية حسب الحالة"
+              aria-label={LABEL_STATUS}
             >
               <option value="">كل الحالات</option>
               <option value="ACTIVE">{ENROLLMENT_LABELS.ACTIVE}</option>
@@ -222,10 +232,10 @@ export function PeopleDirectoryPage() {
       <Card>
         {directory.isPending && <ListSkeleton rows={6} />}
         {directory.isError && (
-          <ErrorState error={directory.error} message="تعذّر التحميل" onRetry={() => directory.refetch()} />
+          <ErrorState error={directory.error} message={FAILED_LOAD} onRetry={() => directory.refetch()} />
         )}
         {directory.data && rows.length === 0 && (
-          <EmptyCell label="لا نتائج" note="عدّل البحث أو التصفية." />
+          <EmptyCell label={NO_RESULTS} note="عدّل البحث." />
         )}
         {directory.data && rows.length > 0 && (
           <div className="r349p-dir-list">
@@ -235,13 +245,13 @@ export function PeopleDirectoryPage() {
           </div>
         )}
         {meta && meta.totalPages > 1 && (
-          <nav className="admin-pagination" aria-label="تصفح الدليل">
+          <nav className="admin-pagination" aria-label="الدليل">
             <button type="button" className="btn ghost sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-              السابق
+              {PREV}
             </button>
             <span className="text-xs text-subtle">صفحة {page} من {meta.totalPages} · {meta.total} سجل</span>
             <button type="button" className="btn ghost sm" disabled={page >= meta.totalPages} onClick={() => setPage((p) => p + 1)}>
-              التالي
+              {NEXT}
             </button>
           </nav>
         )}
@@ -388,7 +398,7 @@ function FieldEditorPanel() {
   if (defs.isError) {
     return (
       <Card>
-        <ErrorState error={defs.error} message="تعذّر تحميل الحقول" onRetry={() => defs.refetch()} />
+        <ErrorState error={defs.error} message={FAILED_LOAD} onRetry={() => defs.refetch()} />
       </Card>
     );
   }
@@ -435,15 +445,15 @@ function FieldEditorPanel() {
           )}
           {byEntity(entity).map((f) => (
             confirmDelete === f.id ? (
-              <div key={f.id} className="r349p-fe-row r349p-fe-row--danger" role="alertdialog" aria-label="تأكيد حذف الحقل">
+              <div key={f.id} className="r349p-fe-row r349p-fe-row--danger" role="alertdialog" aria-label="تأكيد الحذف">
                 <span className="text-xs">
                   حذف «{f.labelAr}» نهائيًا؟ القيم المخزّنة في ملفات الأعضاء تبقى بلا عنوان يعرضها.
                 </span>
                 <span className="r349p-fe-actions">
                   <button type="button" className="btn danger sm" disabled={del.isPending} onClick={() => doDelete(f.id)}>
-                    {del.isPending ? '…' : 'حذف نهائي'}
+                    {del.isPending ? '…' : DELETE_PERMANENTLY}
                   </button>
-                  <button type="button" className="btn ghost sm" onClick={() => setConfirmDelete(null)}>إلغاء</button>
+                  <button type="button" className="btn ghost sm" onClick={() => setConfirmDelete(null)}>{CANCEL}</button>
                 </span>
               </div>
             ) : editing && 'id' in editing && editing.id === f.id ? (
@@ -585,13 +595,13 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
       <div className="r349p-fe-form-head">
         <Icon icon={ListPlus} size={14} className="text-subtle" aria-hidden />
         <b className="text-sm">{isEdit ? `تعديل «${initial.labelAr}»` : 'حقل جديد'}</b>
-        <button type="button" className="btn ghost sm" aria-label="إلغاء" onClick={onDone}>
+        <button type="button" className="btn ghost sm" aria-label={CANCEL} onClick={onDone}>
           <Icon icon={X} size={12} />
         </button>
       </div>
       <div className="grid-2">
-        <FormField label="التسمية بالعربية" value={form.labelAr} onChange={set('labelAr')} />
-        <FormField label="التسمية باللاتينية" value={form.labelEn} onChange={set('labelEn')} dir="ltr" />
+        <FormField label="التسمية عربية" value={form.labelAr} onChange={set('labelAr')} />
+        <FormField label="التسمية لاتينية" value={form.labelEn} onChange={set('labelEn')} dir="ltr" />
         {!isEdit && (
         <FormField label="المفتاح" value={form.key} onChange={set('key')} dir="ltr" mono />
         )}
@@ -599,7 +609,7 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
           { value: 'STUDENT', label: 'حقول الطالب' },
           { value: 'TEACHER', label: 'حقول المدرّس' },
         ]} />
-        <SelectField label="النوع" value={form.type} onChange={set('type')} options={[
+        <SelectField label={LABEL_TYPE} value={form.type} onChange={set('type')} options={[
           { value: 'TEXT', label: FIELD_TYPE_LABELS.TEXT },
           { value: 'NUMBER', label: FIELD_TYPE_LABELS.NUMBER },
           { value: 'DATE', label: FIELD_TYPE_LABELS.DATE },
@@ -629,9 +639,9 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
       {failure && <p className="r349p-error" role="alert">{failure}</p>}
       <div className="r349p-savebar" role="toolbar" aria-label="حفظ الحقل">
         <button type="button" className="btn primary sm" onClick={save} disabled={pending}>
-          {pending ? '…' : 'حفظ'}
+          {pending ? '…' : SAVE}
         </button>
-        <button type="button" className="btn ghost sm" onClick={onDone}>إلغاء</button>
+        <button type="button" className="btn ghost sm" onClick={onDone}>{CANCEL}</button>
       </div>
     </div>
   );
@@ -651,7 +661,7 @@ export function StudentFilePage() {
   if (person.isPending) {
     return (
       <PageFrame width="default">
-        <PageHeader title="ملف الطالب" description="جارٍ التحميل…" />
+        <PageHeader title="ملف الطالب" description={LOADING} />
         <Card><ListSkeleton rows={5} /></Card>
       </PageFrame>
     );
@@ -659,7 +669,7 @@ export function StudentFilePage() {
   if (person.isError || !person.data) {
     return (
       <PageFrame width="default">
-        <PageHeader title="ملف الطالب" description="خارج نطاق مؤسستك." />
+        <PageHeader title="ملف الطالب" description="خارج نطاق المؤسسة." />
         <Card>
           <ErrorState error={person.error ?? new Error('not found')} message="تعذّر الفتح" onRetry={() => person.refetch()} />
         </Card>
@@ -672,7 +682,7 @@ export function StudentFilePage() {
       <PageFrame width="default">
         <PageHeader title="الملف" description="ملف مدرّس." />
         <Card>
-          {p ? <TeacherFileBody person={p} /> : <EmptyCell label="غير موجود" note="خارج نطاقك أو محذوف." /> }
+          {p ? <TeacherFileBody person={p} /> : <EmptyCell label="غير موجود" note="خارج نطاقك." /> }
         </Card>
       </PageFrame>
     );
@@ -683,13 +693,29 @@ export function StudentFilePage() {
       <PageHeader
         title={p.nameAr ?? `${p.user.firstName} ${p.user.lastName}`}
         description={`رقم القيد ${p.universityId}`}
+        /* R369 (C1 · the D11 parent-child register): the person file
+         * shares the directory's [08] (the OwnerInstitutions 04
+         * precedent) and gains the sector eyebrow the topbar kicker
+         * cannot carry on a dynamic route. */
+        index="08"
+        eyebrow="الأكاديمية"
+        breadcrumbs={[{ label: 'الدليل', to: '/admin/directory' }, { label: 'الملف' }]}
+        actions={(
+          /* R369 (C1 · D11 standing action): the record's ONE honest
+           * next surface — the students console where the enrollment
+           * verbs live (the governance CTA precedent). */
+          <Link to="/admin/students" className="btn accent sm">
+            <Icon icon={GraduationCap} size={13} />
+            {MANAGE_STUDENTS}
+          </Link>
+        )}
       />
       <StatLine
         items={[
-          { label: 'الحالة', value: ENROLLMENT_LABELS[p.academic.enrollmentStatus] ?? p.academic.enrollmentStatus },
+          { label: LABEL_STATUS, value: ENROLLMENT_LABELS[p.academic.enrollmentStatus] ?? p.academic.enrollmentStatus },
           { label: 'الوضع', value: p.academic.studyType ? STUDY_TYPE_LABELS[p.academic.studyType] : '—' },
           { label: 'الكلية', value: p.faculty?.name ?? '—' },
-          { label: 'الهاتف', value: p.phone.display ?? '—' },
+          { label: LABEL_PHONE, value: p.phone.display ?? '—' },
         ]}
       />
       <Tabs
@@ -699,7 +725,7 @@ export function StudentFilePage() {
           { value: 'file', label: 'الملف' },
           { value: 'courses', label: 'المقررات' },
           { value: 'grades', label: 'الدرجات' },
-          { value: 'attendance', label: 'الحضور' },
+          { value: 'attendance', label: ATTENDANCE },
           { value: 'notes', label: 'الملاحظات' },
         ]}
       />
@@ -781,26 +807,26 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
 
   return (
     <section aria-label="الملف" className="r349p-data">
-      <SectionBar index="01" title="بيانات التوثيق" />
+      <SectionBar index="01" title="التوثيق" />
       <Card>
         <div className="grid-2">
-          <FormField label="الاسم" value={form.nameAr} onChange={set('nameAr')} />
+          <FormField label={LABEL_NAME} value={form.nameAr} onChange={set('nameAr')} />
           <FormField label="الأب" value={form.fatherName} onChange={set('fatherName')} />
           <FormField label="الجد" value={form.grandfatherName} onChange={set('grandfatherName')} />
           <FormField label="الأم" value={form.motherName} onChange={set('motherName')} />
           <FormField label="الرقم الوطني" value={form.nationalId} onChange={set('nationalId')} dir="ltr" mono error={nationalIdDirty ? '12 خانة رقمية' : undefined} />
           <FormField label="الميلاد" value={form.birthPlace} onChange={set('birthPlace')} />
-          <FormField label="المدينة" value={form.city} onChange={set('city')} />
-          <FormField label="العنوان" value={form.address} onChange={set('address')} />
+          <FormField label={LABEL_CITY} value={form.city} onChange={set('city')} />
+          <FormField label={LABEL_ADDRESS} value={form.address} onChange={set('address')} />
         </div>
       </Card>
 
       <SectionBar index="02" title="ولي الأمر" />
       <Card>
         <div className="grid-2">
-          <FormField label="الاسم" value={form.guardianName} onChange={set('guardianName')} />
+          <FormField label={LABEL_NAME} value={form.guardianName} onChange={set('guardianName')} />
           <FormField label="الصلة" value={form.guardianRelationship} onChange={set('guardianRelationship')} />
-          <FormField label="الهاتف" value={form.guardianPhone} onChange={set('guardianPhone')} dir="ltr" mono />
+          <FormField label={LABEL_PHONE} value={form.guardianPhone} onChange={set('guardianPhone')} dir="ltr" mono />
         </div>
         {p.guardian?.phone.access === 'MASKED' && (
           <p className="r349p-note">هاتف ولي الأمر خاص — مقنّع.</p>
@@ -816,7 +842,7 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
             { value: 'EVENING', label: STUDY_TYPE_LABELS.EVENING! },
             { value: 'PARALLEL', label: STUDY_TYPE_LABELS.PARALLEL! },
           ]} />
-          <SelectField label="الحالة" value={form.enrollmentStatus} onChange={set('enrollmentStatus')} options={[
+          <SelectField label={LABEL_STATUS} value={form.enrollmentStatus} onChange={set('enrollmentStatus')} options={[
             { value: 'ACTIVE', label: ENROLLMENT_LABELS.ACTIVE! },
             { value: 'SUSPENDED', label: ENROLLMENT_LABELS.SUSPENDED! },
             { value: 'DEFERRED', label: ENROLLMENT_LABELS.DEFERRED! },
@@ -825,7 +851,7 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
           ]} />
           <FormField label="المرحلة" value={form.stage} onChange={set('stage')} />
           <FormField label="الصف" value={form.grade} onChange={set('grade')} />
-          <FormField label="الفصل" value={form.section} onChange={set('section')} />
+          <FormField label={SEM} value={form.section} onChange={set('section')} />
           <FormField label="الثانوية" value={form.secondarySchool} onChange={set('secondarySchool')} />
           <FormField label="شعبة" value={form.secondarySchoolBranch} onChange={set('secondarySchoolBranch')} />
           <FormField label="نسبة الثانوية" value={form.secondarySchoolPercent} onChange={set('secondarySchoolPercent')} dir="ltr" mono />
@@ -862,7 +888,7 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
         {patch.isError && <span className="r349p-error" role="alert">تعذّر الحفظ.</span>}
         {saved && <span className="r349p-saved"><Icon icon={Check} size={12} /> حُفظ</span>}
         <button type="button" className="btn primary sm" onClick={save} disabled={!dirty || patch.isPending || Boolean(nationalIdDirty)}>
-          {patch.isPending ? '…' : 'حفظ'}
+          {patch.isPending ? '…' : SAVE}
         </button>
       </div>
     </section>
@@ -889,9 +915,9 @@ function CoursesTab({ userId }: { userId: string }) {
     ),
   });
   if (q.isPending) return <Card><ListSkeleton rows={4} /></Card>;
-  if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر التحميل" onRetry={() => q.refetch()} /></Card>;
+  if (q.isError) return <Card><ErrorState error={q.error} message={FAILED_LOAD} onRetry={() => q.refetch()} /></Card>;
   const rows = q.data?.data ?? [];
-  if (rows.length === 0) return <Card><EmptyCell label="لا مقررات" note="غير مسجّل بعد." /></Card>;
+  if (rows.length === 0) return <Card><EmptyCell label="لا مقررات" note="غير مسجّل." /></Card>;
   return (
     <Card>
       <div className="r349p-dir-list">
@@ -905,7 +931,7 @@ function CoursesTab({ userId }: { userId: string }) {
                 <span>· تقدّم {e.progressPct}%</span>
               </span>
             </div>
-            <Badge color={e.status === 'active' ? 'green' : undefined}>{e.status === 'active' ? 'نشط' : e.status}</Badge>
+            <Badge color={e.status === 'active' ? 'green' : undefined}>{e.status === 'active' ? STATUS_ACTIVE_M : e.status}</Badge>
           </div>
         ))}
       </div>
@@ -980,7 +1006,7 @@ function PerOfferingTab({ p, mode }: { p: StudentPerson; mode: 'grades' | 'atten
   }, [enrollments.data, mode, p.user.id]);
 
   if (enrollments.isPending) return <Card><ListSkeleton rows={4} /></Card>;
-  if (enrollments.isError) return <Card><ErrorState error={enrollments.error} message="تعذّر التحميل" onRetry={() => enrollments.refetch()} /></Card>;
+  if (enrollments.isError) return <Card><ErrorState error={enrollments.error} message={FAILED_LOAD} onRetry={() => enrollments.refetch()} /></Card>;
   if (offeringIds.length === 0) return <Card><EmptyCell label="لا مقررات" /></Card>;
   if (loaded.length === 0) return <Card><ListSkeleton rows={3} /></Card>;
 
@@ -1024,7 +1050,7 @@ interface AuditRow {
 
 const ACTION_LABELS: Record<string, string> = {
   'people.read': 'قراءة',
-  'people.update': 'تعديل',
+  'people.update': EDIT,
   'directory.export': 'تصدير دليل',
   'people.contact-request': 'طلب تواصل',
   'profile.self-update': 'تعديل ذاتيّ',
@@ -1037,9 +1063,9 @@ function NotesTab({ id }: { id: string }) {
     queryFn: () => unwrap<AuditRow[]>(api.get(`/people/${id}/history`)),
   });
   if (q.isPending) return <Card><ListSkeleton rows={4} /></Card>;
-  if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر التحميل" onRetry={() => q.refetch()} /></Card>;
+  if (q.isError) return <Card><ErrorState error={q.error} message={FAILED_LOAD} onRetry={() => q.refetch()} /></Card>;
   if (!q.data?.length) {
-    return <Card><EmptyCell label="فارغ" note="لا لمسات بعد." /></Card>;
+    return <Card><EmptyCell label="فارغ" note="لا لمسات." /></Card>;
   }
   return (
     <Card>
@@ -1050,7 +1076,7 @@ function NotesTab({ id }: { id: string }) {
             <div className="r349p-dir-id">
               <span className="r349p-dir-name">{ACTION_LABELS[r.action] ?? r.action}</span>
               <span className="r349p-dir-meta">
-                {r.user ? `${r.user.firstName} ${r.user.lastName}` : 'النظام'}
+                {r.user ? `${r.user.firstName} ${r.user.lastName}` : LABEL_SYSTEM}
                 {' · '}
                 {new Date(r.createdAt).toLocaleString('ar-LY')}
               </span>
@@ -1067,10 +1093,10 @@ function NotesTab({ id }: { id: string }) {
 function TeacherFileBody({ person }: { person: TeacherPerson }) {
   return (
     <div className="grid-2">
-      <Fact icon={User} label="الاسم" value={person.nameAr ?? `${person.user.firstName} ${person.user.lastName}`} />
+      <Fact icon={User} label={LABEL_NAME} value={person.nameAr ?? `${person.user.firstName} ${person.user.lastName}`} />
       <Fact icon={GraduationCap} label="التخصص" value={person.specialty} />
-      <Fact icon={Phone} label="الهاتف" value={person.phone.display ?? '—'} mono />
-      <Fact icon={ShieldCheck} label="الرتبة" value={person.rank} />
+      <Fact icon={Phone} label={LABEL_PHONE} value={person.phone.display ?? '—'} mono />
+      <Fact icon={ShieldCheck} label={LABEL_RANK} value={person.rank} />
     </div>
   );
 }

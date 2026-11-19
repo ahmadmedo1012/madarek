@@ -56,7 +56,9 @@ describe('r166e — /admin/courses actions column follows the family pattern', (
   it('the actions th/td are plain and the cluster carries no dead justify-end', () => {
     const page = stripComments(read('src/pages/admin/AdminPages.tsx'));
     // Plain th/td — the students-table family shape (START edge in RTL).
-    expect(page).toContain('<th scope="col">إجراءات</th>');
+    // R369-C4.1 wave-1: the th literal rides the shared LABEL_ACTIONS
+    // constant (lib/copy.ts) — the pinned plain-th structure is unchanged.
+    expect(page).toContain('<th scope="col">{LABEL_ACTIONS}</th>');
     expect(page).toContain('<td data-label="الإجراءات">');
     expect(page).not.toContain(deadClass);
     // The cluster is flex items-center gap-2 ONLY: justify-end has no rule

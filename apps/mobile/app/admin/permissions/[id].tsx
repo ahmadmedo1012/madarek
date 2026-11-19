@@ -75,7 +75,7 @@ export default function AdminPermissions() {
     mutationFn: () => adminApi.setScope(userId, scopeMode === "UNIVERSITY" ? null : scopeFacultyId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
-      toast.success("تمّ حفظ النطاق.", "نطاق العمل");
+      toast.success("تمّ حفظ النطاق.");
     },
     onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
@@ -111,12 +111,12 @@ export default function AdminPermissions() {
 
             {isSelf ? (
               <T variant="sm" color="danger">
-                هذه صلاحياتك أنت — حرس الحاكمية يمنع تعديل صلاحياتك بنفسك من الخادم؛ اطلب من مالك أو إداري آخر تطبيق التغيير.
+                حرس الحاكمية يمنع تعديل صلاحياتك بنفسك — اطلب من مالك أو إداريّ.
               </T>
             ) : null}
 
             <T variant="xs" color="muted">
-              الصلاحيات الافتراضية مرتبطة بالدور. يمكنك منح صلاحية إضافية أو سحب صلاحية لهذا المستخدم تحديداً.
+              الافتراضية مرتبطة بالدور — امنح أو اسحب لكل مستخدم.
             </T>
 
             <RowList>
@@ -156,7 +156,7 @@ export default function AdminPermissions() {
                 نطاق العمل
               </T>
               <T variant="sm" color="muted">
-                النطاق الافتراضيّ على مستوى الجامعة. يمكن قَصره على كلّيّة واحدة فقط للحدّ من نطاق الإشراف.
+                النطاق الافتراضيّ الجامعة — يمكن قصره على كلّيّة واحدة.
               </T>
               {currentScopeFaculty?.name ? (
                 <T variant="xs" color="faint">

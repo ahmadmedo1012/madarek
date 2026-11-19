@@ -49,7 +49,7 @@ import {
   lecturesProgress,
   type ScopedAnnouncement,
 } from "@/features/student/coursesLogic";
-import { NO_FILES, REPORT_PROBLEM } from "@/lib/copy";
+import {NO_FILES, REPORT_PROBLEM, APPEARS_ONCE_PUBLISHED, UNSPECIFIED_DEPT} from "@/lib/copy";
 
 /* ══ shared bits ══════════════════════════════════════════════════════ */
 
@@ -172,7 +172,7 @@ const LectureRow = makeRow<Lecture, { index: number }>(({ item, index }) => {
                 "فصلان",
                 "فصول",
                 "فصلاً",
-              ])} · ${countAr(checkpoints, ["نقطة تفاعل واحدة", "نقطتا تفاعل", "نقاط تفاعل", "نقطة تفاعل"])}`}
+              ])} · ${countAr(checkpoints, ["نقطة تفاعل", "نقطتا تفاعل", "نقاط تفاعل", "نقطة تفاعل"])}`}
             </T>
           </View>
           <Badge label={chip.label} tone={chip.tone} />
@@ -425,7 +425,7 @@ export default function CourseDetailScreen() {
                 {course?.name}
               </T>
               <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
-                {course?.department?.name ?? "قسم غير محدَّد"}
+                {course?.department?.name ?? UNSPECIFIED_DEPT}
                 {course?.faculty ? ` · ${course.faculty.name}` : ""}
               </T>
             </View>
@@ -440,9 +440,9 @@ export default function CourseDetailScreen() {
           </View>
 
           <T variant="sm" color="secondary">
-            {teacher ? `د. ${teacher.firstName} ${teacher.lastName}` : "بلا أستاذ مسجَّل"}
+            {teacher ? `د. ${teacher.firstName} ${teacher.lastName}` : "بلا أستاذ"}
             {course?.credits
-              ? ` · ${countAr(course.credits, ["ساعة معتمدة واحدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])}`
+              ? ` · ${countAr(course.credits, ["ساعة معتمدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])}`
               : ""}
           </T>
           <T variant="xs" color="muted">
@@ -494,12 +494,12 @@ export default function CourseDetailScreen() {
             refetch={() => full.refetch()}
             isRefetching={full.isRefetching}
             emptyTitle="لا محاضرات"
-            emptyMessage="لا محاضرات — يضيفها الأستاذ تباعًا."
+            emptyMessage="لا محاضرات — يضيفها الأستاذ."
             emptySlot={
               <EmptyState
                 room="lecture-hall"
                 title="لا محاضرات"
-                message="لا محاضرات — يضيفها الأستاذ تباعًا."
+                message="يضيفها الأستاذ."
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}
@@ -534,12 +534,12 @@ export default function CourseDetailScreen() {
             refetch={() => announcements.refetch()}
             isRefetching={announcements.isRefetching}
             emptyTitle="لا إعلانات"
-            emptyMessage="تظهر فور نشرها."
+            emptyMessage={APPEARS_ONCE_PUBLISHED}
             emptySlot={
               <EmptyState
                 room="building"
                 title="لا إعلانات"
-                message="تظهر فور نشرها."
+                message={APPEARS_ONCE_PUBLISHED}
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}

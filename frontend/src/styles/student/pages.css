@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — R319 (c2-G1) — the student dashboard joins the SHEET SYSTEM
    Scope: the §B2 component anatomy (§1–§7 below) is shared by every
    student page that renders the kit — /student/dashboard (DashboardPage,
@@ -14,33 +14,35 @@
    sheetCode context — see r319-shell.css). This sheet carries the
    PAGE's §B2 material only:
 
-     · SectionBar — `[02] اليوم ───────── 03` mono-indexed title
-       bars replacing the display-register section headings (the ONE
-       h1 masthead keeps the display voice, re-seated to the sheet
-       scale in the unlayered tail below);
-     · the indicators: RulerGauge (semester — ticks/week, orange
-       fill, mono W07/16 head), CourseBar (per-course hairline +
-       end-tick + mono code/pct), StatusChip ([LIVE]/[DUE 3D]/…
-       square mono chips — orange LIVE only), WeekStrip (7-cell week
-       row, current day inked);
-     · EmptyCell — hatched empty states (45° hatch in the line
-       color), never bare text.
+   · SectionBar — `[02] اليوم ───────── 03` mono-indexed title
+    bars replacing the display-register section headings (the ONE
+    h1 masthead keeps the display voice, re-seated to the sheet
+    scale in the unlayered tail below);
+   · the indicators: RulerGauge (semester — ticks/week, orange
+    fill, mono W07/16 head), CourseBar (per-course hairline +
+    end-tick + mono code/pct), StatusChip ([LIVE]/[DUE 3D]/…
+    square mono chips — orange LIVE only), WeekStrip (7-cell week
+    row, current day inked);
+   · EmptyCell — hatched empty states (45° hatch in the line
+    color), never bare text.
 
    Gate contract (this tree): var()/color-mix() colors only · token
    ladder for radius/spacing · rem type rungs where the Heron ladder
    has no --fs token (the landing's own precedent) · zero :hover (the
    indicators are read-only; interactive elements ride the shared .btn
    system) · static texture, nothing for the RM belt to collapse.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
   /* ── 1 · SectionBar — the mono-indexed title bar ──────────────────
-     `[02] اليوم ─────────────── 03` — index in the gutter start, the
-     Arabic title at the section register (the reference's h4 step —
-     a rung the --fs ladder has no token for, so the rem values mirror
-     the landing's own media-band rungs), a hairline rule filling the
-     remainder, quiet mono metadata at the end. */
+   `[02] اليوم ─────────────── 03` — index in the gutter start, the
+   Arabic title at the section register (the reference's h4 step —
+   a rung the --fs ladder has no token for, so the rem values mirror
+   the landing's own media-band rungs), a hairline rule filling the
+   remainder, quiet mono metadata at the end.
+*/
   .r319s-bar {
     display: flex;
     flex-wrap: wrap;
@@ -60,9 +62,11 @@
   .r319s-bar-title {
     margin: 0;
     font-family: var(--font-display);
-    font-size: 3.2rem;   /* type-gate: allow — 26.7px @1440, the reference's own h4 step-title rung (rem rides the streaming root) */
+    font-size: 3.2rem;   /* type-gate: allow — 26.7px @1440, the reference's own h4 step-title rung (rem rides the streaming root)
+*/
     line-height: var(--lh-snug);
-    font-weight: var(--fw-semibold); /* r324 P3 — 500/600 only */
+    font-weight: var(--fw-semibold); /* r324 P3 — 500/600 only
+*/
     color: var(--text);
   }
   .r319s-bar-rule {
@@ -85,14 +89,17 @@
     flex: none;
   }
   @media (max-width: 991px) {
-    .r319s-bar-title { font-size: 2.8rem; } /* type-gate: allow — the tablet step-title rung */
+    .r319s-bar-title { font-size: 2.8rem; } /* type-gate: allow — the tablet step-title rung
+*/
   }
   @media (max-width: 767px) {
-    .r319s-bar-title { font-size: 2rem; } /* type-gate: allow — 19.8px @390, the phone step-title rung */
+    .r319s-bar-title { font-size: 2rem; } /* type-gate: allow — 19.8px @390, the phone step-title rung
+*/
   }
 
   /* The mono data voice (counts, codes, readouts — Latin runs only,
-     the r197 mono contract; Arabic never rides mono). */
+   the r197 mono contract; Arabic never rides mono).
+*/
   .r319s-mono {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
@@ -104,10 +111,11 @@
   }
 
   /* ── 2 · RulerGauge — the semester ruler ───────────────────────────
-     Hairline ticks (one per week, major every 4th) on the bottom rule,
-     the orange fill, the W07/16 mono readout at the fill head
-     (background knockout so ticks never collide with the label), and
-     the API's percentage as quiet mono meta at the inline-end. */
+   Hairline ticks (one per week, major every 4th) on the bottom rule,
+   the orange fill, the W07/16 mono readout at the fill head
+   (background knockout so ticks never collide with the label), and
+   the API's percentage as quiet mono meta at the inline-end.
+*/
   .r319s-ruler {
     display: flex;
     align-items: flex-end;
@@ -164,9 +172,10 @@
   }
 
   /* ── 3 · CourseBar — the per-course hairline bar ───────────────────
-     Code in mono at the start, a hairline track with an ink fill and
-     a taller end-tick at the exact value, the percentage in mono at
-     the end. Neutral ink — orange stays the semester/LIVE signal. */
+   Code in mono at the start, a hairline track with an ink fill and
+   a taller end-tick at the exact value, the percentage in mono at
+   the end. Neutral ink — orange stays the semester/LIVE signal.
+*/
   .r319s-coursebar {
     display: inline-flex;
     align-items: center;
@@ -208,24 +217,27 @@
     color: var(--text-secondary);
   }
   /* Inside a «مقرّراتك» row the code already rides the row's meta
-     Badge — the phone band drops the bar's duplicate code and the
-     min width so the row keeps its CTA seat (≤640, the frozen
-     .stu-course-progress band). */
+   Badge — the phone band drops the bar's duplicate code and the
+   min width so the row keeps its CTA seat (≤640, the frozen
+   .stu-course-progress band).
+*/
   @media (max-width: 640px) {
     .stu-course-progress .r319s-coursebar { min-inline-size: 108px; }
     .stu-course-progress .r319s-coursebar-code { display: none; }
   }
 
   /* ── 4 · StatusChip — the mono status register ─────────────────────
-     Square (radius 0 — the r313 ladder), 1px hairline, ~10px Latin
-     mono, ink on paper. Orange text/border is LIVE ONLY — the one
-     signal state. */
+   Square (radius 0 — the r313 ladder), 1px hairline, ~10px Latin
+   mono, ink on paper. Orange text/border is LIVE ONLY — the one
+   signal state.
+*/
   .r319s-chip {
     display: inline-flex;
     align-items: center;
     padding: var(--sp-1) var(--sp-2);
     border: 1px solid var(--border-strong);
-    border-radius: var(--r-sm); /* 0 — the r313 squared ladder */
+    border-radius: var(--r-sm); /* 0 — the r313 squared ladder
+*/
     background: transparent;
     font-family: var(--font-mono);
     font-size: var(--fs-mono-sm);
@@ -235,20 +247,16 @@
     color: var(--text-secondary);
     white-space: nowrap;
   }
-  .r319s-chip--live {
-    border-color: var(--accent);
-    color: var(--accent-ink); /* the AA orange — 5.16 light / 4.73 dark */
-  }
   .r319s-chip--due { color: var(--text-secondary); }
-  .r319s-chip--new { color: var(--text-secondary); }
   .r319s-chip--done,
   .r319s-chip--quiet { color: var(--text-muted); }
 
   /* ── 5 · WeekStrip — the 7-cell week row ───────────────────────────
-     The app's own week order (WEEKDAY_NAMES_AR, Sunday-first) flowing
-     RTL; hairline cell separators; the CURRENT day inked (ink fill,
-     paper label — the deep-band inversion in miniature, theme-reactive
-     by construction); date digits in the mono voice. */
+   The app's own week order (WEEKDAY_NAMES_AR, Sunday-first) flowing
+   RTL; hairline cell separators; the CURRENT day inked (ink fill,
+   paper label — the deep-band inversion in miniature, theme-reactive
+   by construction); date digits in the mono voice.
+*/
   .r319s-weekstrip {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -267,7 +275,8 @@
     border-inline-start: 1px solid var(--rule);
   }
   .r319s-weekcell-name {
-    font-size: var(--fs-sm); /* the 13px Arabic floor — never below */
+    font-size: var(--fs-sm); /* the 13px Arabic floor — never below
+*/
     line-height: 1.25;
     color: var(--text-secondary);
   }
@@ -278,9 +287,10 @@
   .r319s-weekcell--today {
     background: var(--text);
     /* R341 (D7c): the cell's OWN color flips to the paper pole so the
-       sr-only «اليوم» label (the only direct child without its own ink
-       rule) inherits an ink that measures against the ink fill instead
-       of vanishing into it (1:1 — the ink-island probe's catch). */
+    sr-only «اليوم» label (the only direct child without its own ink
+    rule) inherits an ink that measures against the ink fill instead
+    of vanishing into it (1:1 — the ink-island probe's catch).
+*/
     color: var(--bg);
   }
   .r319s-weekcell--today .r319s-weekcell-name {
@@ -295,10 +305,11 @@
   }
 
   /* ── 6 · EmptyCell — the hatched empty state ───────────────────────
-     A 45° diagonal hatch cell in the line color (the reference's
-     empty-region convention), the honest label, an optional note, ONE
-     optional action. The dashed outer rule reads as the sheet's
-     reserved-but-empty region. */
+   A 45° diagonal hatch cell in the line color (the reference's
+   empty-region convention), the honest label, an optional note, ONE
+   optional action. The dashed outer rule reads as the sheet's
+   reserved-but-empty region.
+*/
   .r319s-empty {
     display: flex;
     align-items: center;
@@ -347,11 +358,12 @@
   }
 
   /* ── 7 · Page-section harmonics ───────────────────────────────────
-     The term band sits tight under the masthead (the ruler IS the
-     section); the momentum strip keeps the StatLine's own rhythm, with
-     the AVG coursebar seated under the line as the KPI summary
-     instrument; the today rows' chip slot rides the TodayList action
-     seat. */
+   The term band sits tight under the masthead (the ruler IS the
+   section); the momentum strip keeps the StatLine's own rhythm, with
+   the AVG coursebar seated under the line as the KPI summary
+   instrument; the today rows' chip slot rides the TodayList action
+   seat.
+*/
   .r319s-term { margin-block: calc(-1 * var(--sp-2)) 0; }
   .dash-momentum .r319s-coursebar {
     inline-size: auto;
@@ -379,29 +391,36 @@
    stepping DOWN the phone band exactly like the landing's hero ladder
    (3.2rem = 31.8px @390) so the phone stops printing a 47.6px
    masthead. The section h2s answer at the SectionBar register above —
-   one display voice per page, and it is the masthead's. */
+   one display voice per page, and it is the masthead's.
+*/
 .r319s-page .pf-page-title {
   font-family: var(--font-display);
   /* r324 P3 (X9) — the app-density masthead: 28px @1440 · 24px @390
-     (the dashboards' own ladder — the display d1 rung is for narrative
-     pages, not framed app headers). */
+   (the dashboards' own ladder — the display d1 rung is for narrative
+   pages, not framed app headers).
+*/
   font-size: var(--fs-app-h1);
   font-weight: var(--fw-semibold);
-  line-height: 1.05;            /* the Alexandria display canon */
-  letter-spacing: 0;            /* Arabic joins — never tracked */
+  line-height: 1.05;            /* the Alexandria display canon
+*/
+  letter-spacing: 0;            /* Arabic joins — never tracked
+*/
   color: var(--text);
   overflow-wrap: break-word;
 }
 @media (max-width: 991px) {
-  .r319s-page .pf-page-title { font-size: 4.4rem; } /* type-gate: allow — ~40.5px @768, the tablet display rung */
+  .r319s-page .pf-page-title { font-size: 4.4rem; } /* type-gate: allow — ~40.5px @768, the tablet display rung
+*/
 }
 @media (max-width: 767px) {
-  .r319s-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung */
+  .r319s-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung
+*/
 }
 
 /* Reduced-motion belt: the §B2 material is static texture (hairlines,
    hatches, fills, chips — nothing animates, nothing to collapse). Kept
-   as the explicit contract, mirroring the family sheets. */
+   as the explicit contract, mirroring the family sheets.
+*/
 @media (prefers-reduced-motion: reduce) {
   .r319s-bar-rule,
   .r319s-ruler-fill,

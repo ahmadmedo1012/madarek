@@ -28,7 +28,7 @@ import {
   type CourseRow,
   type FacultyNode,
 } from "@/features/governance/components";
-import { ADDED, REGISTRAR_DASHBOARD, SAVED, SAVING } from "@/lib/copy";
+import {ADDED, REGISTRAR_DASHBOARD, SAVED, SAVING, NO_TEACHERS_YET, TRY_WIDER_SEARCH, NO_RESULTS, PICK_DEPARTMENT, FINAL_DELETE} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 const PAGE_LIMIT = 20;
@@ -141,12 +141,12 @@ export default function AdminCourses() {
     mutationFn: (id: string) => adminApi.deleteCourse(id),
     onSuccess: () => {
       invalidateCourses();
-      toast.success(`حُذف «${deleting?.name}» من السجلّ.`, "تمّ الحذف");
+      toast.success(`حُذف «${deleting?.name}» من السجلّ.`);
       setDeleting(null);
     },
     onError: (e) =>
       toast.error(
-        humanizeError(e) || "تعذّر الحذف — مرتبط بشُعب أو مفاهيم.",
+        humanizeError(e) || "تعذّر الحذف — مرتبط بشُعب.",
         "فشل الحذف",
       ),
   });
@@ -173,7 +173,7 @@ export default function AdminCourses() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو الكود…"
+          placeholder="بحث بالاسم أو الكود…"
           onClear={() => {
             setQ("");
             setPage(1);
@@ -196,8 +196,8 @@ export default function AdminCourses() {
           <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title={appliedQ ? "لا نتائج" : "لا مقرّرات بعد"}
-            message={appliedQ ? "جرّب بحثًا أوسع." : "أضف أول مقرّر."}
+            title={appliedQ ? NO_RESULTS : "لا مقرّرات بعد"}
+            message={appliedQ ? TRY_WIDER_SEARCH : "أضف أول مقرّر."}
             actionLabel={appliedQ ? "مسح البحث" : undefined}
             onAction={appliedQ ? () => setQ("") : undefined}
           />
@@ -291,7 +291,7 @@ export default function AdminCourses() {
                 createCourse.isPending || updateCourse.isPending
                   ? SAVING
                   : editingId
-                    ? "حفظ التعديلات"
+                    ? "حفظ"
                     : "إضافة المقرّر"
               }
               disabled={
@@ -366,7 +366,7 @@ export default function AdminCourses() {
                   keyboardType="numeric"
                 />
                 <T variant="xs" color="muted">
-                  بين 1 و10 — الحدّ الذي يقبله الخادم
+                  بين 1 و10.
                 </T>
               </View>
               <SelectField
@@ -377,7 +377,7 @@ export default function AdminCourses() {
                 options={departmentOptions}
                 onSelect={(id) => setDraft({ ...draft, departmentId: id })}
                 loading={facs.isLoading}
-                placeholder="اختر القسم…"
+                placeholder={PICK_DEPARTMENT}
                 sheetTitle="القسم"
                 emptyLabel="لا أقسام بعد"
               />
@@ -400,10 +400,10 @@ export default function AdminCourses() {
         title="حذف المقرّر"
         message={
           deleting
-            ? `سيُحذف «${deleting.name}» نهائيًا من السجلّ الجامعي. لا يمكن التراجع عن هذا الإجراء.`
+            ? `سيُحذف «${deleting.name}» نهائيًا — لا تراجع.`
             : ""
         }
-        confirmLabel="حذف نهائي"
+        confirmLabel={FINAL_DELETE}
         danger
         loading={deleteCourse.isPending}
         onConfirm={() => deleting && deleteCourse.mutate(deleting.id)}
@@ -446,10 +446,7 @@ function OfferingSheet({
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "courses"] });
       onCreated();
-      toast.success(
-        `فُتحت شعبة «${course.name}» للفصل «${term.trim()}».`,
-        "تمّ فتح الشعبة",
-      );
+      toast.success(`فُتحت شعبة «${course.name}» للفصل «${term.trim()}».`);
       onClose();
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر فتحها"),
@@ -478,7 +475,7 @@ function OfferingSheet({
     >
       <View style={{ gap: sp[12] }}>
         <T variant="body" color="muted">
-          سيُدرَّس مقرّر «{course.name}» ({course.code}) في الشعبة الجديدة.
+          سيُدرَّس «{course.name}» في الشعبة الجديدة.
         </T>
         <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">
@@ -492,7 +489,7 @@ function OfferingSheet({
             maxLength={50}
           />
           <T variant="xs" color="muted">
-            نص حرّ من 1 إلى 50 حرفًا — مثال: 2024-FALL
+            1–50 حرفًا — مثال: 2024-FALL
           </T>
         </View>
         <SelectField
@@ -503,7 +500,7 @@ function OfferingSheet({
           loading={teachers.isLoading}
           placeholder="اختر الأستاذ…"
           sheetTitle="أساتذة المؤسسة"
-          emptyLabel="لا أساتذة بعد"
+          emptyLabel={NO_TEACHERS_YET}
         />
         <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">

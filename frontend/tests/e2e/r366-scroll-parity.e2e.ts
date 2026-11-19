@@ -209,13 +209,20 @@ test.describe('authed shell — the ONE scroller', () => {
     //    with it; the sidebar link is the real user gesture)
     // The dashboard's payloads land after mount: wait until the track can
     // actually HOLD 600px before seating there (a clamp to a short page
-    // would test nothing).
+    // would test nothing). R369 fix: skeletons already hold 600px while
+    // the late payloads (announcements/KPI resolves) are still in flight,
+    // and Chromium's scroll anchoring then WALKS the seat when they land
+    // (CI run 44561151256: seat 600 → 665, retry-passed — the classic
+    // late-landing race). The gate below waits for the track to hold
+    // 600px AND be height-stable across a 350 ms window, so the seat
+    // lands after the growth and stays exactly where it was put.
     await expect
       .poll(
-        async () => page.evaluate(() => {
+        async () => page.evaluate(() => new Promise<number>((resolve) => {
           const c = document.querySelector('.content') as HTMLElement;
-          return c.scrollHeight - c.clientHeight;
-        }),
+          const h = c.scrollHeight;
+          setTimeout(() => resolve(c.scrollHeight === h ? h : -1), 350);
+        })),
         { timeout: 20000 },
       )
       .toBeGreaterThan(600);

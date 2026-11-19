@@ -30,7 +30,7 @@ import {
   countAr,
   isUnauthError,
 } from "@/features/common/components";
-import { SELF_DEV } from "@/lib/copy";
+import {SELF_DEV, NO_BADGES_YET} from "@/lib/copy";
 
 type Tab = "badges" | "certs" | "leaderboard";
 
@@ -77,9 +77,9 @@ export default function Achievements() {
 
   return (
     <Screen scroll>
-      <StackHeader title="الإنجازات" kicker={SELF_DEV} />
+      <StackHeader title="الإنجازات" />
       <T variant="body" color="secondary">
-        رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء.
+        نقاطك وأوسمتك وشهاداتك وترتيبك.
       </T>
 
       <Segmented
@@ -107,7 +107,7 @@ export default function Achievements() {
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             art={<Illustration id="r342/why-cycle" width={342} />}
-            title="لا أوسمة بعد"
+            title={NO_BADGES_YET}
             message="ابدأ بدروس التطوير لأول وسام."
             icon={<Award size={20} color={p.textMuted} />}
             actionLabel="تصفّح المسارات"
@@ -165,7 +165,7 @@ export default function Achievements() {
                   ) : null}
                   {c.hours != null ? (
                     <Badge
-                      label={countAr(c.hours, ["ساعة تقديرية واحدة", "ساعتان تقديريّتان", "ساعات تقديرية", "ساعة تقديرية"])}
+                      label={countAr(c.hours, ["ساعة تقديرية", "ساعتان تقديريّتان", "ساعات تقديرية", "ساعة تقديرية"])}
                       tone="grey"
                     />
                   ) : null}
@@ -188,7 +188,7 @@ export default function Achievements() {
         ) : (board.data ?? []).length === 0 ? (
           <EmptyState
             title="لا ترتيب بعد"
-            message="اكسب النقاط — ترتيبك يظهر مع أول نقطة."
+            message="ترتيبك يظهر مع أول نقطة."
             actionLabel="ابدأ من التطوير الذاتي"
             onAction={() => router.push("/training" as never)}
           />
@@ -199,7 +199,7 @@ export default function Achievements() {
                 الأعلى نقاطًا
               </T>
               <T variant="sm" color="muted">
-                ترتيب الطلاب حسب نقاط التطوير الذاتي.
+                ترتيب الطلاب حسب النقاط.
               </T>
             </View>
             <RowList>

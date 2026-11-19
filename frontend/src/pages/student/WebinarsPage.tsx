@@ -1,3 +1,5 @@
+import { OPEN_COMMUNITY, SEMINARS_WORKSHOPS, ON_COMMUNITY_BOARD, NOUN_SESSIONS, ONE_SESSION } from '../../lib/copy';
+
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import {
@@ -60,7 +62,19 @@ export default function WebinarsPage() {
     <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
-        title="الندوات وورش العمل"
+        title={SEMINARS_WORKSHOPS}
+        actions={(
+          /* R369 (C1 · the R342-08 header-CTA precedent): the phone
+           * band hides the topbar «اسأل AI» ≤920 (D6) — the events
+           * feed lives on the community surface (the page's own
+           * destinations rail says so); the standing verb rides the
+           * header at every width (the deep rail link stays
+           * contextual). */
+          <Link to="/community" className="btn accent sm">
+            <Icon icon={MessageSquare} size={13} />
+            المجتمع الجامعيّ
+          </Link>
+        )}
       />
 
       {/* The two MetricCards collapsed into ONE StatLine — counts from
@@ -71,7 +85,7 @@ export default function WebinarsPage() {
           {
             label: 'فعاليّات قادمة',
             value: events.isPending ? '…' : events.isError ? '—' : formatNum(events.data?.length ?? 0),
-            hint: 'على لوحة المجتمع',
+            hint: ON_COMMUNITY_BOARD,
           },
           {
             label: 'بثوث مباشرة الآن',
@@ -104,7 +118,7 @@ export default function WebinarsPage() {
             !live.isPending && !live.isError && sessions.length > 0 ? (
               <BarCount
                 n={sessions.length}
-                srLabel={countAr(sessions.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+                srLabel={countAr(sessions.length, [ONE_SESSION, 'جلستان', NOUN_SESSIONS, 'جلسة'])}
               />
             ) : undefined
           }
@@ -129,7 +143,7 @@ export default function WebinarsPage() {
           /* R319 (c3-S2): the hatched EmptyCell — the sheet's
              reserved-but-empty region (same copy, same one action). */
           <EmptyCell
-            label="لا توجد جلسات مباشرة مجدولة الآن"
+            label="لا جلسات مباشرة الآن"
             action={<Link to="/student/live" className="btn outline sm">زيارة صفحة البثّ</Link>}
           />
         ) : (
@@ -204,7 +218,7 @@ export default function WebinarsPage() {
             </p>
             <Link to="/community" className="btn primary sm">
               <Icon icon={ArrowLeft} size={13} />
-              فتح المجتمع
+              {OPEN_COMMUNITY}
             </Link>
           </div>
 

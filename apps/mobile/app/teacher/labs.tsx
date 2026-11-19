@@ -49,7 +49,7 @@ export default function TeacherLabs() {
       studentApi.recordLab(labId, experimentName),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me", "lab-sessions"] });
-      toast.success("سُجّلت معاينة.", "معاينة المعمل");
+      toast.success("سُجّلت معاينة.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر التسجيل"),
   });
@@ -70,7 +70,7 @@ export default function TeacherLabs() {
           <TriangleAlert size={16} color={p.goldInk} />
           <T variant="sm" color="secondary" style={{ flex: 1 }}>
             <T variant="sm" weight="bold">تنويه أكاديمي: </T>
-            المعامل الافتراضية هي بيئات محاكاة معتمدة في الجامعة. استخدمها لتعزيز فهم الطلاب للمحتوى النظري — ليست بديلاً عن المختبر الواقعي.
+            بيئات محاكاة للفهم النظري — ليست بديلاً عن المختبر.
           </T>
         </View>
       </Card>
@@ -115,7 +115,7 @@ export default function TeacherLabs() {
         {preview ? (
           <View style={{ gap: sp[8] }}>
             <T variant="sm" color="muted">
-              «معاينة كطالب» تسجّل جلسة معمل باسمك كما يفعل الطالب في صفحة المعامل — تجربة المعمل نفسها تُدار من واجهة الطالب.
+              «معاينة كطالب» تسجّل جلسة باسمك — من واجهة الطالب.
             </T>
             {preview.description ? (
               <T variant="body" color="secondary">
@@ -145,7 +145,7 @@ export default function TeacherLabs() {
               </RowList>
             ) : (
               <T variant="sm" color="muted">
-                لا تجارب معدّة في هذا المعمل بعد.
+                لا تجارب معدّة بعد.
               </T>
             )}
           </View>

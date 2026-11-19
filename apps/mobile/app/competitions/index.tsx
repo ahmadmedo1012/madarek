@@ -16,6 +16,7 @@ import { RowList, LedgerRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { SignInPrompt, apiMessage, competitionStatus, isUnauthError, submissionEnded } from "@/features/common/components";
+import { LOGIN_TO_PARTICIPATE } from "@/lib/copy";
 
 /**
  * /competitions — the academic competitions list (auth context data; a
@@ -34,14 +35,14 @@ export default function CompetitionsIndex() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المسابقات" kicker="تحديات المعرفة" />
+      <StackHeader title="المسابقات" />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">
           المسابقات الأكاديمية
         </T>
         <T variant="body" color="secondary">
-          شارك في تحديات المعرفة، أو نظِّم مسابقتك الخاصّة.
+          شارك أو نظِّم مسابقتك.
         </T>
       </View>
 
@@ -49,7 +50,7 @@ export default function CompetitionsIndex() {
         <SkeletonList rows={5} />
       ) : q.isError ? (
         isUnauthError(q.error) ? (
-          <SignInPrompt message="سجّل الدخول للمشاركة." />
+          <SignInPrompt message={LOGIN_TO_PARTICIPATE} />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )

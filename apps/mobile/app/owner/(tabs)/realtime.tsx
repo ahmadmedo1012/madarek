@@ -11,13 +11,14 @@ import { ownerApi } from "@/api/owner";
 import { latn, timeOf } from "@/lib/format";
 import { numOf } from "@/features/governance/components";
 import { useNow } from "@/hooks/useNow";
+import { AI_REQUESTS_PER_MIN } from "@/lib/copy";
 
 const POLL_MS = 15_000;
 
 /** Known /owner/realtime keys → Arabic labels (web OwnerRealtimePage parity). */
 const REALTIME_LABELS: Record<string, string> = {
   activeSessions: "الجلسات النشطة",
-  aiRequestsPerMin: "طلبات AI / دقيقة",
+  aiRequestsPerMin: AI_REQUESTS_PER_MIN,
   liveBroadcasts: "بثّ مباشر جارٍ",
   activeExams: "اختبارات جارية",
 };
@@ -65,7 +66,7 @@ export default function OwnerRealtime() {
             المراقبة الحيّة
           </T>
           <T variant="body" color="muted">
-            مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ
+            مراقبة العمليّات الحيّة لحظيًا
           </T>
         </View>
 
@@ -137,7 +138,7 @@ export default function OwnerRealtime() {
             ) : null}
 
             <T variant="xs" color="faint">
-              القراءات من نقطة النهاية ‎/owner/realtime‎ — قيم رقميّة بصيغة لاتينية كما تصل من الخادم.
+              القراءات من ‎/owner/realtime‎ — لاتينية كما تصل من الخادم.
             </T>
           </View>
         )}

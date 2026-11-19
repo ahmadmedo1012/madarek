@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — Layout & navigation chrome
    r211 Superlist re-skin: calm surfaces, soft geometry, ONE signal
    accent, hierarchy via surface steps (not border stacks), zero
@@ -17,69 +17,78 @@
    surface step + icon tint). The Heron layer that binds the whole
    shell lives in r305-shell.css (imported by AppShell.tsx, unlayered
    — last word in the cascade); this sheet remains the base recipes.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer layout {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SHELL SCROLL ARCHITECTURE (wave 7-b)                          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SHELL SCROLL ARCHITECTURE (wave 7-b)
+   ╚╚╚
+*/
   /* The whole shell contract (useScrollRestoration, useHideOnScroll,
-     AppShell's topbar `scrolled` elevation) is written against
-     `.content` as the app's scroll container — but base.css sized the
-     grid with `min-height: 100dvh`, so the single implicit row grew
-     with page content, .main stretched to full document height and the
-     WINDOW scrolled instead. All three .content listeners silently
-     never fired (verified in-browser: `.topbar.scrolled` and
-     `.bottom-nav.is-hidden` never appeared; PUSH navigations kept the
-     old scroll offset). Bounding the shell to the viewport with a
-     minmax(0,1fr) row (the 0 floor stops the row's automatic
-     min-content growth) restores the intended architecture:
-     .main = 100dvh, .content = the real scroller. The skip-link must
-     stay position:fixed (see polish.css wave 7-b) so exactly one
-     in-flow child (.main) occupies the row. Print override + rationale
-     live in the polish.css wave 7-b section. */
+   AppShell's topbar `scrolled` elevation) is written against
+   `.content` as the app's scroll container — but base.css sized the
+   grid with `min-height: 100dvh`, so the single implicit row grew
+   with page content, .main stretched to full document height and the
+   WINDOW scrolled instead. All three .content listeners silently
+   never fired (verified in-browser: `.topbar.scrolled` and
+   `.bottom-nav.is-hidden` never appeared; PUSH navigations kept the
+   old scroll offset). Bounding the shell to the viewport with a
+   minmax(0,1fr) row (the 0 floor stops the row's automatic
+   min-content growth) restores the intended architecture:
+   .main = 100dvh, .content = the real scroller. The skip-link must
+   stay position:fixed (see polish.css wave 7-b) so exactly one
+   in-flow child (.main) occupies the row. Print override + rationale
+   live in the polish.css wave 7-b section.
+*/
   .has-shell {
     block-size: 100dvh;
     grid-template-rows: minmax(0, 1fr);
     /* r304 fold (ex «final-visual-system»): the workspace paints its own
-       ground so translucent chrome (topbar glass, drawer scrim) always
-       composites over the theme's paper, never over a bare body. */
+    ground so translucent chrome (topbar glass, drawer scrim) always
+    composites over the theme's paper, never over a bare body.
+*/
     background: var(--bg);
   }
   /* iOS scroll-chaining containment: when .content hits its edge the
-     gesture must not chain to the (non-scrolling) document. */
+   gesture must not chain to the (non-scrolling) document.
+*/
   .content {
     overscroll-behavior-y: contain;
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SIDEBAR — Notion workspace style                              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SIDEBAR — Notion workspace style
+   ╚╚╚
+*/
   .sidebar {
     inline-size: var(--sidebar-w);
     /* r304 fold (ex «final-visual-system»): the rail rides one calm step
-       between the page paper and the cards — surface pulled 4% toward
-       the paper — instead of the flat --sidebar-bg wash. Content-facing
-       hairline stays on the inline-END edge (base.css owns the border;
-       the color lands on --rule there). */
+    between the page paper and the cards — surface pulled 4% toward
+    the paper — instead of the flat --sidebar-bg wash. Content-facing
+    hairline stays on the inline-END edge (base.css owns the border;
+    the color lands on --rule there).
+*/
     background: color-mix(in srgb, var(--surface) 96%, var(--bg));
     padding: var(--sp-3) var(--sp-3) var(--sp-3);
     /* 4-A2 P1-2: the sidebar itself must NOT be the scroll container —
-       with the whole rail scrolling, the pinned-intent footer
-       (margin-block-start: auto) only won free space that never
-       existed, and the account cluster sat 177-577px below the fold
-       in every shell state. The scroller is .sidebar-nav below; the
-       footer stays pinned. overflow:hidden (not clip) keeps the
-       programmatic-overflow behavior identical for the drawer band. */
+    with the whole rail scrolling, the pinned-intent footer
+    (margin-block-start: auto) only won free space that never
+    existed, and the account cluster sat 177-577px below the fold
+    in every shell state. The scroller is .sidebar-nav below; the
+    footer stays pinned. overflow:hidden (not clip) keeps the
+    programmatic-overflow behavior identical for the drawer band.
+*/
     overflow: hidden;
     font-size: var(--fs-sm);
   }
 
   /* The nav scroller (4-A2 P1-2): takes all the free block space so
-     .sidebar-footer below stays on-screen; the rail/drawer chrome
-     (brand + footer) never scrolls away. Mirrors polish.css:814's
-     thin scrollbar intent for the old whole-sidebar scroller. */
+   .sidebar-footer below stays on-screen; the rail/drawer chrome
+   (brand + footer) never scrolls away. Mirrors polish.css:814's
+   thin scrollbar intent for the old whole-sidebar scroller.
+*/
   .sidebar-nav {
     flex: 1;
     min-block-size: 0;
@@ -97,14 +106,16 @@
     border-radius: var(--r-md);
     margin-block-end: var(--sp-2);
     /* 4-A2 P3-15: cursor:pointer + hover bg were an affordance lie —
-       the brand is not a control (no onClick in Sidebar.tsx). A static
-       element must not advertise interactivity. */
+    the brand is not a control (no onClick in Sidebar.tsx). A static
+    element must not advertise interactivity.
+*/
     flex-shrink: 0;
   }
   .sidebar-brand-mark {
     /* r304: the mark sits on its accent tile — the recognizable product
-       logo plate every Superlist-style rail opens with. The self-colored
-       copper→gold star keeps its gradient strokes on the quiet tint. */
+    logo plate every Superlist-style rail opens with. The self-colored
+    copper→gold star keeps its gradient strokes on the quiet tint.
+*/
     inline-size: 30px;
     block-size: 30px;
     border-radius: var(--r-md);
@@ -114,13 +125,15 @@
     background: var(--accent-soft);
     flex-shrink: 0;
   }
-  .sidebar-brand-text { display: flex; flex-direction: column; gap: var(--sp-0-5); min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
+  .sidebar-brand-text { display: flex; flex-direction: column; gap: var(--sp-0-5); min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة
+*/
   .sidebar-brand-name {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
     font-size: var(--fs-sm);
     color: var(--text);
-    letter-spacing: 0; /* r148 (AUDIT-3 M8): «مدارك» عربية — لا تتبّع سالب */
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): «مدارك» عربية — لا تتبّع سالب
+*/
     line-height: 1.2;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
@@ -130,10 +143,11 @@
   }
 
   /* r294 (polish v8 fold): the rail collapse control — its own pill
-     anchored in the brand row, consistent across expanded/collapsed
-     states. The v6 structural half (display/alignment/cursor) and
-     the v8 refinement half (28px surface pill + accent hover) are
-     merged here as ONE definition — both polish copies deleted. */
+   anchored in the brand row, consistent across expanded/collapsed
+   states. The v6 structural half (display/alignment/cursor) and
+   the v8 refinement half (28px surface pill + accent hover) are
+   merged here as ONE definition — both polish copies deleted.
+*/
   .sidebar-collapse-btn {
     display: inline-flex;
     align-items: center;
@@ -145,33 +159,38 @@
     border: 1px solid var(--rule);
     color: var(--text-muted);
     /* r305 (Heron conservation): the 1px «hairline depth cue» shadow is
-       retired — resting chrome is FLAT (the hairline border IS the
-       outline; --elev-* is reserved for true overlays). Press/hover
-       registers for this control live in r305-shell.css's one
-       control recipe. */
+    retired — resting chrome is FLAT (the hairline border IS the
+    outline; --elev-* is reserved for true overlays). Press/hover
+    registers for this control live in r305-shell.css's one
+    control recipe.
+*/
     cursor: pointer;
     flex-shrink: 0;
     /* R329 (gate:clean): the transition is r305-shell.css's unlayered
-       control recipe — this in-layer copy was inert. */
+    control recipe — this in-layer copy was inert.
+*/
   }
   @media (hover: hover) and (pointer: fine) {
   /* R319 (c1-A · B1): the wash is guarded to fine pointers (hover
-     sticks after a tap on touch) — R329 gate:clean wraps it (it was
-     an unguarded tap-stick seat). */
+   sticks after a tap on touch) — R329 gate:clean wraps it (it was
+   an unguarded tap-stick seat).
+*/
   .sidebar-collapse-btn:hover {
     /* r305 (Heron conservation): hover is a SURFACE STEP — the copper
-       border/ink here spent the signal on an uncommitted state (grammar
-       §3: copper only at the active marker / focus / primary CTA /
-       unread urgency / ⌘K chip). The ink steps with the surface; FOCUS
-       keeps the accent (polish v22's :focus-visible border cue).
-       The pair travels whole — background + ink together (the
-       paired-state lint's contract). */
+    border/ink here spent the signal on an uncommitted state (grammar
+    §3: copper only at the active marker / focus / primary CTA /
+    unread urgency / ⌘K chip). The ink steps with the surface; FOCUS
+    keeps the accent (polish v22's :focus-visible border cue).
+    The pair travels whole — background + ink together (the
+    paired-state lint's contract).
+*/
     background: var(--surface-2);
     border-color: var(--border-strong);
     color: var(--text);
   }
   }
-  /* R319 (c1-A · B1): the press twin — same pair, always-on. */
+  /* R319 (c1-A · B1): the press twin — same pair, always-on.
+*/
   .sidebar-collapse-btn:active {
     background: var(--surface-3);
     border-color: var(--border-strong);
@@ -180,7 +199,8 @@
   }
   .sidebar.collapsed .sidebar-collapse-btn {
     /* When collapsed, the button is the only visible chrome in the
-       brand row — make it the clear interaction target. */
+    brand row — make it the clear interaction target.
+*/
     margin-inline-start: 0;
     margin-inline-end: 0;
   }
@@ -188,26 +208,30 @@
   .nav-group {
     display: flex;
     flex-direction: column;
-    gap: var(--sp-0-5); /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية */
+    gap: var(--sp-0-5); /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية
+*/
     padding-block: var(--sp-2);
   }
   .nav-section-label {
     /* R313 (WP-F · D16): the section headers are Geist Mono micro-labels
-       — the reference's instrument voice (uppercase is a no-op on the
-       Arabic labels; weight 600 carries them; letter-spacing stays 0 so
-       the cursive joins never break). */
+    — the reference's instrument voice (uppercase is a no-op on the
+    Arabic labels; weight 600 carries them; letter-spacing stays 0 so
+    the cursive joins never break).
+*/
     font-family: var(--font-mono);
     text-transform: uppercase;
     /* R329 (gate:clean): font-size is r325-shell.css's mono-md seat —
-       this in-layer copy was inert. */
+    this in-layer copy was inert.
+*/
     color: var(--text-faint);
     font-weight: var(--fw-semibold);
     padding: var(--sp-2) var(--sp-3) var(--sp-1);
     letter-spacing: 0;
   }
   /* R313 (WP-F · D16): structural chrome separators carry the strong
-     hairline (--rule ≡ #B3B3AF) — the reference's frame grey; row-level
-     separators inside content use the quiet --border row rule. */
+   hairline (--rule ≡ #B3B3AF) — the reference's frame grey; row-level
+   separators inside content use the quiet --border row rule.
+*/
   .nav-group + .nav-group { border-block-start: 1px solid var(--rule); }
 
   .nav-item {
@@ -216,30 +240,33 @@
     align-items: center;
     gap: var(--sp-2);
     /* r211: calmer row rhythm (--sp-2 block) with a 36px desktop floor —
-       roomier scan line, still far under the 44px touch floor that the
-       (hover: none) band enforces on real touch devices.
-       r304 fold (ex «final-visual-system»): the row radius is the
-       workspace r-md — the same corner every clickable chrome control
-       carries, so hover/active pills read as one family. (The ≤920px
-       drawer re-cuts the corner to 0 — R319, see the drawer band.) */
+    roomier scan line, still far under the 44px touch floor that the
+    (hover: none) band enforces on real touch devices.
+    r304 fold (ex «final-visual-system»): the row radius is the
+    workspace r-md — the same corner every clickable chrome control
+    carries, so hover/active pills read as one family. (The ≤920px
+    drawer re-cuts the corner to 0 — R319, see the drawer band.)
+*/
     padding: var(--sp-2) var(--sp-3);
     border-radius: var(--r-md);
     /* r157 (6A4-9): nav links are chrome surface — DESIGN.md §2 maps
-       «روابط التنقل» onto --fs-chrome (14px), the r133 fleet decision
-       raw-14px sites consolidated. (Sidebar user names stay at
-       --fs-sm: the canon wording covers nav links / footer columns /
-       form labels / status boxes / timestamps — not user names.) */
+    «روابط التنقل» onto --fs-chrome (14px), the r133 fleet decision
+    raw-14px sites consolidated. (Sidebar user names stay at
+    --fs-sm: the canon wording covers nav links / footer columns /
+    form labels / status boxes / timestamps — not user names.)
+*/
     font-size: var(--fs-chrome);
     /* R319 (c1-A · B1) — the PAIRED-STATE TOKEN CONTRACT: every state
-       of this row (hover / press / on) flips --_bg, --_fg and --_icon-fg
-       TOGETHER, and the base routes all three paints through them. The
-       B1 ghost was polish.css re-declaring the hover BACKGROUND only
-       (surface-2) beneath this sheet's full wash — the cascade composed
-       paper-label-on-light-grey ≈1.1:1, and on touch `:hover` sticks
-       after a tap, so the owner watched «مقرّراتي الدراسية» disappear.
-       One home per state (this sheet), tokens flipped in pairs, the
-       hover wash guarded to fine pointers, and an always-on :active
-       twin carrying the same wash on touch. */
+    of this row (hover / press / on) flips --_bg, --_fg and --_icon-fg
+    TOGETHER, and the base routes all three paints through them. The
+    B1 ghost was polish.css re-declaring the hover BACKGROUND only
+    (surface-2) beneath this sheet's full wash — the cascade composed
+    paper-label-on-light-grey ≈1.1:1, and on touch `:hover` sticks
+    after a tap, so the owner watched «مقرّراتي الدراسية» disappear.
+    One home per state (this sheet), tokens flipped in pairs, the
+    hover wash guarded to fine pointers, and an always-on :active
+    twin carrying the same wash on touch.
+*/
     --_bg: transparent;
     --_fg: var(--sidebar-item);
     --_icon-fg: var(--text-muted);
@@ -256,19 +283,21 @@
   .nav-icon {
     display: inline-flex; align-items: center; justify-content: center;
     /* R319 (c1-A · B1): the icon rides the row's paired tokens — the
-       wash flips it WITH the label (the old `.nav-item:hover .nav-icon`
-       and `.nav-item.on .nav-icon` color companions are deleted; one
-       token, one flip, no half-state can strand the glyph). */
+    wash flips it WITH the label (the old `.nav-item:hover .nav-icon`
+    and `.nav-item.on .nav-icon` color companions are deleted; one
+    token, one flip, no half-state can strand the glyph).
+*/
     color: var(--_icon-fg);
     flex-shrink: 0;
   }
   .nav-label { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* R319 (c1-A · B1): the landing wash is a FINE-POINTER contract —
-     `:hover` sticks after a tap on touch devices (the exact mechanism
-     behind the owner's pale-ghost screenshot), so the wash only loads
-     where a hover can actually END. The R313 recipe itself is
-     unchanged: the row fills the solid charcoal cell (var(--text))
-     with the paper ground as the label (var(--bg)). */
+   `:hover` sticks after a tap on touch devices (the exact mechanism
+   behind the owner's pale-ghost screenshot), so the wash only loads
+   where a hover can actually END. The R313 recipe itself is
+   unchanged: the row fills the solid charcoal cell (var(--text))
+   with the paper ground as the label (var(--bg)).
+*/
   @media (hover: hover) and (pointer: fine) {
     .nav-item:hover {
       --_bg: var(--text);
@@ -277,71 +306,82 @@
     }
   }
   /* r157 (6A4-5, F3 half): the .active twins are gone — Sidebar writes
-     exactly one boolean, the `on` class. (.search-row.active below and
-     BottomNav's bottom-nav-item active are separate live families;
-     polish.css twins are F1's parallel half. Gate:
-     tests/unit/nav-active-vocabulary.test.tsx.)
-     r304: the ex-«final-visual-system» `.nav-item[aria-current]` twin
-     (accent-soft pill + a SECOND 2px start border on top of this bar)
-     is retired with its file — A4's «كل مسار له علامة جانبية واحدة»
-     contract holds again: ONE bar, ONE surface step, ONE icon tint. */
+   exactly one boolean, the `on` class. (.search-row.active below and
+   BottomNav's bottom-nav-item active are separate live families;
+   polish.css twins are F1's parallel half. Gate:
+   tests/unit/nav-active-vocabulary.test.tsx.)
+   r304: the ex-«final-visual-system» `.nav-item[aria-current]` twin
+   (accent-soft pill + a SECOND 2px start border on top of this bar)
+   is retired with its file — A4's «كل مسار له علامة جانبية واحدة»
+   contract holds again: ONE bar, ONE surface step, ONE icon tint.
+*/
   .nav-item.on {
     /* R313 (WP-F · D16): the active row is ONE signal — the 2px accent
-       side rule below + the ink label. The surface-step pill retires
-       (the marker carries the state; the row stays on the paper).
-       R319 (c1-A · B1b): routed through the paired tokens — the row
-       keeps its ink label on the paper ground, and the polish.css
-       accent-soft twin is deleted (ONE home for the state). */
+    side rule below + the ink label. The surface-step pill retires
+    (the marker carries the state; the row stays on the paper).
+    R319 (c1-A · B1b): routed through the paired tokens — the row
+    keeps its ink label on the paper ground, and the polish.css
+    accent-soft twin is deleted (ONE home for the state).
+*/
     --_bg: transparent;
     /* R329 (gate:clean): --_fg/--_icon-fg are r325-shell.css's app-bg
-       seats (unlayered wins) — these in-layer twins were inert. */
+    seats (unlayered wins) — these in-layer twins were inert.
+*/
     font-weight: var(--fw-semibold);
   }
   /* R319 (c1-A · B1): the PRESS twin — the same paired wash, always-on
-     (fine pointers feel the press too), landing INSTANTLY on the press
-     (the micro duration; the snap-back keeps it). Sits after `.on` so
-     pressing the active row still reads as a press. */
+   (fine pointers feel the press too), landing INSTANTLY on the press
+   (the micro duration; the snap-back keeps it). Sits after `.on` so
+   pressing the active row still reads as a press.
+*/
   .nav-item:active {
     --_bg: var(--text);
     --_fg: var(--bg);
     --_icon-fg: var(--bg);
     /* R329 (gate:clean): transition-duration is polish.css's
-       pages-layer press rule — this in-layer copy was inert. */
+    pages-layer press rule — this in-layer copy was inert.
+*/
   }
   /* r211: the dark-mode «orbit glow» halo is retired — R313 (WP-F):
-     the active row is the 2px accent bar + the ink label, identically
-     calm in both themes. */
+   the active row is the 2px accent bar + the ink label, identically
+   calm in both themes.
+*/
   .nav-item.on::before {
     content: '';
     position: absolute;
     /* R313 (WP-F · D16): the square 2px accent side rule, pinned to the
-       rail's content seam (inline-start 0) — no rounded corners, one
-       signal, the reference's own marker grammar. */
+    rail's content seam (inline-start 0) — no rounded corners, one
+    signal, the reference's own marker grammar.
+*/
     inset-inline-start: 0;
     inset-block: 9px;
     inline-size: 2px;
     /* R329 (gate:clean): the bar ground + animation duration are
-       r325-shell.css's app-signal seats (unlayered wins) — the
-       in-layer copies were inert. */
+    r325-shell.css's app-signal seats (unlayered wins) — the
+    in-layer copies were inert.
+*/
     animation: madarek-nav-pop var(--motion-duration-medium) var(--motion-ease-decelerate);
   }
   @keyframes madarek-nav-pop {
     /* R313 (WP-F · D16): inset-block positions the bar; only the scale
-       animates (no translateY displacement). */
+    animates (no translateY displacement).
+*/
     from { transform: scaleY(0.4); opacity: 0; }
     to   { transform: scaleY(1);    opacity: 1; }
   }
   .nav-badge {
     /* wave 2-b: was the raw 10px sub-token floor — lifted to --fs-xxs
-       (11px) per the craft-floor font sweep.
-       r304: the count rides --text-secondary — the muted tier measured
-       3.1:1 on surface-3 at 13px (axe, browser check), under the AA
-       text floor; secondary ink clears 7:1 in both themes.
-       R313 (WP-F · D16): square + hairline — the count chip joins the
-       data-dense chip grammar (radius 0, 1px rule, mono tabular). */
+    (11px) per the craft-floor font sweep.
+    r304: the count rides --text-secondary — the muted tier measured
+    3.1:1 on surface-3 at 13px (axe, browser check), under the AA
+    text floor; secondary ink clears 7:1 in both themes.
+    R313 (WP-F · D16): square + hairline — the count chip joins the
+    data-dense chip grammar (radius 0, 1px rule, mono tabular).
+*/
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
-    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 2/7) */
+    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 2/7)
+*/
     border-radius: var(--r-xs);
     border: 1px solid var(--rule);
     background: transparent;
@@ -352,8 +392,9 @@
   .nav-badge.brand,
   .nav-badge.gold { background: var(--accent-soft); color: var(--accent-strong); }
   /* r157 (6A4-6): .nav-badge.red / .nav-badge.amber deleted — Sidebar is
-     the only badge producer and nav.ts tones are brand/gold/default
-     only (verified by rg); the rose/yellow twins were dead rules. */
+   the only badge producer and nav.ts tones are brand/gold/default
+   only (verified by rg); the rose/yellow twins were dead rules.
+*/
 
   .sidebar-footer {
     margin-block-start: var(--sp-3);
@@ -363,7 +404,8 @@
     flex-direction: column;
     gap: var(--sp-2);
     /* 4-A2 P1-2: pinned — never absorbed into the .sidebar-nav
-       scroller, never pushed below the fold. */
+    scroller, never pushed below the fold.
+*/
     flex-shrink: 0;
   }
 
@@ -376,13 +418,15 @@
     transition: background var(--t-fast) var(--ease);
   }
   /* R319 (c1-A · B1): the account row's wash — a fine-pointer
-     affordance only (the row is not a control; hover sticks after a
-     tap on touch, where the row stays flat — the press registers on
-     its buttons). The pair travels whole: surface step + ink together. */
+   affordance only (the row is not a control; hover sticks after a
+   tap on touch, where the row stays flat — the press registers on
+   its buttons). The pair travels whole: surface step + ink together.
+*/
   @media (hover: hover) and (pointer: fine) {
     .sidebar-user:hover { background: var(--sidebar-item-hover-bg); color: var(--text); }
   }
-  .sidebar-user-info { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px */
+  .sidebar-user-info { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px
+*/
   .sidebar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -390,13 +434,14 @@
   .sidebar-user-role { font-size: var(--fs-xxs); color: var(--text-muted); }
 
   /* r294 (polish v8 fold): the mobile drawer's close button + the
-     ≤920px sidebar overrides. The X button is drawer-only; the rail
-     collapse control dies on mobile (open vs closed, no rail).
-     R319 (c1-A · B1b): Heron menu grammar — a square 44px cell on the
-     1px hairline, radius 0, paper ground (the tinted-surface chip
-     retires; the drawer IS the sheet). The state pair travels whole
-     (see the paired-state contract on .nav-item) and hover is guarded
-     to fine pointers. */
+   ≤920px sidebar overrides. The X button is drawer-only; the rail
+   collapse control dies on mobile (open vs closed, no rail).
+   R319 (c1-A · B1b): Heron menu grammar — a square 44px cell on the
+   1px hairline, radius 0, paper ground (the tinted-surface chip
+   retires; the drawer IS the sheet). The state pair travels whole
+   (see the paired-state contract on .nav-item) and hover is guarded
+   to fine pointers.
+*/
   .sidebar-mobile-close {
     display: none;
     align-items: center;
@@ -410,7 +455,8 @@
     cursor: pointer;
     flex-shrink: 0;
     /* R329 (gate:clean): the transition is r305-shell.css's unlayered
-       control recipe — this in-layer copy was inert. */
+    control recipe — this in-layer copy was inert.
+*/
     -webkit-tap-highlight-color: transparent;
   }
   @media (hover: hover) and (pointer: fine) {
@@ -428,21 +474,27 @@
   }
 
   @media (max-width: 920px) {
-    /* X button visible only in the mobile drawer */
+    /* X button visible only in the mobile drawer
+*/
     .sidebar-mobile-close { display: inline-flex; }
-    /* No collapse rail on mobile — only open vs closed. */
+    /* No collapse rail on mobile — only open vs closed.
+*/
     .sidebar-collapse-btn { display: none; }
-    /* Brand row becomes a sticky drawer header */
+    /* Brand row becomes a sticky drawer header
+*/
     .sidebar-brand {
       position: sticky;
       inset-block-start: 0;
       /* R319 (c1-A · B1b): the header rides the sheet's own paper
-         (var(--bg)) — the drawer is ONE material; the sticky plate
-         must not read as a different surface. */
+     (var(--bg)) — the drawer is ONE material; the sticky plate
+     must not read as a different surface.
+*/
       background: var(--bg);
-      z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
+      z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer
+*/
       padding-block: var(--sp-3);
-      /* R313 (WP-F · D16): structural hairline (--rule ≡ #B3B3AF). */
+      /* R313 (WP-F · D16): structural hairline (--rule ≡ #B3B3AF).
+*/
       border-block-end: 1px solid var(--rule);
       margin-block-end: var(--sp-2);
     }
@@ -455,8 +507,9 @@
     transition: var(--t-clean);
   }
   /* R319 (c1-A · B1): the destructive ghost — the rose pair travels
-     whole (bg + ink), guarded to fine pointers; on touch the press
-     twin below carries it. */
+   whole (bg + ink), guarded to fine pointers; on touch the press
+   twin below carries it.
+*/
   @media (hover: hover) and (pointer: fine) {
     .sidebar-logout:hover { background: var(--c-rose-bg); color: var(--c-rose-deep); }
   }
@@ -465,148 +518,171 @@
   .sidebar-backdrop {
     position: fixed; inset: 0;
     /* R319 (c1-A · B1b): the scrim is INK over paper — the translucent
-       veil retires (it read as a flat grey wash on the phone). Light:
-       the ink #282828 (= --text light) at 58%; dark: the paper twin
-       #F6F8FA (= --text dark) at 92% — Heron's own menu veils. The
-       theme fork below keys off the existing [data-theme] mechanism;
-       the rgba literals are the precomputed rgb(from var(--text) …)
-       equivalents. */
-    background: rgba(40,40,40,0.58); /* color-gate: allow — R319 (c1-A · B1b): drawer scrim, light theme — ink #282828 (var(--text)) at 58% over paper, the precomputed rgb(from var(--text) r g b / 0.58) */
+    veil retires (it read as a flat grey wash on the phone). Light:
+    the ink #282828 (= --text light) at 58%; dark: the paper twin
+    #F6F8FA (= --text dark) at 92% — Heron's own menu veils. The
+    theme fork below keys off the existing [data-theme] mechanism;
+    the rgba literals are the precomputed rgb(from var(--text) …)
+    equivalents.
+*/
+    background: rgba(40,40,40,0.58); /* color-gate: allow — R319 (c1-A · B1b): drawer scrim, light theme — ink #282828 (var(--text)) at 58% over paper, the precomputed rgb(from var(--text) r g b / 0.58)
+*/
     opacity: 0; pointer-events: none;
     /* R329 (gate:clean): the fade transition is polish.css's overrides
-       seat (motion-duration-medium) — this in-layer copy was inert. */
-    /* Sits just under the mobile drawer (a --z-sheet surface). */
+    seat (motion-duration-medium) — this in-layer copy was inert.
+*/
+    /* Sits just under the mobile drawer (a --z-sheet surface).
+*/
     z-index: calc(var(--z-sheet) - 1);
   }
   [data-theme="dark"] .sidebar-backdrop {
     /* R319 (c1-A · B1b): dark scrim — the paper twin at 92% (the
-       reference's own night menu veil: the sheet reads as paper over
-       paper, not a black hole). */
-    background: rgba(246,248,250,0.92); /* color-gate: allow — R319 (c1-A · B1b): drawer scrim, dark theme — paper twin #F6F8FA (var(--text) dark) at 92%, Heron's night menu veil */
+    reference's own night menu veil: the sheet reads as paper over
+    paper, not a black hole).
+*/
+    background: rgba(246,248,250,0.92); /* color-gate: allow — R319 (c1-A · B1b): drawer scrim, dark theme — paper twin #F6F8FA (var(--text) dark) at 92%, Heron's night menu veil
+*/
   }
 
   /* ═══ مدارك night shell (r211 Superlist re-skin) ═══
-     The r190 sky washes + hand-placed constellation points are RETIRED:
-     the dark sidebar is the theme's own calm surface (--sidebar-bg from
-     tokens.css — theme-aware, contrast-vetted). Chrome carries zero
-     decorative paint in both themes; hierarchy comes from surface
-     steps, the one signal accent, and a single shadow tier.
-     The desktop position contract below stays: it re-asserts base.css's
-     sticky at dark-rule specificity so the drawer band's position:fixed
-     can never leak into the desktop band (PP-fix P0-1, still live). */
+   The r190 sky washes + hand-placed constellation points are RETIRED:
+   the dark sidebar is the theme's own calm surface (--sidebar-bg from
+   tokens.css — theme-aware, contrast-vetted). Chrome carries zero
+   decorative paint in both themes; hierarchy comes from surface
+   steps, the one signal accent, and a single shadow tier.
+   The desktop position contract below stays: it re-asserts base.css's
+   sticky at dark-rule specificity so the drawer band's position:fixed
+   can never leak into the desktop band (PP-fix P0-1, still live).
+*/
   /* PP-fix (premium-polish P0-1): the night shell's position declarations
-     must never reach the ≤920px mobile drawer. Inside @layer layout the
-     dark pair ([data-theme] .has-shell > .sidebar = 0,3,0 sticky and
-     [data-theme] .sidebar = 0,2,0 relative) used to out-rank the drawer's
-     .sidebar { position: fixed } (0,1,0) — so on every dark-mode phone the
-     sidebar stayed in flow, the shell grid collapsed to `0px <content>` and
-     hide-on-scroll / topbar elevation / scroll restoration all silently
-     died. Desktop-only now: base.css already owns the sticky contract
-     there, and on mobile `position: fixed` is itself a containing block
-     for the ::before constellation, so nothing else changes. */
+   must never reach the ≤920px mobile drawer. Inside @layer layout the
+   dark pair ([data-theme] .has-shell > .sidebar = 0,3,0 sticky and
+   [data-theme] .sidebar = 0,2,0 relative) used to out-rank the drawer's
+   .sidebar { position: fixed } (0,1,0) — so on every dark-mode phone the
+   sidebar stayed in flow, the shell grid collapsed to `0px <content>` and
+   hide-on-scroll / topbar elevation / scroll restoration all silently
+   died. Desktop-only now: base.css already owns the sticky contract
+   there, and on mobile `position: fixed` is itself a containing block
+   for the ::before constellation, so nothing else changes.
+*/
   @media (min-width: 921px) {
     [data-theme="dark"] .has-shell > .sidebar { position: sticky; }
     [data-theme="dark"] .sidebar { position: relative; }
   }
 
   /* mobile drawer — R319 (c1-A · B1b): rebuilt on Heron's menu grammar.
-     The drawer IS the sheet: full-bleed opaque paper, hairline rows,
-     mono gutter indexes, one accent rule per active row. See each
-     rule's comment for the grammar decision. */
+   The drawer IS the sheet: full-bleed opaque paper, hairline rows,
+   mono gutter indexes, one accent rule per active row. See each
+   rule's comment for the grammar decision.
+*/
   @media (max-width: 920px) {
     .sidebar {
       display: flex;
       position: fixed;
       /* R319 (c1-A · B1b): 100dvh — the DYNAMIC viewport, not the
-         inset pair / 100vh (which on iPhone Safari includes the area
-         under the browser toolbar): the drawer footer never slides
-         under the chrome and the last rows never clip. */
+     inset pair / 100vh (which on iPhone Safari includes the area
+     under the browser toolbar): the drawer footer never slides
+     under the chrome and the last rows never clip.
+*/
       inset-block-start: 0;
       block-size: 100dvh;
       /* 4-A2 P1-4: dock the drawer to the inline-START edge — physical
-         RIGHT in RTL, the same side as the burger trigger and the
-         desktop sidebar column. The old inset-inline-end anchored it
-         to the physical LEFT in RTL while everything else about the
-         shell (reading direction, desktop grid, trigger cluster) put
-         navigation on the right — rotating/resizing across 920px made
-         the nav jump sides. */
+     RIGHT in RTL, the same side as the burger trigger and the
+     desktop sidebar column. The old inset-inline-end anchored it
+     to the physical LEFT in RTL while everything else about the
+     shell (reading direction, desktop grid, trigger cluster) put
+     navigation on the right — rotating/resizing across 920px made
+     the nav jump sides.
+*/
       inset-inline-start: 0;
       inline-size: min(86vw, 320px);
       max-inline-size: 320px;
       /* R319 (c1-A · B1b): the drawer IS the sheet — full-bleed OPAQUE
-         paper (var(--bg), alpha 1; --sidebar-bg retired here). No
-         tinted boxes inside: the brand cell and rows sit on the same
-         paper, one material. */
+     paper (var(--bg), alpha 1; --sidebar-bg retired here). No
+     tinted boxes inside: the brand cell and rows sit on the same
+     paper, one material.
+*/
       background: var(--bg);
       /* Content sits on the drawer's inline-END side in both
-         directions — that edge carries the structural hairline now
-         (R313 WP-F · D16: --rule ≡ #B3B3AF, the frame grey). */
+     directions — that edge carries the structural hairline now
+     (R313 WP-F · D16: --rule ≡ #B3B3AF, the frame grey).
+*/
       border-inline-end: 1px solid var(--rule);
       /* r157 (6A4-1): the closed drawer is off-screen via transform
-         ONLY — it stayed in the accessibility tree, focusable and
-         Tab-reachable behind the page. visibility:hidden removes it
-         from tab order + a11y tree. (The visibility TIMING lives in
-         the unlayered block at the end of this file — the overrides
-         layer redefines this whole transition shorthand for .sidebar
-         in this band, so any transition entry written here would be
-         dead code; see that block's comment. R329 gate:clean: the
-         inert in-layer fallback shorthand is DELETED — the spring
-         shorthand in polish.css's overrides layer is the one live
-         seat (polish.css is a global import; it cannot not-load).) */
+     ONLY — it stayed in the accessibility tree, focusable and
+     Tab-reachable behind the page. visibility:hidden removes it
+     from tab order + a11y tree. (The visibility TIMING lives in
+     the unlayered block at the end of this file — the overrides
+     layer redefines this whole transition shorthand for .sidebar
+     in this band, so any transition entry written here would be
+     dead code; see that block's comment. R329 gate:clean: the
+     inert in-layer fallback shorthand is DELETED — the spring
+     shorthand in polish.css's overrides layer is the one live
+     seat (polish.css is a global import; it cannot not-load).)
+*/
       visibility: hidden;
       /* R313 (WP-F · D16): flat drawer — the hairline on the
-         content-facing edge carries the depth; no shadow paint.
-         R329 gate:clean: the drawer's z rung is r325-shell.css's
-         unlayered --z-menu-drawer seat — the in-layer z-sheet copy
-         was inert. */
+     content-facing edge carries the depth; no shadow paint.
+     R329 gate:clean: the drawer's z rung is r325-shell.css's
+     unlayered --z-menu-drawer seat — the in-layer z-sheet copy
+     was inert.
+*/
       padding-block: max(var(--sp-3), env(safe-area-inset-top))
                      max(var(--sp-3), env(safe-area-inset-bottom));
       will-change: transform;
     }
     /* Hidden transforms mirror the new dock: off-screen means +100%
-     (to the right) in RTL and -100% (to the left) in LTR. */
+   (to the right) in RTL and -100% (to the left) in LTR.
+*/
     [dir="rtl"] .sidebar { transform: translateX(100%); }
     [dir="ltr"] .sidebar { transform: translateX(-100%); }
     .sidebar.open {
       transform: translateX(0);
       /* r157 (6A4-1): visible (and focusable) from the first frame
-         of the slide-in — the unlayered transition-property block at
-         the end of this file makes visibility interpolate as visible
-         for the whole open transition. */
+     of the slide-in — the unlayered transition-property block at
+     the end of this file makes visibility interpolate as visible
+     for the whole open transition.
+*/
       visibility: visible;
     }
     .sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
 
     /* 4-A2 P2-6 (partial, in-file surfaces): 44px touch floor for the
-       drawer's own chrome. min-* props beat the physical width/height
-       declarations of later layers at used-value time, so the visual
-       language of the buttons is untouched — only the hit area grows. */
+    drawer's own chrome. min-* props beat the physical width/height
+    declarations of later layers at used-value time, so the visual
+    language of the buttons is untouched — only the hit area grows.
+*/
     .sidebar-mobile-close { min-inline-size: 44px; min-block-size: 44px; }
     .sidebar-logout { min-inline-size: 44px; min-block-size: 44px; }
 
-    /* ── R319 (c1-A · B1b): Heron's menu grammar, drawer band ────── */
+    /* ── R319 (c1-A · B1b): Heron's menu grammar, drawer band ──────
+*/
 
     /* Rows: square hairline-separated cells, 48px tall (inside the
-       48–56 band; the (hover:none) 44px floor below stays the legal
-       minimum). Radius 0 — no pill chrome on the menu. The wash/press
-       states come from the paired tokens on .nav-item (base block). */
+    48–56 band; the (hover:none) 44px floor below stays the legal
+    minimum). Radius 0 — no pill chrome on the menu. The wash/press
+    states come from the paired tokens on .nav-item (base block).
+*/
     .sidebar .nav-item {
       border-radius: 0;
       /* R329 (gate:clean): the row height is polish.css's overrides
-      seat (44px) — the 48px here was inert. */
+   seat (44px) — the 48px here was inert.
+*/
     }
     .nav-group .nav-item + .nav-item {
       /* quiet row hairline inside a group — the row-level --border
-         rung (R313: structural seams between groups stay --rule via
-         .nav-group + .nav-group above). */
+     rung (R313: structural seams between groups stay --rule via
+     .nav-group + .nav-group above).
+*/
       border-block-start: 1px solid var(--border);
     }
 
     /* MONO GUTTER INDEX — each section wears its [01]… index in the
-       start gutter (Geist Mono micro-label, muted): the reference's
-       instrument voice, the same one the sheet frame uses. The LRI/PDI
-       isolates (\2066…\2069) keep the Latin bracket run from mirroring
-       inside the RTL line. */
+    start gutter (Geist Mono micro-label, muted): the reference's
+    instrument voice, the same one the sheet frame uses. The LRI/PDI
+    isolates (\2066…\2069) keep the Latin bracket run from mirroring
+    inside the RTL line.
+*/
     .sidebar-nav { counter-reset: nav-section; }
     .nav-group { counter-increment: nav-section; }
     .nav-section-label::before {
@@ -615,17 +691,19 @@
     }
 
     /* The brand cell loses its tinted plate: plain paper + hairline
-       (one material — the drawer IS the sheet). */
+    (one material — the drawer IS the sheet).
+*/
     .sidebar-brand-mark {
       background: transparent;
       border: 1px solid var(--rule);
     }
 
     /* Start-inset parity: the brand row, every section heading (plain
-       label AND accordion toggle) and every row share ONE inline-start
-       inset (--sp-3 inside the drawer's own --sp-3 padding) — the
-       «التعلم الذكي» misalignment the owner photographed was the
-       layers disagreeing about which gutter the heading sits in. */
+    label AND accordion toggle) and every row share ONE inline-start
+    inset (--sp-3 inside the drawer's own --sp-3 padding) — the
+    «التعلم الذكي» misalignment the owner photographed was the
+    layers disagreeing about which gutter the heading sits in.
+*/
     .sidebar-brand,
     .nav-section-label,
     .sidebar .nav-item {
@@ -633,20 +711,23 @@
     }
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TOPBAR                                                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TOPBAR
+   ╚╚╚
+*/
   .topbar {
     padding-inline: var(--page-gutter);
     /* R329 (gate:clean): the topbar's flex grammar + transition are
-       polish.css's overrides seats (flex row, sp-3 gap, the
-       box-shadow/border-color transition) — the grid/align/gap/
-       transition copies here were inert (layout < overrides). */
+    polish.css's overrides seats (flex row, sp-3 gap, the
+    box-shadow/border-color transition) — the grid/align/gap/
+    transition copies here were inert (layout < overrides).
+*/
   }
   /* R313 (WP-F · D16): the scrolled topbar is FLAT — the bottom hairline
-     is always on (base.css owns the seam); scrolling only re-colors it.
-     The r304 "lifts once content slides beneath it" elevation is
-     retired with every other shadow in the system. */
+   is always on (base.css owns the seam); scrolling only re-colors it.
+   The r304 "lifts once content slides beneath it" elevation is
+   retired with every other shadow in the system.
+*/
   @media (max-width: 920px) { .topbar { padding-inline: var(--page-gutter-mobile); } }
 
   .topbar-mobile-toggle {
@@ -656,33 +737,37 @@
     align-items: center; justify-content: center;
     color: var(--text-secondary);
     /* r149 (R3-A3 §3): الـhover كان يقفز بلا انتقال (snap) — زر
-       الهامبرغر الوحيد في الترويسة. R329 gate:clean: the transition
-       is r305-shell.css's unlayered control recipe — inert here. */
+    الهامبرغر الوحيد في الترويسة. R329 gate:clean: the transition
+    is r305-shell.css's unlayered control recipe — inert here.
+*/
   }
   @media (hover: hover) and (pointer: fine) {
     /* R319 (c1-A · B1): guarded — hover sticks after a tap on touch;
-     the pair (surface step + ink) travels whole. */
+   the pair (surface step + ink) travels whole.
+*/
     .topbar-mobile-toggle:hover { background: var(--surface-3); color: var(--text); }
   }
   .topbar-mobile-toggle:active {
     /* r305: the raw 0.97 joins the one press register (--press-scale).
-       R319 (c1-A · B1): the press also carries the hover pair so touch
-       gets the same acknowledgment. */
+    R319 (c1-A · B1): the press also carries the hover pair so touch
+    gets the same acknowledgment.
+*/
     background: var(--surface-3);
     color: var(--text);
     transform: scale(var(--press-scale));
     transition-duration: var(--motion-duration-micro);
   }
   @media (max-width: 920px) {
-    .topbar-mobile-toggle { display: inline-flex; }
     /* 4-A2 P2-6: 44px touch floor — min-* grows the hit area over the
-       38px visual box regardless of source/later-layer width writes. */
-    .topbar-mobile-toggle { min-inline-size: 44px; min-block-size: 44px; }
+    38px visual box regardless of source/later-layer width writes.
+*/
+    .topbar-mobile-toggle { display: inline-flex; min-inline-size: 44px; min-block-size: 44px; }
   }
 
   /* Mobile-band search entry point (4-A2 P1-3): opens the command
-     palette (⌘K surface), which carries the full combobox search +
-     quick actions. Hidden ≥921px where the search pill lives. */
+   palette (⌘K surface), which carries the full combobox search +
+   quick actions. Hidden ≥921px where the search pill lives.
+*/
   .topbar-search-toggle {
     display: none;
     align-items: center;
@@ -690,12 +775,14 @@
     inline-size: 44px;
     block-size: 44px;
     /* R329 (gate:clean): radius 0 is r319-shell.css's unlayered seat
-       and the transition is r305-shell.css's control recipe — both
-       in-layer copies here were inert. */
+    and the transition is r305-shell.css's control recipe — both
+    in-layer copies here were inert.
+*/
     color: var(--text-secondary);
   }
   @media (hover: hover) and (pointer: fine) {
-    /* R319 (c1-A · B1): guarded fine-pointer wash, pair whole. */
+    /* R319 (c1-A · B1): guarded fine-pointer wash, pair whole.
+*/
     .topbar-search-toggle:hover { background: var(--surface-3); color: var(--text); }
   }
   .topbar-search-toggle:active { background: var(--surface-3); color: var(--text); transition-duration: var(--motion-duration-micro); }
@@ -705,53 +792,63 @@
     font-family: var(--font-display);
     font-size: var(--fs-h3);
     /* r366 (2-g): ONE line, always — at extreme text scale a wrapped
-     * title balloons the band (2 × 61px measured) and the overflow
-     * paints over the page's first row. The end clips honestly (the
-     * full name rides the document title). */
+   * title balloons the band (2 × 61px measured) and the overflow
+   * paints over the page's first row. The end clips honestly (the
+   * full name rides the document title).
+*/
     white-space: nowrap;
     /* r294 (polish v8 fold): semibold — the polish pages-layer bump
-       overrode bold as the rendered truth. */
+    overrode bold as the rendered truth.
+*/
     font-weight: var(--fw-semibold);
     color: var(--text);
-    letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين صفحات عربية — لا تتبّع سالب */
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين صفحات عربية — لا تتبّع سالب
+*/
     line-height: 1.2;
     display: flex; align-items: baseline; gap: var(--sp-3);
     min-inline-size: 0; overflow: hidden;
-    /* A9 P1-2: pin height so the skeleton→real swap doesn't shift layout */
+    /* A9 P1-2: pin height so the skeleton→real swap doesn't shift layout
+*/
     min-block-size: 48px;
   }
   /* (r151c dead-twin sweep, R5-A1b declaration-level proof): this
-     rule used to carry 9 declarations — polish.css's overrides-layer
-     .topbar-scope re-specifies every one except font-family, so only
-     the family survives here. The ≤920px display:none below is live.) */
+   rule used to carry 9 declarations — polish.css's overrides-layer
+   .topbar-scope re-specifies every one except font-family, so only
+   the family survives here. The ≤920px display:none below is live.)
+*/
   .topbar-scope {
     /* r294 (polish v8 fold): the full chip recipe returns home — the
-       polish bundle was the live definition (this rule held only
-       font-family since the r151c dead-twin sweep). Smaller, calmer
-       chip than the title. */
+    polish bundle was the live definition (this rule held only
+    font-family since the r151c dead-twin sweep). Smaller, calmer
+    chip than the title.
+*/
     font-family: var(--font-sans);
     font-size: var(--fs-xxs);
     font-weight: var(--fw-medium);
     /* r304: --text-secondary — muted measured 3.35:1 on the surface-2
-       chip at 13px (axe, browser check); secondary clears AA both themes. */
+    chip at 13px (axe, browser check); secondary clears AA both themes.
+*/
     color: var(--text-secondary);
     background: var(--surface-2);
     /* r305 (Heron conservation): the 20% copper tint on this hairline
-       is retired — the scope chip is CONTEXT, not signal (grammar §3's
-       five copper sites don't include a passive chip); the plain rule
-       hairline carries it in both themes.
-       R313 (WP-F · D16): square chip — radius 0 on the hairline. */
+    is retired — the scope chip is CONTEXT, not signal (grammar §3's
+    five copper sites don't include a passive chip); the plain rule
+    hairline carries it in both themes.
+    R313 (WP-F · D16): square chip — radius 0 on the hairline.
+*/
     border: 1px solid var(--rule);
     border-radius: var(--r-xs);
-    padding: 3px var(--sp-2-5); /* spacing-gate: allow — topbar scope chip micro grade 3/10 vertical hairline */
+    padding: 3px var(--sp-2-5); /* spacing-gate: allow — topbar scope chip micro grade 3/10 vertical hairline
+*/
     margin-inline-start: var(--sp-2);
     white-space: nowrap;
     /* R327 F (red team, measured +20px spill): the scope chip never
-       truncates — a long offering/faculty name pushed it past the
-       topbar track. The title got real truncation in r304; the chip
-       now does the same (context, not signal — ellipsis is honest).
-       inline-block first: max-inline-size + ellipsis do nothing on an
-       inline span. */
+    truncates — a long offering/faculty name pushed it past the
+    topbar track. The title got real truncation in r304; the chip
+    now does the same (context, not signal — ellipsis is honest).
+    inline-block first: max-inline-size + ellipsis do nothing on an
+    inline span.
+*/
     display: inline-block;
     vertical-align: middle;
     max-inline-size: 24ch;
@@ -762,46 +859,51 @@
     .topbar { grid-template-columns: auto 1fr auto; }
     .topbar .global-search { display: none; }
     .topbar-scope { display: none; }
-    .topbar-title { font-size: var(--fs-body); }
     /* Real truncation (4-A10 P2): .topbar-title is a flex row on
-       desktop (title + scope chips), but text-overflow never applies
-       to a flex container — on phones the two-word page names just
-       clipped with no ellipsis. The chips are display:none in this
-       band, so the flex row buys nothing: become a block so the
-       ellipsis actually renders. */
+    desktop (title + scope chips), but text-overflow never applies
+    to a flex container — on phones the two-word page names just
+    clipped with no ellipsis. The chips are display:none in this
+    band, so the flex row buys nothing: become a block so the
+    ellipsis actually renders.
+*/
     .topbar-title {
       display: block;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      font-size: var(--fs-body);
     }
     /* 4-A2 P2-6: 44px floor for the topbar chrome that stays visible
-       on phones (the AI pill + bell live in this cluster). min-*
-       beats the physical height/width writes of later layers
-       (polish.css .topbar-actions .btn.primary.sm height:32px,
-       .topbar-notif 36×36) at used-value time. */
+    on phones (the AI pill + bell live in this cluster). min-*
+    beats the physical height/width writes of later layers
+    (polish.css .topbar-actions .btn.primary.sm height:32px,
+    .topbar-notif 36×36) at used-value time.
+*/
     .topbar-actions .btn.primary.sm { min-inline-size: 44px; min-block-size: 44px; }
     .topbar-notif { min-inline-size: 44px; min-block-size: 44px; }
   }
   @media (max-width: 420px) {
     /* 4-A10 P2: at ≤420px the actions cluster starves the title —
-     drop the «اسأل AI» quick-action (freed ~47px; the destination
-     stays reachable via BottomNav «المساعد» and the sidebar/palette). */
+   drop the «اسأل AI» quick-action (freed ~47px; the destination
+   stays reachable via BottomNav «المساعد» and the sidebar/palette).
+*/
     .topbar-actions .btn.primary.sm { display: none; }
   }
 
   /* R354-UI-2 — the actions cluster may never push the shell: a long
-     user name (a real Libyan full name + patronymic, a long email) grew
-     .topbar-user to 586px and the whole document overflowed by 305px at
-     1024×600 (measured under the stress crawl). Strength: the cluster
-     and its user chip shrink; the name ellipsises (the .topbar-scope /
-     .topbar-inst-name rule above is the same contract). */
+   user name (a real Libyan full name + patronymic, a long email) grew
+   .topbar-user to 586px and the whole document overflowed by 305px at
+   1024×600 (measured under the stress crawl). Strength: the cluster
+   and its user chip shrink; the name ellipsises (the .topbar-scope /
+   .topbar-inst-name rule above is the same contract).
+*/
   .topbar-actions { display: flex; align-items: center; gap: var(--sp-2); min-inline-size: 0; }
 
   /* r178 (multi-institution): the institution switcher's menu rows.
-     The trigger is the chrome's existing .btn ghost; each row is a
-     .dropdown-item (components.css) — the name grows, the role label
-     rides the trailing edge in the quiet chrome voice. */
+   The trigger is the chrome's existing .btn ghost; each row is a
+   .dropdown-item (components.css) — the name grows, the role label
+   rides the trailing edge in the quiet chrome voice.
+*/
   .topbar-inst-name {
     flex: 1;
     min-inline-size: 0;
@@ -823,18 +925,21 @@
     align-items: center;
     gap: var(--sp-2);
     /* Logical properties (0-c P2-5): the avatar sits at inline-start,
-       so it gets the tight 4px inset and the chevron end gets 10px —
-       the old physical shorthand `4px 10px 4px 4px` put the wide inset
-       on the avatar side in RTL. */
+    so it gets the tight 4px inset and the chevron end gets 10px —
+    the old physical shorthand `4px 10px 4px 4px` put the wide inset
+    on the avatar side in RTL.
+*/
     padding-block: var(--sp-1);
     padding-inline: var(--sp-1) var(--sp-2-5);
     /* R313 (WP-F · D16): square chip on the hairline (the avatar keeps
-       its own circle — circular primitives only). */
+    its own circle — circular primitives only).
+*/
     border-radius: var(--r-xs);
     border: 1px solid var(--rule);
     background: var(--surface);
     /* R329 (gate:clean): the transition is r305-shell.css's unlayered
-       control recipe — this in-layer copy was inert. */
+    control recipe — this in-layer copy was inert.
+*/
   }
   @media (hover: hover) and (pointer: fine) {
     .topbar-user-trigger:hover { border-color: var(--border-strong); background: var(--surface-2); }
@@ -842,40 +947,45 @@
   .topbar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
     /* R354-UI-2 — the name is chrome, not signal: clamp it like the
-       scope chip (24ch) and let the ellipsis carry the rest. */
+    scope chip (24ch) and let the ellipsis carry the rest.
+*/
     min-inline-size: 0;
     max-inline-size: 22ch;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     /* r155d: was 1 — the single-line box clipped Arabic descenders on the
-       13px semibold (the same defect class notifications.css documents
-       on .bottom-nav-label); --lh-snug (1.2) is the documented floor. */
+    13px semibold (the same defect class notifications.css documents
+    on .bottom-nav-label); --lh-snug (1.2) is the documented floor.
+*/
     line-height: var(--lh-snug); padding-inline-end: var(--sp-1);
   }
   /* (.topbar-user-menu container + -item/-divider rules removed in the
-     WS-D2 orphan sweep: Topbar now mounts the <Dropdown> primitive with
-     DropdownItem/DropdownSeparator. Only the -header block below is still
-     referenced by the markup.) */
+   WS-D2 orphan sweep: Topbar now mounts the <Dropdown> primitive with
+   DropdownItem/DropdownSeparator. Only the -header block below is still
+   referenced by the markup.)
+*/
   .topbar-user-menu-header { padding: var(--sp-3) var(--sp-4); border-block-end: 1px solid var(--rule); background: var(--surface-2); }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  GLOBAL SEARCH (wave 2-b — audit 0-c P0-1)                     ║
-     ║  The pill IS the input, styled in components.css right after   ║
-     ║  the global input rules (the layout layer cannot override      ║
-     ║  them — layer order layout < components; the old rules here    ║
-     ║  were dead for that reason AND lost to polish v8's reset).     ║
-     ║  This section owns the wrapper + the absolutely-positioned      ║
-     ║  chrome inside the pill: search icon (inline-start), kbd       ║
-     ║  shortcut hint / clear button (inline-end). All logical        ║
-     ║  properties — RTL-correct. LibraryPage reuses the same markup  ║
-     ║  for its page-level search bars (icon + input only).          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   GLOBAL SEARCH (wave 2-b — audit 0-c P0-1)
+   The pill IS the input, styled in components.css right after
+   the global input rules (the layout layer cannot override
+   them — layer order layout < components; the old rules here
+   were dead for that reason AND lost to polish v8's reset).
+   This section owns the wrapper + the absolutely-positioned
+   chrome inside the pill: search icon (inline-start), kbd
+   shortcut hint / clear button (inline-end). All logical
+   properties — RTL-correct. LibraryPage reuses the same markup
+   for its page-level search bars (icon + input only).
+   ╚╚╚
+*/
   .global-search { position: relative; }
   /* (.global-search-input-wrap / .global-search-kbd and the
-     .global-search input pill were dead selectors — the markup was
-     renamed to .topbar-search* without renaming the CSS, and every
-     declaration lost the cascade anyway. Deleted in wave 2-b.) */
+   .global-search input pill were dead selectors — the markup was
+   renamed to .topbar-search* without renaming the CSS, and every
+   declaration lost the cascade anyway. Deleted in wave 2-b.)
+*/
 
   .topbar-search {
     position: relative;
@@ -883,14 +993,16 @@
     align-items: center;
     inline-size: 100%;
     /* The v22 focus ring resolves `border-radius: inherit` on the
-       focused input — pinning the wrapper's radius to the input's own
-       square makes the ring hug the field exactly.
-       R313 (WP-F · D16): the search pill joins the square input
-       grammar (the reference's fields are square on the #B3B3AF
-       hairline). */
+    focused input — pinning the wrapper's radius to the input's own
+    square makes the ring hug the field exactly.
+    R313 (WP-F · D16): the search pill joins the square input
+    grammar (the reference's fields are square on the #B3B3AF
+    hairline).
+*/
     border-radius: var(--r-xs);
     /* Clicking anywhere in the pill (label wraps the input) focuses
-       the field — advertise it. */
+    the field — advertise it.
+*/
     cursor: text;
   }
   .topbar-search-icon {
@@ -903,7 +1015,8 @@
     pointer-events: none;
   }
   /* ⌘K / Ctrl+K hint — mirrors the .kbd chip language (components.css).
-     The glyphs are a Latin/symbol run, so the TSX sets dir="ltr". */
+   The glyphs are a Latin/symbol run, so the TSX sets dir="ltr".
+*/
   .topbar-search-shortcut {
     position: absolute;
     inset-inline-end: var(--sp-2);
@@ -917,7 +1030,8 @@
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
     /* r304: --text-secondary — muted measured 3.35:1 on the surface-2
-       chip at 13px (axe, browser check); secondary clears AA both themes. */
+    chip at 13px (axe, browser check); secondary clears AA both themes.
+*/
     color: var(--text-secondary);
     background: var(--surface-2);
     border: 1px solid var(--rule);
@@ -925,9 +1039,10 @@
     pointer-events: none;
   }
   /* Clear button — rendered only when text is present (mutually
-     exclusive with the shortcut hint; the TSX marks the wrapper with
-     .has-clear / .has-shortcut so the input's end padding can reserve
-     the right zone). */
+   exclusive with the shortcut hint; the TSX marks the wrapper with
+   .has-clear / .has-shortcut so the input's end padding can reserve
+   the right zone).
+*/
   .topbar-search-clear {
     position: absolute;
     inset-inline-end: var(--sp-1);
@@ -938,7 +1053,8 @@
     justify-content: center;
     inline-size: 32px;
     block-size: 32px;
-    /* R313 (WP-F · D16): square on the square input. */
+    /* R313 (WP-F · D16): square on the square input.
+*/
     border-radius: var(--r-xs);
     color: var(--text-muted);
     cursor: pointer;
@@ -947,65 +1063,62 @@
       background var(--t-fast) var(--ease);
   }
   @media (hover: hover) and (pointer: fine) {
-    /* R319 (c1-A · B1): guarded fine-pointer wash, pair whole. */
+    /* R319 (c1-A · B1): guarded fine-pointer wash, pair whole.
+*/
     .topbar-search-clear:hover { color: var(--text); background: var(--surface-3); }
   }
   .topbar-search-clear:active { color: var(--text); background: var(--surface-3); transition-duration: var(--motion-duration-micro); }
   @media (max-width: 640px) {
     /* 44px touch target on phones — the transparent button fills the
-       (44px) pill exactly there; the :focus-visible ring comes from
-       the v22 system like every other button. */
+    (44px) pill exactly there; the :focus-visible ring comes from
+    the v22 system like every other button.
+*/
     .topbar-search-clear { inline-size: 44px; block-size: 44px; }
   }
 
   /* (r151c dead-twin sweep: the search family below is the layout-layer
-     base of a system polish v21 fully re-specified in @layer overrides.
-     Declaration-by-declaration comparison kept ONLY the survivors —
-     everything polish also sets is dead here by layer order. The fully
-     shadowed rules (.search-section, .search-row:hover, -body, -title,
-     -sub, -arrow, -empty-title, -empty-hint, -empty-tips, -tip-pill,
-     -footer) were deleted outright. When v21 migrates home (r151-m3)
-     it becomes a pure move.) */
+   base of a system polish v21 fully re-specified in @layer overrides.
+   Declaration-by-declaration comparison kept ONLY the survivors —
+   everything polish also sets is dead here by layer order. The fully
+   shadowed rules (.search-section, .search-row:hover, -body, -title,
+   -sub, -arrow, -empty-title, -empty-hint, -empty-tips, -tip-pill,
+   -footer) were deleted outright. When v21 migrates home (r151-m3)
+   it becomes a pure move.)
+*/
+  /* R369-C (C4.2): the r151c base survivors folded INTO their v21
+   presentation homes (the block's own comment names this fold as the
+   designed end-state — "When v21 migrates home it becomes a pure
+   move"). One owner per selector; computed result identical (the
+   declarations were property-disjoint by design).
+*/
+  .search-loading, .search-shimmer { align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
+
+  /* ╔╔╔
+   SEARCH DROPDOWN — the v21 presentation, home since r152d
+   ╚╚╚
+   (r151c kept only the property-disjoint base above; r152d moved
+   the full presentation grammar here from polish v21 — a pure move,
+   internal order preserved. The RM belt + craft-floor sweep still
+   live in polish and keep winning by layer order, as designed.)
+*/
+  /* ╔╔╔
+   SEARCH DROPDOWN — richer presentation
+   ╚╚╚
+*/
   .search-dropdown {
     position: absolute;
-    inset-block-start: calc(100% + var(--sp-1-5)); /* r153h: 6px → --sp-1-5 */
+    inset-block-start: calc(100% + var(--sp-1-5)); /* r153h: 6px → --sp-1-5
+*/
     inset-inline-start: 0; inset-inline-end: 0;
     background: var(--surface);
     max-block-size: 480px;
     z-index: var(--z-popover);
     padding: var(--sp-2);
-  }
-  /* R313 (WP-F · D16): the overlay is a solid sheet on the hairline —
-     no shadow, no gradient, radius 0 (the presentation re-spec below
-     keeps its border + flat surface). */
-  .search-section-label {
-    margin-block-end: var(--sp-1);
-  }
-  .search-row {
-    border-radius: var(--r-sm);
-  }
-  .search-row-icon {
-    background: var(--c-grey-bg);
-    color: var(--c-grey-deep);
-  }
-  .search-empty { display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; }
-  .search-loading, .search-shimmer { align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SEARCH DROPDOWN — the v21 presentation, home since r152d      ║
-     ╚═══════════════════════════════════════════════════════════════╝
-     (r151c kept only the property-disjoint base above; r152d moved
-     the full presentation grammar here from polish v21 — a pure move,
-     internal order preserved. The RM belt + craft-floor sweep still
-     live in polish and keep winning by layer order, as designed.) */
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SEARCH DROPDOWN — richer presentation                         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .search-dropdown {
     border: 1px solid var(--rule);
     border-radius: var(--r-xs);
     overflow: hidden;
-    /* Override any generic popover animation; this one's bespoke */
+    /* Override any generic popover animation; this one's bespoke
+*/
     animation: madarek-search-pop var(--motion-duration-medium) var(--ease-spring-soft) both;
     transform-origin: top center;
   }
@@ -1021,19 +1134,22 @@
     border-block-start: 1px solid var(--rule);
   }
   .search-section-label {
+    margin-block-end: var(--sp-1);
     padding: var(--sp-2) var(--sp-4);
     font-size: var(--fs-xxs);
     /* 21-c ruling #2: the section labels are Arabic («مقررات»، «محاضرات»…)
-       — uppercase is a Latin-only concept here and 0.12em tracking
-       broke the cursive joins (same call as .landing-campus-eyebrow). */
+    — uppercase is a Latin-only concept here and 0.12em tracking
+    broke the cursive joins (same call as .landing-campus-eyebrow).
+*/
     text-transform: none;
     letter-spacing: normal;
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
     /* r305 (Heron conservation): the 90deg surface-fade backdrop is
-       retired — decorative gradient paint in the chrome (the quiet
-       muted label carries the section; the dropdown hairlines carry
-       the structure). The [dir=rtl] gradient twin retired with it. */
+    retired — decorative gradient paint in the chrome (the quiet
+    muted label carries the section; the dropdown hairlines carry
+    the structure). The [dir=rtl] gradient twin retired with it.
+*/
   }
 
   .search-row {
@@ -1043,9 +1159,11 @@
     inline-size: 100%;
     padding: var(--sp-3) var(--sp-4);
     border: none;
+    border-radius: var(--r-sm);
     /* R319 (c1-A · B1): the row joins the paired-state contract —
-       hover/selected flip --_bg and --_fg together (base fg is the
-       theme ink; the surface step never strands it). */
+    hover/selected flip --_bg and --_fg together (base fg is the
+    theme ink; the surface step never strands it).
+*/
     --_bg: transparent;
     --_fg: var(--text);
     background: var(--_bg);
@@ -1053,13 +1171,15 @@
     text-align: start;
     cursor: pointer;
     /* (5-C1, 4-A11 P2-10 family: the hover affordance used to grow
-       padding-inline-start 16→20px — text reflow on every hover of
-       every search/command row, and a layout-property transition the
-       line-based gate cannot see in multi-line form. The row now
-       stays put; the icon nudges toward the content exactly like
-       .notif-item above (compositor-only, direction-aware).) */
+    padding-inline-start 16→20px — text reflow on every hover of
+    every search/command row, and a layout-property transition the
+    line-based gate cannot see in multi-line form. The row now
+    stays put; the icon nudges toward the content exactly like
+    .notif-item above (compositor-only, direction-aware).)
+*/
     /* r149 (R3-A3 §4): transform ينضم — الصف يضغط الآن (0.985 عبر سجل
-     v13) بدل القفز. */
+   v13) بدل القفز.
+*/
     transition:
       background var(--motion-duration-short) var(--ease),
       color var(--motion-duration-short) var(--ease),
@@ -1069,7 +1189,8 @@
   .search-row::before {
     content: '';
     /* R313 (WP-F · D16): the selected row's signal is the square 2px
-       accent rule — same grammar as the sidebar's active marker. */
+    accent rule — same grammar as the sidebar's active marker.
+*/
     inset-block: 10px;
     inset-inline-start: 0;
     inline-size: 2px;
@@ -1079,13 +1200,14 @@
     transition: transform var(--motion-duration-short) var(--ease-spring-soft);
   }
   /* r305 (Heron conservation): hover is a SURFACE STEP — the accent
-     wash + accent bar used to preview on plain hover, spending the
-     signal before the user committed. The bar + tinted step are the
-     SELECTED grammar (.active / aria-selected — the list's one
-     marker); hover earns --surface-2 only. LibraryPage reuses this
-     family, so both surfaces inherit the quieter hover.
-     R319 (c1-A · B1): the wash is guarded to fine pointers (hover
-     sticks after a tap on touch) and the pair travels whole. */
+   wash + accent bar used to preview on plain hover, spending the
+   signal before the user committed. The bar + tinted step are the
+   SELECTED grammar (.active / aria-selected — the list's one
+   marker); hover earns --surface-2 only. LibraryPage reuses this
+   family, so both surfaces inherit the quieter hover.
+   R319 (c1-A · B1): the wash is guarded to fine pointers (hover
+   sticks after a tap on touch) and the pair travels whole.
+*/
   @media (hover: hover) and (pointer: fine) {
     .search-row:hover {
       --_bg: var(--surface-2);
@@ -1094,7 +1216,8 @@
   }
   .search-row:active {
     /* R319 (c1-A · B1): the press twin — same pair, always-on,
-     instant on the press. */
+   instant on the press.
+*/
     --_bg: var(--surface-2);
     --_fg: var(--text);
     transition-duration: var(--motion-duration-micro);
@@ -1102,9 +1225,10 @@
   .search-row.active,
   .search-row[aria-selected="true"] {
     /* R313 (WP-F · D16): selected = the 2px rule + the paper step —
-       no accent wash (one signal, the marker carries it).
-       R319 (c1-A · B1): paired tokens (fg stays the theme ink on the
-       stepped ground — the pair can never half-flip). */
+    no accent wash (one signal, the marker carries it).
+    R319 (c1-A · B1): paired tokens (fg stays the theme ink on the
+    stepped ground — the pair can never half-flip).
+*/
     --_bg: var(--surface-2);
     --_fg: var(--text);
   }
@@ -1124,11 +1248,14 @@
     inline-size: 36px;
     block-size: 36px;
     border-radius: var(--r-md);
+    background: var(--c-grey-bg);
+    color: var(--c-grey-deep);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 18px; /* type-gate: allow — icon-tile glyph (36×36 tile, glyph ladder) */
+    font-size: 18px; /* type-gate: allow — icon-tile glyph (36×36 tile, glyph ladder)
+*/
     transition: transform var(--motion-duration-short) var(--ease);
   }
   .search-row-body {
@@ -1146,17 +1273,11 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .search-row-sub {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
   /* r353-F — the discovery row is ONE line: the title with a single
-     inline meta (subtitleAr) riding the same baseline. The title keeps
-     its ellipsis; the meta takes the remainder and truncates after it,
-     so a long subtitle can never wrap the row taller. */
+   inline meta (subtitleAr) riding the same baseline. The title keeps
+   its ellipsis; the meta takes the remainder and truncates after it,
+   so a long subtitle can never wrap the row taller.
+*/
   .search-row-line {
     display: flex;
     align-items: baseline;
@@ -1196,15 +1317,17 @@
     }
   }
   /* If arrow has no rtl flip applied, we still want its base transform
-     to point in the start direction in rtl */
+   to point in the start direction in rtl
+*/
   [dir="rtl"] .search-row-arrow {
     transform: rotate(180deg);
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SEARCH LOADING — friendlier shimmer rows                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SEARCH LOADING — friendlier shimmer rows
+   ╚╚╚
+*/
   .search-loading {
     display: flex;
     flex-direction: column;
@@ -1222,8 +1345,9 @@
     );
     background-size: 200% 100%;
     /* r150b: rides the canonical skeleton-shimmer pair (was its own
-       200%→-100% math — a fourth grammar). RTL-aware like every other
-       skeleton now; the stagger delays stay. */
+    200%→-100% math — a fourth grammar). RTL-aware like every other
+    skeleton now; the stagger delays stay.
+*/
     animation: skeleton-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
     display: block;
   }
@@ -1233,21 +1357,28 @@
   .search-shimmer:nth-child(3) { inline-size: 60%; animation-delay: 240ms; }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SEARCH EMPTY — bigger, more confident                         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SEARCH EMPTY — bigger, more confident
+   ╚╚╚
+*/
   .search-empty {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    align-items: center;
     padding: var(--sp-6) var(--sp-4);
     text-align: center;
   }
   /* r280: the mk-ill `empty-search` piece above the no-results copy
-     (the palette's designed no-results moment). The kit sheet owns
-     the piece geometry; this slot only breathes. */
+   (the palette's designed no-results moment). The kit sheet owns
+   the piece geometry; this slot only breathes.
+*/
   .search-empty-illustration {
     margin-block-end: var(--sp-2);
   }
   .search-empty-title {
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (the .state-title register; was 700) */
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (the .state-title register; was 700)
+*/
     color: var(--text);
     font-size: var(--fs-body);
     margin-block-end: var(--sp-3);
@@ -1267,7 +1398,8 @@
     border: 1px solid var(--rule);
     color: var(--text-secondary);
     padding: var(--sp-1) var(--sp-3);
-    /* R313 (WP-F · D16): square chip on the hairline. */
+    /* R313 (WP-F · D16): square chip on the hairline.
+*/
     border-radius: var(--r-xs);
     font-size: var(--fs-xs);
     cursor: pointer;
@@ -1279,9 +1411,10 @@
   }
   @media (hover: hover) and (pointer: fine) {
     /* r305 (Heron conservation): hover is a surface step + a stronger
-       hairline — was an accent wash + accent border (copper spent on
-       hover). The pill's ink steps up to keep the affordance legible.
-       R319 (c1-A · B1): guarded fine-pointer wash, pair whole. */
+    hairline — was an accent wash + accent border (copper spent on
+    hover). The pill's ink steps up to keep the affordance legible.
+    R319 (c1-A · B1): guarded fine-pointer wash, pair whole.
+*/
     .search-tip-pill:hover {
       background: var(--surface-3);
       border-color: var(--border-strong);
@@ -1302,9 +1435,10 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SEARCH FOOTER — keyboard hints                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SEARCH FOOTER — keyboard hints
+   ╚╚╚
+*/
   .search-footer {
     padding: var(--sp-3) var(--sp-4);
     border-block-start: 1px solid var(--rule);
@@ -1319,47 +1453,56 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BOTTOM NAV (mobile only)                                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   BOTTOM NAV (mobile only)
+   ╚╚╚
+*/
   /* (wave 2-b — this block was deleted: every declaration lost the
-     cascade war. The container + .is-hidden were redefined 1:1 by
-     polish v22 (overrides layer, ruling #8); the .bottom-nav-item
-     rules were fully superseded by notifications.css (pages layer).
-     The BottomNav TSX classes stay — only the dead CSS went. See
-     audits/0-c P1-3 + worklog Task 1-a.) */
+   cascade war. The container + .is-hidden were redefined 1:1 by
+   polish v22 (overrides layer, ruling #8); the .bottom-nav-item
+   rules were fully superseded by notifications.css (pages layer).
+   The BottomNav TSX classes stay — only the dead CSS went. See
+   audits/0-c P1-3 + worklog Task 1-a.)
+*/
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  THEME TOGGLE                                                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   THEME TOGGLE
+   ╚╚╚
+*/
   .theme-toggle {
     display: inline-flex;
     background: var(--surface-2);
     border: 1px solid var(--rule);
-    /* R313 (WP-F · D16): square track on the hairline. */
+    /* R313 (WP-F · D16): square track on the hairline.
+*/
     border-radius: var(--r-xs);
-    padding: 3px; /* spacing-gate: allow — theme-toggle track inset — thumb geometry, not a scale rung */
+    padding: 3px; /* spacing-gate: allow — theme-toggle track inset — thumb geometry, not a scale rung
+*/
     gap: 0;
   }
   .theme-toggle-option {
     inline-size: 30px; block-size: 28px;
     display: inline-flex; align-items: center; justify-content: center;
     /* R319 (c1-A · B1): the option joins the paired-state contract —
-       the transparent track ground is the constant bg half; hover and
-       the is-active thumb flip both halves together. */
+    the transparent track ground is the constant bg half; hover and
+    the is-active thumb flip both halves together.
+*/
     --_bg: transparent;
     --_fg: var(--text-muted);
     background: var(--_bg);
     color: var(--_fg);
-    /* R313 (WP-F · D16): square option on the square track. */
+    /* R313 (WP-F · D16): square option on the square track.
+*/
     border-radius: var(--r-xs);
     /* R329 (gate:clean): the transition is r305-shell.css's unlayered
-       control recipe — this in-layer copy was inert. */
+    control recipe — this in-layer copy was inert.
+*/
     cursor: pointer;
   }
   @media (hover: hover) and (pointer: fine) {
     /* R319 (c1-A · B1): guarded fine-pointer wash — the ink steps on
-       the constant transparent ground, pair whole. */
+    the constant transparent ground, pair whole.
+*/
     .theme-toggle-option:hover { --_fg: var(--text); --_bg: transparent; }
   }
   .theme-toggle-option:active { --_fg: var(--text); --_bg: transparent; transition-duration: var(--motion-duration-micro); }
@@ -1369,20 +1512,22 @@
     background: var(--_bg);
     color: var(--_fg);
     /* r305 (Heron conservation): the thumb floats by SURFACE STEP + an
-       inset hairline now (precise outlines) — the at-rest --shadow-card
-       on a chrome control read as elevation the overlay ladder doesn't
-       sanction. Inset ring, not a border: no layout shift inside the
-       segmented track. R313 (WP-F · D16): a border would render the
-       same 1px hairline today — the inset ring stays (no layout shift
-       inside the segmented track). */
+    inset hairline now (precise outlines) — the at-rest --shadow-card
+    on a chrome control read as elevation the overlay ladder doesn't
+    sanction. Inset ring, not a border: no layout shift inside the
+    segmented track. R313 (WP-F · D16): a border would render the
+    same 1px hairline today — the inset ring stays (no layout shift
+    inside the segmented track).
+*/
     box-shadow: inset 0 0 0 1px var(--rule);
   }
 
   /* Collapsed icon rail (4-A2 P2-9): the 3 options used to squeeze
-     side-by-side into ~40px of rail content — three 13×28 slivers.
-     Stack them vertically instead: each option becomes a real
-     ~34×30 button. Desktop-only band, matching every other
-     .sidebar.collapsed rule (the mobile drawer never collapses). */
+   side-by-side into ~40px of rail content — three 13×28 slivers.
+   Stack them vertically instead: each option becomes a real
+   ~34×30 button. Desktop-only band, matching every other
+   .sidebar.collapsed rule (the mobile drawer never collapses).
+*/
   @media (min-width: 921px) {
     .sidebar.collapsed .theme-toggle {
       flex-direction: column;
@@ -1396,14 +1541,15 @@
   }
 
   /* 5-D1 (A5 P2-4) — the drawer footer's last sub-44 controls: the
-     three theme options measured 30×28 with gap 0 (the worst touch
-     cluster on the platform; logout + mobile-close already carry the
-     4-A2 P2-6 floor above). min-* grows only the hit area — glyphs
-     stay 14-16px — and beats the physical inline/block-size above at
-     used-value time. The 4px gap keeps adjacent 44px options from
-     sharing an edge (a mis-tap lands in the gutter, not the
-     neighbour). Scoped to the mobile band: the desktop sidebar keeps
-     its compact 30×28 segmented pill (pointer-fine). */
+   three theme options measured 30×28 with gap 0 (the worst touch
+   cluster on the platform; logout + mobile-close already carry the
+   4-A2 P2-6 floor above). min-* grows only the hit area — glyphs
+   stay 14-16px — and beats the physical inline/block-size above at
+   used-value time. The 4px gap keeps adjacent 44px options from
+   sharing an edge (a mis-tap lands in the gutter, not the
+   neighbour). Scoped to the mobile band: the desktop sidebar keeps
+   its compact 30×28 segmented pill (pointer-fine).
+*/
   @media (max-width: 920px) {
     .theme-toggle { gap: var(--sp-1); }
     .theme-toggle-option { min-inline-size: 44px; min-block-size: 44px; }
@@ -1411,20 +1557,22 @@
   }
 
   /* r164-j (WCAG 2.2 §2.5.8 / NN/g 44px — input-capability floors):
-     the band blocks above proxy "touch" by VIEWPORT WIDTH, which misses
-     two real touch contexts: tablets in the ≥921px desktop band
-     (landscape iPad renders the persistent sidebar + full topbar with
-     touch input) and 641–920 (where .icon-btn's only floor is ≤640).
-     (hover: none) targets the actual input capability — the same idiom
-     .cmd-row already uses (see the COMMAND PALETTE BODY section below):
-     pointer-fine desktops keep the documented compact rhythm (the
-     5-D1 ruling above stands for them); every touch device gets the
-     44px hit floor on the layout/overlay chrome this file owns.
-     min-* grows the hit box only — glyphs, labels and the visible
-     chip language stay compact (min constraints apply at used-value
-     time, regardless of the physical sizes later layers declare). */
+   the band blocks above proxy "touch" by VIEWPORT WIDTH, which misses
+   two real touch contexts: tablets in the ≥921px desktop band
+   (landscape iPad renders the persistent sidebar + full topbar with
+   touch input) and 641–920 (where .icon-btn's only floor is ≤640).
+   (hover: none) targets the actual input capability — the same idiom
+   .cmd-row already uses (see the COMMAND PALETTE BODY section below):
+   pointer-fine desktops keep the documented compact rhythm (the
+   5-D1 ruling above stands for them); every touch device gets the
+   44px hit floor on the layout/overlay chrome this file owns.
+   min-* grows the hit box only — glyphs, labels and the visible
+   chip language stay compact (min constraints apply at used-value
+   time, regardless of the physical sizes later layers declare).
+*/
   @media (hover: none) {
-    .icon-btn { min-inline-size: 44px; min-block-size: 44px; } /* Sheet/Modal close affordances */
+    .icon-btn { min-inline-size: 44px; min-block-size: 44px; } /* Sheet/Modal close affordances
+*/
     .sidebar .nav-item { min-block-size: 44px; }
     .theme-toggle-option { min-inline-size: 44px; min-block-size: 44px; }
     .sidebar-collapse-btn { min-inline-size: 44px; min-block-size: 44px; }
@@ -1433,13 +1581,14 @@
     .topbar-user-trigger { min-block-size: 44px; }
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  COMMAND PALETTE BODY (wave 21-a — 4-A2 P2-8 wiring)           ║
-     ║  The overlay/card chrome lives in components.css (T066). This  ║
-     ║  section styles the search-first body mounted inside the card: ║
-     ║  input row, scrollable list (reusing the .search-row family    ║
-     ║  this file already owns), and the kbd hint footer.             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   COMMAND PALETTE BODY (wave 21-a — 4-A2 P2-8 wiring)
+   The overlay/card chrome lives in components.css (T066). This
+   section styles the search-first body mounted inside the card:
+   input row, scrollable list (reusing the .search-row family
+   this file already owns), and the kbd hint footer.
+   ╚╚╚
+*/
   .cmd-body {
     display: flex;
     flex-direction: column;
@@ -1467,17 +1616,20 @@
     font-size: var(--fs-md);
     padding: var(--sp-2) 0;
   }
-  .cmd-input::placeholder { color: var(--text-faint); } /* r149 (R3-A5 #4): وحّد مع كل placeholder في المنصة (كان --text-muted درجة أغمق) */
+  .cmd-input::placeholder { color: var(--text-faint); } /* r149 (R3-A5 #4): وحّد مع كل placeholder في المنصة (كان --text-muted درجة أغمق)
+*/
   /* r176f (E-02): suppress only the MOUSE focus outline — the layer
-     order (layout > base) used to defeat the universal :focus-visible
-     ring from motion.css, leaving the ⌘K palette's only search input
-     with no keyboard focus indication. Mirrors base.css:116's fix for
-     the same class of bug. */
+   order (layout > base) used to defeat the universal :focus-visible
+   ring from motion.css, leaving the ⌘K palette's only search input
+   with no keyboard focus indication. Mirrors base.css:116's fix for
+   the same class of bug.
+*/
   .cmd-input:focus:not(:focus-visible) { outline: none; }
   .cmd-input-esc { color: var(--text-muted); flex-shrink: 0; display: inline-flex; }
   /* r366 (2-f): the phone sheet's close seat — hidden on the keyboard
-     band (the Esc hint owns dismissal there); the phone band swaps it
-     in (components.css owns the swap point with the sheet geometry). */
+   band (the Esc hint owns dismissal there); the phone band swaps it
+   in (components.css owns the swap point with the sheet geometry).
+*/
   .cmd-input-close {
     display: none;
     align-items: center;
@@ -1513,18 +1665,20 @@
     color: var(--text-muted);
   }
   /* Touch floor: phones/tablets get 44px rows; pointer users keep
-     the compact palette rhythm. */
+   the compact palette rhythm.
+*/
   @media (hover: none) {
     .cmd-row { min-block-size: 44px; }
     .cmd-input { min-block-size: 44px; }
   }
   /* The card's own max-block-size (calc(76dvh), components.css) plus
-     the sticky input/footer rows means the LIST is the scroller. */
+   the sticky input/footer rows means the LIST is the scroller.
+*/
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    UNLAYERED — mobile drawer visibility timing (r157, 6A4-1)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The drawer's visibility pair lives in @layer layout above
    (.sidebar → hidden closed / .sidebar.open → visible). The TIMING
    for that flip cannot live there: polish.css's "SIDEBAR DRAWER —
@@ -1539,24 +1693,25 @@
    declaration beats every layer without !important. These blocks
    re-declare ONLY the transition longhands, per property:
 
-     · transform keeps polish's exact timing — duration
-       var(--motion-duration-long) (380ms, the same token polish
-       uses), zero delay, and the spring easing stays polish's (not
-       re-declared here);
-     · visibility flips with a 0s duration (zero-ish — kills motion,
-       doesn't author it) DELAYED by the full slide length, so the
-       hide lands exactly when the slide-out finishes — the a11y
-       tree keeps the drawer through the whole exit, then it is
-       gone (the worklog's spec named --t-base 240ms for this delay,
-       but the live slide is the overrides-layer 380ms: --t-base
-       would hide the drawer 140ms early, mid-slide);
-     · .sidebar.open re-declares zero delay for the open direction —
-       the drawer is visible (focusable) from the slide-in's first
-       frame;
-     · no `linear` keyword, no raw durations (delay slots are
-       token-exempt by the motion gate's own policy); the
-       reduced-motion 0.01ms belt (base.css) collapses the timing to
-       an instant flip in both directions. */
+   · transform keeps polish's exact timing — duration
+    var(--motion-duration-long) (380ms, the same token polish
+    uses), zero delay, and the spring easing stays polish's (not
+    re-declared here);
+   · visibility flips with a 0s duration (zero-ish — kills motion,
+    doesn't author it) DELAYED by the full slide length, so the
+    hide lands exactly when the slide-out finishes — the a11y
+    tree keeps the drawer through the whole exit, then it is
+    gone (the worklog's spec named --t-base 240ms for this delay,
+    but the live slide is the overrides-layer 380ms: --t-base
+    would hide the drawer 140ms early, mid-slide);
+   · .sidebar.open re-declares zero delay for the open direction —
+    the drawer is visible (focusable) from the slide-in's first
+    frame;
+   · no `linear` keyword, no raw durations (delay slots are
+    token-exempt by the motion gate's own policy); the
+    reduced-motion 0.01ms belt (base.css) collapses the timing to
+    an instant flip in both directions.
+*/
 @media (max-width: 920px) {
   .sidebar {
     transition-property: transform, visibility;
@@ -1572,9 +1727,10 @@
 
 
 
-/* ╔═══════════════════════════════════════════════════════════════╗
-   ║  SERVER WAKE PILL (r280) — «الخادم يستيقظ…»                     ║
-   ╚═══════════════════════════════════════════════════════════════╝ */
+/* ╔╔╔
+   SERVER WAKE PILL (r280) — «الخادم يستيقظ…»
+   ╚╚╚
+*/
 @media (min-width: 921px) {
   .wake-pill {
     position: fixed;
@@ -1588,7 +1744,8 @@
     background: var(--surface-1);
     border: 1px solid var(--rule);
     /* R313 (WP-F · D16): square floating chrome on the hairline — no
-       shadow, no pill radius. */
+    shadow, no pill radius.
+*/
     border-radius: var(--r-xs);
     max-inline-size: min(480px, calc(100vw - var(--sp-8)));
     animation: wake-pill-in var(--motion-duration-medium) var(--ease);
@@ -1596,7 +1753,8 @@
 }
 
 /* Mobile: the pill rides ABOVE the bottom-nav (never covering the tab
-   bar), respecting the safe-area inset the tab bar itself adds. */
+   bar), respecting the safe-area inset the tab bar itself adds.
+*/
 @media (max-width: 920px) {
   .wake-pill {
     position: fixed;
@@ -1610,7 +1768,8 @@
     background: var(--surface-1);
     border: 1px solid var(--rule);
     /* R313 (WP-F · D16): square floating chrome on the hairline — no
-       shadow, no pill radius. */
+    shadow, no pill radius.
+*/
     border-radius: var(--r-xs);
     animation: wake-pill-in var(--motion-duration-medium) var(--ease);
   }
@@ -1646,7 +1805,8 @@
    sheet is self-contained under prefers-reduced-motion (the global
    0.01ms belts in base.css/polish.css already bound them; these are
    the explicit, per-selector kills the r305 shell contract test
-   asserts). */
+   asserts).
+*/
 @media (prefers-reduced-motion: reduce) {
   .search-dropdown,
   .search-shimmer,

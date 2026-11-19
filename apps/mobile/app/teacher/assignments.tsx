@@ -29,7 +29,7 @@ import {
   OfferingPicker,
   useTeacherOfferings,
 } from "@/features/teacher/components";
-import { CREATING } from "@/lib/copy";
+import {CREATING, TITLE_TWO_CHARS, GRADE_NOT_NEGATIVE, INVALID_DATETIME, WEIGHT_OF_GRADES} from "@/lib/copy";
 
 /** Wire shape of /teacher/me/pending-submissions (teacher-dashboard.routes.ts). */
 type PendingWire = Submission & {
@@ -117,9 +117,9 @@ export default function Assignments() {
     mutationFn: async () => {
       const value = Number(score);
       if (score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
-      if (value < 0) throw new Error("الدرجة ليست سالبة.");
+      if (value < 0) throw new Error(GRADE_NOT_NEGATIVE);
       if (gradeTarget?.maxScore != null && value > gradeTarget.maxScore) {
-        throw new Error(`الدرجة يجب ألّا تتجاوز ${latn(gradeTarget.maxScore)}.`);
+        throw new Error(`أقصى درجة ${latn(gradeTarget.maxScore)}.`);
       }
       const rounded = Math.round(value * 100) / 100;
       return teacherApi.gradeSubmission(gradeTarget!.id, {
@@ -130,7 +130,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "pending-submissions"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظت — بإشعار للطالب.", "تمّ التقييم");
+      toast.success("حُفظت — بإشعار للطالب.");
       setGradeTarget(null);
       setScore("");
       setFeedback("");
@@ -143,11 +143,11 @@ export default function Assignments() {
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر المقرّر أولاً.");
-      if (title.trim().length < 2) throw new Error("العنوان: حرفان على الأقل.");
+      if (title.trim().length < 2) throw new Error(TITLE_TWO_CHARS);
       if (!dueDate) throw new Error("حدّد الموعد النهائي.");
       const when = `${dueDate}T${dueTime.trim() === "" ? "23:59" : dueTime}`;
       const t = Date.parse(when);
-      if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
+      if (Number.isNaN(t)) throw new Error(INVALID_DATETIME);
       const w = Number(weight);
       const mx = Number(maxScore);
       if (Number.isNaN(w) || w < 0 || w > 100) throw new Error("الوزن بين 0 و100.");
@@ -164,7 +164,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "assignments"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("أُنشئ — يظهر فورًا.", "تمّ الإنشاء");
+      toast.success("أُنشئ — يظهر فورًا.");
       setCreating(false);
       setTitle("");
       setType("HOMEWORK");
@@ -184,10 +184,7 @@ export default function Assignments() {
   return (
     <Screen scroll>
       <StackHeader title="الواجبات والاختبارات" />
-      <PageHeader
-        title="الواجبات والاختبارات"
-        kicker="واجباتك والتسليمات بانتظارك."
-      />
+      <PageHeader title="الواجبات والاختبارات" />
       <SectionBar
         index={1}
         title="تسليمات بانتظار التقييم"
@@ -348,7 +345,7 @@ export default function Assignments() {
                 {gradeError}
               </T>
             ) : null}
-            <Button label="حفظ الدرجة" kind="accent" loading={grade.isPending} onPress={() => grade.mutate()} />
+            <Button label="حفظ" kind="accent" loading={grade.isPending} onPress={() => grade.mutate()} />
           </View>
         ) : null}
       </Sheet>
@@ -390,7 +387,7 @@ export default function Assignments() {
               setDueDate(v);
               setCreateError(null);
             }}
-            hint="بصيغة YYYY-MM-DD"
+            hint="YYYY-MM-DD"
             accessibilityLabel="الموعد النهائي"
           />
           <Field
@@ -401,7 +398,7 @@ export default function Assignments() {
             accessibilityLabel="وقت التسليم"
           />
           <Field
-            label="الوزن (% من الدرجات)"
+            label={WEIGHT_OF_GRADES}
             value={weight}
             onChangeText={setWeight}
             keyboardType="number-pad"

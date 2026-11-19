@@ -250,7 +250,7 @@ describe("PushActivationCard — the honest failure seats", () => {
     mockPermission = { granted: false, canAskAgain: false };
     const tree = await mountSettled(() => <PushActivationCard />);
     expect(tree.queryByText("مقفلة من إعدادات النظام — افتحها من هناك.")).not.toBeNull();
-    const settings = tree.getByRole("button", { name: "فتح إعدادات النظام" });
+    const settings = tree.getByRole("button", { name: "فتح الإعدادات" });
     await fireEvent.press(settings);
     expect(linkingSpy).toHaveBeenCalled();
   });

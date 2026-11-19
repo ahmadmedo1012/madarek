@@ -110,7 +110,7 @@ const NO_DEPARTMENTS_TEXT =
   // R355 copy diet: «لا أقسام في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو
   // تواصل مع المسجل العام.» → the surviving short form (§B rename folded
   // into R320 previously; R355 trimmed the tail).
-  'لا أقسام في هذه الكلّيّة — اختر كلّيّة أخرى.';
+  'لا أقسام هنا — اختر كلّيّة أخرى.';
 
 function renderPage() {
   return render(
@@ -273,9 +273,9 @@ describe('RegisterPage — server-error contract (r157 F5 / D17-3)', () => {
 
     const banner = screen.getByRole('alert');
     expect(banner).toHaveTextContent('تعذَّر إنشاء الحساب');
-    // R355 copy diet: the authored generic's tail is now «راجع البيانات
-    // وأعد المحاولة» (was the اتصالك phrasing).
-    expect(banner).toHaveTextContent('راجع البيانات وأعد المحاولة');
+    // R369 copy trim (0d827161): the generic's tail is «راجع الحقول» —
+    // the field errors follow.
+    expect(banner).toHaveTextContent('راجع الحقول');
     // The raw Latin transport prose never renders in the RTL UI.
     expect(banner).not.toHaveTextContent('Network Error');
     expect(screen.queryByRole('link', { name: 'سجِّل الدخول' })).toBeNull();

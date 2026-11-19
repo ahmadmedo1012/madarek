@@ -1,3 +1,5 @@
+import { RETRY_ACTION, DASH_OWNER, LIVE_MONITORING, FAILED_FETCH_ALERTS, LIVE_STREAM, LABEL_SYSTEM, FETCHING, ACTIVE_SESSIONS, THE_ALERTS, ONGOING_EXAMS, AI_REQ_PER_MIN } from '../../lib/copy';
+
 import { RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -75,8 +77,8 @@ export function OwnerRealtimePage() {
        inside this div, so the scoped sheet reaches them all. */
     <div className="page r305ao">
       <PatternsPageHeader
-        title="المراقبة الحيّة"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المراقبة الحيّة' }]}
+        title={LIVE_MONITORING}
+        breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: LIVE_MONITORING }]}
         /* R341 D11: the [02] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
         index="02"
@@ -87,8 +89,8 @@ export function OwnerRealtimePage() {
          * stays in-band. */
         actions={(
           <>
-            <Link to="/owner/alerts" className="btn accent sm">التنبيهات</Link>
-            <Link to="/owner/system" className="btn ghost sm">النظام</Link>
+            <Link to="/owner/alerts" className="btn accent sm">{THE_ALERTS}</Link>
+            <Link to="/owner/system" className="btn ghost sm">{LABEL_SYSTEM}</Link>
           </>
         )}
       />
@@ -114,9 +116,9 @@ export function OwnerRealtimePage() {
               {refreshFailed
                 ? 'تعذّر تحديث القراءات — آخر قراءة محفوظة'
                 : alerts.isPending
-                  ? 'جارٍ الجلب…'
+                  ? FETCHING
                   : alerts.isError
-                    ? 'تعذّر جلب التنبيهات'
+                    ? FAILED_FETCH_ALERTS
                     : hasAlerts
                       ? `${countAr(unresolvedAlerts.length, ACTIVE_ALERT_FORMS)}`
                       : 'طبيعيّ'}
@@ -132,7 +134,7 @@ export function OwnerRealtimePage() {
                   }}
                 >
                   <Icon icon={RefreshCw} size={12} />
-                  إعادة المحاولة
+                  {RETRY_ACTION}
                 </button>
               )}
               {/* Bound to the query's own dataUpdatedAt (audit 0-e
@@ -153,10 +155,10 @@ export function OwnerRealtimePage() {
               beside every label already says «live»; four identical
               words under four numbers were pure noise. */}
           <section role="status" aria-live="polite"><StatStrip ariaLabel="مؤشرات المراقبة الحيّة للمنصّة" cells={[
-            liveCell('الجلسات النشطة', data.activeSessions),
-            liveCell('طلبات AI / دقيقة', data.aiRequestsPerMin),
-            liveCell('بثّ مباشر', data.liveBroadcasts),
-            liveCell('اختبارات جارية', data.activeExams),
+            liveCell(ACTIVE_SESSIONS, data.activeSessions),
+            liveCell(AI_REQ_PER_MIN, data.aiRequestsPerMin),
+            liveCell(LIVE_STREAM, data.liveBroadcasts),
+            liveCell(ONGOING_EXAMS, data.activeExams),
           ]} /></section>
         </>
       )}

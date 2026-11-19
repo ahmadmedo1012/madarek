@@ -8,5 +8,5 @@ import { NotificationsScreen } from "@/features/notifications/NotificationsScree
  * way back except the edge swipe / hardware back.
  */
 export default function Alerts() {
-  return <NotificationsScreen title="الإشعارات" kicker="بريدك" stacked onBack={() => router.back()} />;
+  return <NotificationsScreen title="الإشعارات" stacked onBack={() => router.back()} />;
 }

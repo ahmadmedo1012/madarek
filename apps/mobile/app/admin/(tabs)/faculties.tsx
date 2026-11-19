@@ -23,7 +23,7 @@ import {
   useExpanded,
   type FacultyNode,
 } from "@/features/governance/components";
-import { ADDED } from "@/lib/copy";
+import {ADDED, NO_FACULTIES_YET, NAME_EN_OPTIONAL} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 /** (tabs) Faculties & departments — «الكلّيّات والأقسام» (web AdminFacultiesPage parity). */
@@ -94,9 +94,6 @@ export default function AdminFaculties() {
             <T variant="h2" weight="bold">
               الكلّيّات والأقسام
             </T>
-            <T variant="body" color="muted">
-              جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية.
-            </T>
           </View>
           <Button
             label="كلية جديدة"
@@ -139,9 +136,9 @@ export default function AdminFaculties() {
                       ) : null}
                       <T variant="xs" color="muted">
                         {f.city || "—"} ·{" "}
-                        {countAr(f.departmentCount ?? depts.length, ["قسم واحد", "قسمان", "أقسام", "قسماً"])} ·{" "}
-                        {countAr(f.courseCount ?? 0, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
-                        {countAr(f.studentCount ?? 0, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
+                        {countAr(f.departmentCount ?? depts.length, ["قسم", "قسمان", "أقسام", "قسماً"])} ·{" "}
+                        {countAr(f.courseCount ?? 0, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
+                        {countAr(f.studentCount ?? 0, ["طالب", "طالبان", "طلاب", "طالباً"])}
                       </T>
                     </View>
                     {depts.length > 0 ? (
@@ -167,9 +164,9 @@ export default function AdminFaculties() {
                                 {d.name}
                               </T>
                               <T variant="xs" color="muted">
-                                {countAr(d.courses ?? 0, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
-                                {countAr(d.teachers ?? 0, ["مدرّس واحد", "مدرّسان", "مدرّسون", "مدرّساً"])} ·{" "}
-                                {countAr(d.students ?? 0, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
+                                {countAr(d.courses ?? 0, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
+                                {countAr(d.teachers ?? 0, ["أستاذ", "أستاذان", "أساتذة", "أستاذاً"])} ·{" "}
+                                {countAr(d.students ?? 0, ["طالب", "طالبان", "طلاب", "طالباً"])}
                               </T>
                             </LedgerRow>
                           ))}
@@ -191,7 +188,7 @@ export default function AdminFaculties() {
             </View>
           ) : (
             <EmptyState
-              title="لا كليات بعد"
+              title={NO_FACULTIES_YET}
               message="أنشئ أول كلّيّة."
               actionLabel="كلية جديدة"
               onAction={() => setFacultyOpen(true)}
@@ -220,7 +217,7 @@ export default function AdminFaculties() {
             placeholder="كلية العلوم"
           />
           <Field
-            label="الاسم بالإنجليزية (اختياري)"
+            label={NAME_EN_OPTIONAL}
             value={fNameEn}
             onChangeText={setFNameEn}
             placeholder="Faculty of Science"
@@ -230,7 +227,7 @@ export default function AdminFaculties() {
             value={fCity}
             onChangeText={setFCity}
             placeholder="حرم المعرفة"
-            hint="الاسم يتميّز داخل مدينته."
+            hint="يتميّز داخل مدينته."
           />
           <Field
             label="رمز تعبيري (اختياري)"

@@ -11,7 +11,7 @@ import { SecretField } from "@/components/ui/fields";
 import { Card } from "@/components/ui/surfaces";
 import { humanizeError, GENERIC_AR } from "@/lib/errors";
 import { haptics } from "@/haptics";
-import { SAVING } from "@/lib/copy";
+import {SAVING, PW_NEW, PW_CONFIRM, PW_SAVE, PW_RANGE_HINT} from "@/lib/copy";
 
 /**
  * /auth/reset-password?token=… — single-use 30-min token, on the form
@@ -74,7 +74,7 @@ export default function ResetPassword() {
       <AppStatusBar />
       <FormScreen
         onSubmit={done ? undefined : submit}
-        submitLabel={busy ? SAVING : "حفظ كلمة المرور"}
+        submitLabel={busy ? SAVING : PW_SAVE}
         submitLoading={busy}
         submitKind="accent"
         error={error}
@@ -85,7 +85,7 @@ export default function ResetPassword() {
           <Card>
             <T variant="h4" weight="bold">تم تعيين كلمة المرور</T>
             <T variant="body" color="secondary">
-              اكتملت الاستعادة — انتهت جلساتك الأخرى وسيُعادك التطبيق إلى تسجيل الدخول الآن.
+              اكتملت الاستعادة — انتهت الجلسات الأخرى.
             </T>
           </Card>
         ) : (
@@ -93,15 +93,15 @@ export default function ResetPassword() {
             <SecretField
               {...form.field("password")}
               fieldId="password"
-              label="كلمة المرور الجديدة"
+              label={PW_NEW}
               purpose="newPassword"
-              hint="بين 12 و72 حرفًا."
+              hint={PW_RANGE_HINT}
               required
             />
             <SecretField
               {...form.field("confirm")}
               fieldId="confirm"
-              label="تأكيد كلمة المرور"
+              label={PW_CONFIRM}
               purpose="newPassword"
               required
             />

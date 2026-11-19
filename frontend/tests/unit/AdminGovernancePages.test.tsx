@@ -349,7 +349,7 @@ describe('AdminTeachersPage — server-side roster (15-d P1-1)', () => {
     renderTeachersPage();
 
     // R355 copy diet: the API-down line dropped «قائمة».
-    expect(await screen.findByText('تعذّر تحميل الأساتذة')).toBeInTheDocument();
+    expect(await screen.findByText('تعذّر التحميل')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'إعادة المحاولة' })).toBeInTheDocument();
     // R355 copy diet: the KPI label dropped «عدد» — «الأساتذة» is it.
     expect(kpiValue('الأساتذة')('—')).toBeInTheDocument();

@@ -24,7 +24,7 @@ import {
   countAr,
   numOf,
 } from "@/features/governance/components";
-import { READ_ONLY } from "@/lib/copy";
+import {READ_ONLY, NO_PAPERS_YET, EXTRA_DATA} from "@/lib/copy";
 
 const ATTENDANCE_KEY_LABEL: Record<string, string> = {
   PRESENT: "سجلّات حضور",
@@ -85,8 +85,7 @@ export default function QualityDashboard() {
               لوحة الجودة
             </T>
             <T variant="body" color="muted">
-              بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات
-              الاعتماد المحلية والدولية.
+              تطوير الأداء الأكاديمي والإداري — وفق الاعتماد.
             </T>
           </View>
           <Badge label={READ_ONLY} tone="grey" />
@@ -123,7 +122,7 @@ export default function QualityDashboard() {
               <MetricHero
                 label="الطلاب النشطون"
                 value={numOf(users.STUDENT)}
-                hint="آخر قراءة من الجودة"
+                hint="آخر قراءة"
                 progress={presentRate}
               />
               <View style={{ flexDirection: "row", gap: sp[8] }}>
@@ -159,7 +158,7 @@ export default function QualityDashboard() {
                       <StatLine
                         label="نسبة الحضور"
                         value={`${num(Math.round(presentRate * 100))}%`}
-                        hint={countAr(attTotal, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
+                        hint={countAr(attTotal, ["سجل", "سجلان", "سجلات", "سجلاً"])}
                         tone="accent"
                       />
                     ) : null}
@@ -173,7 +172,7 @@ export default function QualityDashboard() {
               {Object.keys(papers).length === 0 ? (
                 <EmptyState
                   room="library"
-                  title="لا بحوث بعد"
+                  title={NO_PAPERS_YET}
                   message="تظهر فور أول بحث."
                 />
               ) : (
@@ -205,7 +204,7 @@ export default function QualityDashboard() {
 
             {Object.keys(rest).length > 0 ? (
               <Animated.View entering={entering(4)}>
-                <SectionBar index={4} title="بيانات إضافية" />
+                <SectionBar index={4} title={EXTRA_DATA} />
                 <RowList>
                   <LedgerRow last>
                     <HonestLedger value={rest} />
@@ -220,7 +219,7 @@ export default function QualityDashboard() {
             >
               <Eye size={12} color={p.textFaint} />
               <T variant="xs" color="faint">
-                قطاع ضمان الجودة — وصول قراءة فقط · قراءة لحظية للمؤشرات.
+                قطاع ضمان الجودة — قراءة فقط، لحظية.
               </T>
             </Animated.View>
           </>

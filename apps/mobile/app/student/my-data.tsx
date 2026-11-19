@@ -37,7 +37,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { ScrollBody } from "@/features/student/components";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { SAVE_FAILED, SAVING, STUDENT_FILE_UNLINKED } from "@/lib/copy";
+import {SAVE_FAILED, SAVING, STUDENT_FILE_UNLINKED, NO_STUDENT_FILE} from "@/lib/copy";
 
 const STUDY_TYPE_LABELS: Record<string, string> = {
   MORNING: "صباحي",
@@ -139,10 +139,7 @@ export default function StudentMyData() {
       <AppStatusBar />
       <AppTopBar alertsPath="/student/alerts" />
       <ScrollBody refreshing={profile.isFetching && !profile.isLoading} onRefresh={() => profile.refetch()}>
-        <PageHeader
-          title="بياناتي واتصالي"
-          kicker="بيانات المؤسسة — عدّل ما يخصّك."
-        />
+        <PageHeader title="بياناتي واتصالي" />
 
         {profile.isLoading ? (
           <SkeletonList rows={6} rowHeight={56} />
@@ -155,7 +152,7 @@ export default function StudentMyData() {
           />
         ) : !view || !draft ? (
           <EmptyState
-            title="لا ملف طالب بعد"
+            title={NO_STUDENT_FILE}
             message={STUDENT_FILE_UNLINKED}
           />
         ) : (
@@ -177,8 +174,7 @@ export default function StudentMyData() {
               <StatLine label="المدينة (السكن)" value={view.city ?? "—"} />
               <StatLine label="العنوان" value={view.address ?? "—"} />
               <T variant="xs" color="faint">
-                الاسم الرباعي والرقم الوطني ومكان الميلاد يُدخلها المسجّل العام في مؤسستك — لتصحيحها
-                راجعه.
+                يُدخلها المسجّل العام — لتصحيحها راجعه.
               </T>
             </Card>
 
@@ -269,8 +265,7 @@ export default function StudentMyData() {
                 </>
               )}
               <T variant="xs" color="faint">
-                الصيغ المقبولة: 09XXXXXXXXX أو 9XXXXXXXX أو +218XXXXXXXXX — والأرقام العربية-الهندية
-                (٩…) تُحوَّل تلقائيًا.
+                الصيغ: 09XXXXXXXXX أو 9XXXXXXXX أو +218XXXXXXXXX — والهندية تُحوَّل تلقائيًا.
               </T>
             </Card>
 
@@ -331,7 +326,7 @@ export default function StudentMyData() {
                 </>
               ) : (
                 <T variant="sm" color="muted">
-                  لا توجد بيانات ولي أمر — تُدخلها إدارة التسجيل في مؤسستك.
+                  لا بيانات ولي أمر — تُدخلها إدارة التسجيل.
                 </T>
               )}
             </Card>
@@ -343,7 +338,7 @@ export default function StudentMyData() {
                 customFields.map((f) => <StatLine key={f.key} label={f.labelAr} value={fmtCustomValue(f)} />)
               ) : (
                 <T variant="sm" color="muted">
-                  لم تُعرّف مؤسستك حقولًا مخصصة على ملفات الطلبة بعد.
+                  لا حقول مخصّصة بعد.
                 </T>
               )}
             </Card>
@@ -375,7 +370,7 @@ export default function StudentMyData() {
               />
               <Hairline />
               <T variant="xs" color="faint">
-                كلمة المرور تُدار من «الإعدادات» — تغييرها يُنهي جلساتك على بقية الأجهزة.
+                كلمة المرور من «الإعدادات» — تغييرها يُنهي الجلسات الأخرى.
               </T>
             </Card>
           </>

@@ -1,6 +1,6 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    «مدارك» — Design System (r305 — the HERON token foundation)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    R305 re-keys the canon to the Heron-inspired visual system (the
    reference reverse-engineered live at heronaiapp.com — full evidence,
    measurements and licensing decisions in
@@ -12,63 +12,63 @@
    SUPERSEDED by the owner decision):
 
    · Warm vintage-paper neutrals — the near-white ground #F6F6EE over
-     white surfaces (the reference's own paper, live-sampled
-     #F4F4EE–#F5F5EF, r308 #F6F6EE — R313 canon); charcoal ink #282828
-     (the reference's own --content--primary, verified live). Dark is
-     the deliberate counterpart: the charcoal itself as ground
-     (#282828), surfaces one step up (#2E2E2E), warm hairlines
-     #4A4A48/#5C5C5A, near-white ink — the reference's dark fills
-     promoted to a full theme, never a cold blue-black.
+   white surfaces (the reference's own paper, live-sampled
+   #F4F4EE–#F5F5EF, r308 #F6F6EE — R313 canon); charcoal ink #282828
+   (the reference's own --content--primary, verified live). Dark is
+   the deliberate counterpart: the charcoal itself as ground
+   (#282828), surfaces one step up (#2E2E2E), warm hairlines
+   #4A4A48/#5C5C5A, near-white ink — the reference's dark fills
+   promoted to a full theme, never a cold blue-black.
    · ONE vivid signal: orange #FA3600 (the reference's
-     --content--brand, used for the scanline, contact accents, error
-     chips and hover overlays). Raw orange is a LARGE-TEXT/UI tone
-     (3.46:1 on the R313 ground — same class as the reference's own
-     use); TEXT routes through the darkened AA ink #C72E00 (5.06:1).
-     R313 SUPERSEDES the r305 "never white on orange" rule: the
-     reference ships WHITE labels on #FA3600 fills (measured, every
-     button recipe) — --accent-fg is #FFFFFF on light with the AA
-     exception noted at its seat (small Arabic accent labels get
-     weight ≥600 + size ≥14px where feasible; dark keeps the warmer
-     5.64:1 ink on its luminous ember). Coral #F15534 is the warm
-     secondary (danger rhymes with it; a --c-coral-* alias namespace
-     exists).
+   --content--brand, used for the scanline, contact accents, error
+   chips and hover overlays). Raw orange is a LARGE-TEXT/UI tone
+   (3.46:1 on the R313 ground — same class as the reference's own
+   use); TEXT routes through the darkened AA ink #C72E00 (5.06:1).
+   R313 SUPERSEDES the r305 "never white on orange" rule: the
+   reference ships WHITE labels on #FA3600 fills (measured, every
+   button recipe) — --accent-fg is #FFFFFF on light with the AA
+   exception noted at its seat (small Arabic accent labels get
+   weight ≥600 + size ≥14px where feasible; dark keeps the warmer
+   5.64:1 ink on its luminous ember). Coral #F15534 is the warm
+   secondary (danger rhymes with it; a --c-coral-* alias namespace
+   exists).
    · Technical greys straight from the reference bundle: #B4B4B0
-     (disable/mid), #B3B3AF (the hairline/grid grey — every construction
-     line on the reference), #72726F / #626260 / #414140 mid steps.
-     The grid grey is decorative on light (1.95:1 — the reference uses
-     it exactly that way) and a legitimate TEXT tone on dark (7.09:1 —
-     the redeemed dark muted).
+   (disable/mid), #B3B3AF (the hairline/grid grey — every construction
+   line on the reference), #72726F / #626260 / #414140 mid steps.
+   The grid grey is decorative on light (1.95:1 — the reference uses
+   it exactly that way) and a legitimate TEXT tone on dark (7.09:1 —
+   the redeemed dark muted).
    · Radius 0 (R313): the reference measures 4 rounded surfaces of
-     2774 sampled — near-absolute square corners. The whole ladder
-     collapses to 0; ONLY genuinely circular primitives (avatars,
-     status dots) keep --r-full: 9999px.
+   2774 sampled — near-absolute square corners. The whole ladder
+   collapses to 0; ONLY genuinely circular primitives (avatars,
+   status dots) keep --r-full: 9999px.
    · The measured Heron motion register: 0.4s-dominant transitions
-     (174×.4s in the bundle) on cubic-bezier(.23,1,.32,1) with the
-     .48s roll/exit curve cubic-bezier(.625,.05,0,1) — adopted into the
-     raw ladder (80/200/400/500/650/900) and the semantic page/reveal
-     durations. Springs and the press register are untouched. R313
-     adds the FLUID REM ROOT (html font-size 0.5787037037vw + the
-     991/767 Webflow bands — exact rules read from the live site) so
-     the rem type ladder scales with the viewport exactly like the
-     reference; decorative shadows are REMOVED (depth via hairlines
-     only — the reference's own policy, 1 shadow in 2774 sampled).
+   (174×.4s in the bundle) on cubic-bezier(.23,1,.32,1) with the
+   .48s roll/exit curve cubic-bezier(.625,.05,0,1) — adopted into the
+   raw ladder (80/200/400/500/650/900) and the semantic page/reveal
+   durations. Springs and the press register are untouched. R313
+   adds the FLUID REM ROOT (html font-size 0.5787037037vw + the
+   991/767 Webflow bands — exact rules read from the live site) so
+   the rem type ladder scales with the viewport exactly like the
+   reference; decorative shadows are REMOVED (depth via hairlines
+   only — the reference's own policy, 1 shadow in 2774 sampled).
    · Arabic-first holds unchanged: Alexandria 600/700 display, IBM Plex
-     Sans Arabic 400–700 body, zero letter-spacing on Arabic, Western
-     digits, logical properties. The reference's proprietary BT
-     Grotesk is NOT licensed for reuse — a PERMANENT documented
-     exception; its Latin grotesk roles stay on the shipped OFL faces
-     (licensing audit in the spec; Archivo is the documented future
-     addition if a distinct Latin display voice is ever needed). R313
-     ADOPTS the reference's OFL mono voice: Geist Mono (self-hosted,
-     latin subset) now leads --font-mono with IBM Plex Mono as the
-     self-hosted fallback.
+   Sans Arabic 400–700 body, zero letter-spacing on Arabic, Western
+   digits, logical properties. The reference's proprietary BT
+   Grotesk is NOT licensed for reuse — a PERMANENT documented
+   exception; its Latin grotesk roles stay on the shipped OFL faces
+   (licensing audit in the spec; Archivo is the documented future
+   addition if a distinct Latin display voice is ever needed). R313
+   ADOPTS the reference's OFL mono voice: Geist Mono (self-hosted,
+   latin subset) now leads --font-mono with IBM Plex Mono as the
+   self-hosted fallback.
    · Role names are the contract: page ground (--bg), card ground
-     (--surface), subtle surface (--surface-2/-3 / --bg-soft), elevated
-     surface (--surface-elevated), primary/secondary/muted/faint text,
-     borders (--border/--rule), focus (--state-focus-ring-*), the
-     interactive accent family, status colors, chart colors and the
-     theme-aware --elev-* ladder. NOTHING was renamed or removed —
-     sibling workstreams resolve the same names, only values re-keyed.
+   (--surface), subtle surface (--surface-2/-3 / --bg-soft), elevated
+   surface (--surface-elevated), primary/secondary/muted/faint text,
+   borders (--border/--rule), focus (--state-focus-ring-*), the
+   interactive accent family, status colors, chart colors and the
+   theme-aware --elev-* ladder. NOTHING was renamed or removed —
+   sibling workstreams resolve the same names, only values re-keyed.
 
    r304 → r305 continuity: the entire r304 alias layer survives
    verbatim (--bg-soft, --surface-elevated, --text-strong, --brand,
@@ -82,7 +82,8 @@
    tone, distinct from the new orange signal again. Contrast notes in
    the comments are recomputed for the new grounds (WCAG 2.1, engine:
    docs/redesign/r305-heron-reference-spec.md §verification).
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 /* Lineage (condensed — full history in docs/redesign + git): r132-F5 /
    r136 / r148-d dead-token sweeps pruned zero-consumer names; 21-c
@@ -95,45 +96,54 @@
    vintage #F6F6EE, collapses the radius ladder to 0, removes every
    decorative shadow, lands the fluid rem root + the rem type ladder
    + Geist Mono, and re-seats the accent label/hairline tokens —
-   while preserving every role name and alias. */
+   while preserving every role name and alias.
+*/
 
 @layer tokens, base, layout, components, pages, overrides;
 
 @layer tokens {
 
   :root {
-    /* ─── Spacing — 4px base ────────────────────────────────────────── */
+    /* ─── Spacing — 4px base ──────────────────────────────────────────
+*/
     /* Half-steps: --sp-0-5 (2px: chip vertical 2/8 rhythm + optical
-       alignment), --sp-1-5 (6px), --sp-2-5 (10px: compact-control
-       padding). 2px is the smallest sanctioned rung; below is anomaly. */
+    alignment), --sp-1-5 (6px), --sp-2-5 (10px: compact-control
+    padding). 2px is the smallest sanctioned rung; below is anomaly.
+*/
     /* R326 M0.4 — the ladder moved to tokens.generated.css (source:
-       shared/design-tokens.json; imported above this sheet). */
+    shared/design-tokens.json; imported above this sheet).
+*/
 
     /* r304 — legacy spacing aliases restored (historical mapping,
-       verbatim) so older consumers and sibling branches resolve. */
+    verbatim) so older consumers and sibling branches resolve.
+*/
     --sp-2x: var(--sp-2); --sp-3x: var(--sp-3); --sp-4x: var(--sp-4);
     --sp-5x: var(--sp-5); --sp-6x: var(--sp-6); --sp-8x: var(--sp-7);
     --sp-12x:var(--sp-9); --sp-16x:var(--sp-13);
 
     /* ─── r306 — the poster namespace is RETIRED ─────────────────────
-       The landing page now speaks the single Heron canon directly
-       (docs/redesign/r306-heron-exclusivity-spec.md); the r197 diver-
-       gence hook (--poster-paper/ink/signal) was migrated with it —
-       every consumer reads the canonical roles below. The parity
-       gate's FORBIDDEN needle list guards the spelling. */
+    The landing page now speaks the single Heron canon directly
+    (docs/redesign/r306-heron-exclusivity-spec.md); the r197 diver-
+    gence hook (--poster-paper/ink/signal) was migrated with it —
+    every consumer reads the canonical roles below. The parity
+    gate's FORBIDDEN needle list guards the spelling.
+*/
 
     /* ─── Radius — R313: the ladder collapses to 0 ───────────────────
-       The reference measures 4 rounded surfaces of 2774 sampled
-       (cursor dot + three why-card dots — both cursor-layer trivia);
-       every marketing/product surface is square. The whole ladder
-       rides 0; ONLY genuinely circular primitives (avatars, status
-       dots) consume --r-full. */
+    The reference measures 4 rounded surfaces of 2774 sampled
+    (cursor dot + three why-card dots — both cursor-layer trivia);
+    every marketing/product surface is square. The whole ladder
+    rides 0; ONLY genuinely circular primitives (avatars, status
+    dots) consume --r-full.
+*/
     /* R326 M0.4 — the rungs moved to tokens.generated.css (source:
-       shared/design-tokens.json): the zero ladder + --r-full 9999px
-       (circular primitives only). */
+    shared/design-tokens.json): the zero ladder + --r-full 9999px
+    (circular primitives only).
+*/
     /* r304 — radius aliases restored (historical names → rungs). The
-       rungs are the R313 zero ladder; the alias wires are verbatim
-       r304. */
+    rungs are the R313 zero ladder; the alias wires are verbatim
+    r304.
+*/
     --radius-sm: var(--r-sm);   --radius-md: var(--r-md);
     --radius-lg: var(--r-lg);   --radius-xl: var(--r-xl);
     --radius-2xl: var(--r-2xl); --radius-full: var(--r-full);
@@ -142,72 +152,92 @@
     --st-r-full: var(--r-full);
 
     /* ─── Type — bold + warm, Arabic-friendly (r305: UNCHANGED — the
-       re-key touches colors/radii/motion only; the reference's BT
-       Grotesk is not licensed so the OFL stacks below carry the voice —
-       audit: docs/redesign/r305-heron-reference-spec.md §4) ────────── */
+    re-key touches colors/radii/motion only; the reference's BT
+    Grotesk is not licensed so the OFL stacks below carry the voice —
+    audit: docs/redesign/r305-heron-reference-spec.md §4) ──────────
+*/
     --font-sans:    'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui,
                     -apple-system, 'Segoe UI', Roboto, sans-serif;
     /* R366 (Agent 3 · L2): the phantom 'Tajawal' rung is RETIRED (never
-       self-hosted, zero local installs — it only inserted a metric
-       stranger between the webfont and the system). The metric-
-       compatible fallback face (fonts.css, ascent 108.5/descent 41.5
-       overrides) holds every line-height: normal box through the swap. */
+    self-hosted, zero local installs — it only inserted a metric
+    stranger between the webfont and the system). The metric-
+    compatible fallback face (fonts.css, ascent 108.5/descent 41.5
+    overrides) holds every line-height: normal box through the swap.
+*/
     /* Alexandria — the Arabic-native geometric display voice (r190).
-       Display headings speak Alexandria 600/700 (500 available for
-       lighter display accents — real woff2 files ship); body stays
-       Plex Sans Arabic. */
+    Display headings speak Alexandria 600/700 (500 available for
+    lighter display accents — real woff2 files ship); body stays
+    Plex Sans Arabic.
+*/
     --font-display: 'Alexandria', 'Alexandria Fallback', 'IBM Plex Sans Arabic',
                     'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
     /* The mono stack falls back per-script: Latin/digits mono (Geist
-       Mono — the reference's own instrument voice, R313; IBM Plex Mono
-       the self-hosted fallback), Arabic continues in the brand face
-       (auth.css documents the recipe). */
+    Mono — the reference's own instrument voice, R313; IBM Plex Mono
+    the self-hosted fallback), Arabic continues in the brand face
+    (auth.css documents the recipe).
+*/
     --font-mono:    'Geist Mono', 'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
 
     /* R313 — the FLUID-REM type ladder. The root itself is fluid (the
-       html rule below: 0.5787037037vw base, Webflow bands ≤991/≤767)
-       so every rung is rem ON that root and scales with the viewport
-       exactly like the reference. At 1440 (root 8.333px): h1 renders
-       46.67px, h2 40, h3 33.33 — the measured Heron heading ladder
-       (h4 26.67 continues the +0.8rem steps); body 13.33px (Heron
-       txt-16). Arabic READING sizes keep the r197 13px legibility
-       floor via max(); the mono micro-label sizes below them are
-       Latin-only (uppercase Geist Mono) and take NO floor — the
-       reference runs them down to 8.33px by design. Metric sizes stay
-       px: KPI numerals are data displays, not fluid marketing type. */
-    --fs-display-xl: 8rem;    /* 66.67px @1440 — the ladder top (h-run +0.8rem steps) */
-    --fs-display-lg: 7.2rem;  /* 60px    @1440 */
-    --fs-display-md: 6.4rem;  /* 53.33px @1440 */
+    html rule below: 0.5787037037vw base, Webflow bands ≤991/≤767)
+    so every rung is rem ON that root and scales with the viewport
+    exactly like the reference. At 1440 (root 8.333px): h1 renders
+    46.67px, h2 40, h3 33.33 — the measured Heron heading ladder
+    (h4 26.67 continues the +0.8rem steps); body 13.33px (Heron
+    txt-16). Arabic READING sizes keep the r197 13px legibility
+    floor via max(); the mono micro-label sizes below them are
+    Latin-only (uppercase Geist Mono) and take NO floor — the
+    reference runs them down to 8.33px by design. Metric sizes stay
+    px: KPI numerals are data displays, not fluid marketing type.
+*/
+    --fs-display-xl: 8rem;    /* 66.67px @1440 — the ladder top (h-run +0.8rem steps)
+*/
+    --fs-display-lg: 7.2rem;  /* 60px    @1440
+*/
+    --fs-display-md: 6.4rem;  /* 53.33px @1440
+*/
 
-    --fs-h1: 5.6rem;          /* 46.67px @1440 — Heron h1 (700 · lh 1.0 · ls −0.02em · UPPER for Latin) */
-    --fs-h2: 4.8rem;          /* 40px    @1440 — Heron h2 */
-    --fs-h3: 4rem;            /* 33.33px @1440 — Heron h3 */
+    --fs-h1: 5.6rem;          /* 46.67px @1440 — Heron h1 (700 · lh 1.0 · ls −0.02em · UPPER for Latin)
+*/
+    --fs-h2: 4.8rem;          /* 40px    @1440 — Heron h2
+*/
+    --fs-h3: 4rem;            /* 33.33px @1440 — Heron h3
+*/
 
-    --fs-body-lg: max(13px, 1.8rem);   /* 15px @1440 — the lead step, floor-gated */
-    --fs-body:    max(13px, 1.6rem);   /* 13.33px @1440 — Heron txt-16, floor-gated */
+    --fs-body-lg: max(13px, 1.8rem);   /* 15px @1440 — the lead step, floor-gated
+*/
+    --fs-body:    max(13px, 1.6rem);   /* 13.33px @1440 — Heron txt-16, floor-gated
+*/
     /* r140 → R313 — the chrome step joins the reference's uniform
-       body run (nav/footer/labels all ride 13.33px there), floor-gated
-       for Arabic. */
+    body run (nav/footer/labels all ride 13.33px there), floor-gated
+    for Arabic.
+*/
     --fs-chrome:  max(13px, 1.6rem);
     /* r197 — the 13px Arabic floor: sub-13px Arabic micro-text is below
-       the legible floor for the script at body weights. --fs-xs/--fs-xxs
-       resolve to the floor. */
+    the legible floor for the script at body weights. --fs-xs/--fs-xxs
+    resolve to the floor.
+*/
     --fs-sm:      13px;
     --fs-xs:      13px;
     --fs-xxs:     13px;
 
     /* R313 — mono micro-label sizes (Latin-only runs: loader readouts,
-       coordinates, button micro-labels — uppercase, Geist Mono).
-       r325 Y4 — the app-density mono rung is 11–12px (§R324): the rem
-       rungs now floor at 11px like --fs-body's 13px floor — the 8.33px
-       «coords» register read 8.3px computed on every viewport, under
-       the legibility rung the type census asserts. */
-    --fs-mono-md: max(11.67px, 1.4rem); /* 11.67px @1440 — Heron txt-14 (button labels) */
-    --fs-mono-sm: max(11px, 1.2rem);    /* 11px floor @1440 (was 10px) — Heron txt-12 (loader %) */
-    --fs-mono-xs: max(11px, 1rem);      /* 11px floor @1440 (was 8.33px) — Heron txt-10 (coords) */
+    coordinates, button micro-labels — uppercase, Geist Mono).
+    r325 Y4 — the app-density mono rung is 11–12px (§R324): the rem
+    rungs now floor at 11px like --fs-body's 13px floor — the 8.33px
+    «coords» register read 8.3px computed on every viewport, under
+    the legibility rung the type census asserts.
+*/
+    --fs-mono-md: max(11.67px, 1.4rem); /* 11.67px @1440 — Heron txt-14 (button labels)
+*/
+    --fs-mono-sm: max(11px, 1.2rem);    /* 11px floor @1440 (was 10px) — Heron txt-12 (loader %)
+*/
+    --fs-mono-xs: max(11px, 1rem);      /* 11px floor @1440 (was 8.33px) — Heron txt-10 (coords)
+*/
 
     /* type aliases — the live steps plus the r304 restorations
-       (--fs-base, --fs-4xl, headline/label pairs — historical mapping). */
+    (--fs-base, --fs-4xl, headline/label pairs — historical mapping).
+*/
     --fs-md: var(--fs-body);
     --fs-lg: var(--fs-h3); --fs-xl: var(--fs-h2);
     --fs-2xl: var(--fs-h1); --fs-3xl: var(--fs-display-md);
@@ -228,55 +258,65 @@
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
-    --fw-black: 800; /* resolves to 700 at runtime below — Plex has no 800 */
+    --fw-black: 800; /* resolves to 700 at runtime below — Plex has no 800
+*/
 
     /* r190 discipline: NO letter-spacing on Arabic (cursive joins
-       break). The reference's −0.02em display tracking is a Latin-only
-       device and stays banned for Arabic platform-wide; roles pin 0.
-       R313 adds --ls-display-tight for LATIN display runs (landing)
-       only — see its seat. */
+    break). The reference's −0.02em display tracking is a Latin-only
+    device and stays banned for Arabic platform-wide; roles pin 0.
+    R313 adds --ls-display-tight for LATIN display runs (landing)
+    only — see its seat.
+*/
     --ls-tight:  0;
     --ls-snug:   0;
     --ls-normal: 0;
     /* R313 — the reference's measured display tracking (−0.93px on a
-       46.67px h1 = −0.02em). LATIN DISPLAY RUNS ONLY — never Arabic
-       (cursive joins); the Arabic 0 pins above are untouched. */
+    46.67px h1 = −0.02em). LATIN DISPLAY RUNS ONLY — never Arabic
+    (cursive joins); the Arabic 0 pins above are untouched.
+*/
     --ls-display-tight: -0.02em;
 
     /* ─── Motion — the measured Heron register (r305) ─────────────────
-       The reference's transition census: .4s ×174 (dominant), .2/.3/.5s
-       secondary, .48s for the rolling dual-label device; easings
-       cubic-bezier(.23,1,.32,1) ×11 (decel standard) and
-       cubic-bezier(.625,.05,0,1) ×3 (enter/roll). Ladder re-keyed to
-       the same feel: micro stays 80 (press feedback), the interaction
-       band moves to 200/400/500, cinematic rungs 650/900. */
+    The reference's transition census: .4s ×174 (dominant), .2/.3/.5s
+    secondary, .48s for the rolling dual-label device; easings
+    cubic-bezier(.23,1,.32,1) ×11 (decel standard) and
+    cubic-bezier(.625,.05,0,1) ×3 (enter/roll). Ladder re-keyed to
+    the same feel: micro stays 80 (press feedback), the interaction
+    band moves to 200/400/500, cinematic rungs 650/900.
+*/
     /* R326 M0.4 — the raw rungs moved to tokens.generated.css (source:
-       shared/design-tokens.json); the reduced-motion kill below still
-       wins by import order. */
+    shared/design-tokens.json); the reduced-motion kill below still
+    wins by import order.
+*/
     /* R313 (D10) — the loader's measured center-out two-band clip
-       split (the reference's exit: 835ms, slit 49.94/50.06% → 0/100%;
-       was the R309 fixed 650ms whose animation raced to ~21ms). */
+    split (the reference's exit: 835ms, slit 49.94/50.06% → 0/100%;
+    was the R309 fixed 650ms whose animation raced to ~21ms).
+*/
 
 
     /* r305 — --ease re-keys to the reference's decel standard
-       (.23,1,.32,1); --ease-in adopts its roll/exit curve (.625,.05,0,1).
-       --ease-out keeps the tighter (.16,1,.3,1) for entrances that must
-       settle faster than the standard. */
+    (.23,1,.32,1); --ease-in adopts its roll/exit curve (.625,.05,0,1).
+    --ease-out keeps the tighter (.16,1,.3,1) for entrances that must
+    settle faster than the standard.
+*/
     /* R326 M0.4 — --ease itself moved to tokens.generated.css (shared
-       with the app); the rest of the easing vocabulary stays here. */
+    with the app); the rest of the easing vocabulary stays here.
+*/
     --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in:     cubic-bezier(0.625, 0.05, 0, 1);
     /* constant speed — the correct curve for CONTINUOUS infinite loops
-       (spinners, skeleton sweeps, shimmer drifts) and scroll-linked
-       progress. Beat-family loops (heartbeat, breathe, pulse) are
-       exempt — a beat needs its attack-and-settle. The reference's own
-       marquee runs 10s linear infinite (marqueeLeft, translateX(-100%))
-       — same grammar. */
+    (spinners, skeleton sweeps, shimmer drifts) and scroll-linked
+    progress. Beat-family loops (heartbeat, breathe, pulse) are
+    exempt — a beat needs its attack-and-settle. The reference's own
+    marquee runs 10s linear infinite (marqueeLeft, translateX(-100%))
+    — same grammar.
+*/
     --ease-linear: linear;
     --ease-soft:   cubic-bezier(0.22, 1, 0.36, 1);
     /* Spring vocabulary — polish-authored springs adopted verbatim.
-       Overshoot tiers: soft 1.18 (settle), spring 1.36 (pop),
-       bounce 1.56 (playful), snappy (0.5,1.6,0.4,1) (quick rebound). */
+    Overshoot tiers: soft 1.18 (settle), spring 1.36 (pop),
+    bounce 1.56 (playful), snappy (0.5,1.6,0.4,1) (quick rebound).
+*/
     --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);
     --ease-spring:        cubic-bezier(0.34, 1.36, 0.64, 1);
     --ease-bounce:        cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -284,12 +324,13 @@
     --ease-spring-snappy: cubic-bezier(0.5, 1.6, 0.4, 1);
 
     /* R329 (gate:clean, resolving 4-A11 P1-3): the `all` rung is
-       retired — this is the de-smuggled property list polish.css's
-       overrides layer carried since 4-A11 (adopted verbatim; the
-       overrides copy is deleted — one canonical home). Exactly what
-       the 22 consumers actually animate (hover/press/focus surfaces),
-       plus opacity for the disabled fades: no phantom scrollbar-color
-       / outline-* transitions, focus rings appear instantly. */
+    retired — this is the de-smuggled property list polish.css's
+    overrides layer carried since 4-A11 (adopted verbatim; the
+    overrides copy is deleted — one canonical home). Exactly what
+    the 22 consumers actually animate (hover/press/focus surfaces),
+    plus opacity for the disabled fades: no phantom scrollbar-color
+    / outline-* transitions, focus rings appear instantly.
+*/
     --t-clean:
       background-color var(--t-base) var(--ease),
       color var(--t-base) var(--ease),
@@ -298,41 +339,51 @@
       transform var(--t-base) var(--ease),
       opacity var(--t-base) var(--ease);
 
-    /* ─── Interactive feedback ──────────────────────────────────────── */
+    /* ─── Interactive feedback ────────────────────────────────────────
+*/
     --press-scale: 0.97;
     /* One press register per surface: controls 0.97, cards 0.99 via
-       --state-card-pressed-scale (below), the bottom-nav's deliberately
-       stronger 0.93 thumb press via --state-nav-pressed-scale. */
+    --state-card-pressed-scale (below), the bottom-nav's deliberately
+    stronger 0.93 thumb press via --state-nav-pressed-scale.
+*/
     --hover-lift: -1px;
 
     /* ─── Motion (semantic layer — see contracts/motion-tokens.md) ───
-       Canonical names new code MUST consume. Mapped to the raw --t-* /
-       --ease-* rungs so they remain a single source. r305: page/reveal
-       re-keyed to the Heron register (400/480); stat/skeleton keep
-       their existing rhythm (independent of the reference). */
-    --motion-duration-micro:    var(--t-micro);   /*  80ms */
-    --motion-duration-short:    var(--t-fast);    /* 200ms */
-    --motion-duration-medium:   var(--t-base);    /* 400ms */
-    --motion-duration-long:     var(--t-slow);    /* 500ms */
+    Canonical names new code MUST consume. Mapped to the raw --t-* /
+    --ease-* rungs so they remain a single source. r305: page/reveal
+    re-keyed to the Heron register (400/480); stat/skeleton keep
+    their existing rhythm (independent of the reference).
+*/
+    --motion-duration-micro:    var(--t-micro);   /*  80ms
+*/
+    --motion-duration-short:    var(--t-fast);    /* 200ms
+*/
+    --motion-duration-medium:   var(--t-base);    /* 400ms
+*/
+    --motion-duration-long:     var(--t-slow);    /* 500ms
+*/
     --motion-duration-page:     400ms;
     --motion-duration-reveal:   480ms;
     /* R333 (P-C) — the drawn-card reveal rung: heron-craft row 13's
-       imgCardReveal (1.6s expo.out) re-keyed to the r305 house
-       register, one step above the 480ms block rise. */
+    imgCardReveal (1.6s expo.out) re-keyed to the r305 house
+    register, one step above the 480ms block rise.
+*/
     --motion-duration-card:     900ms;
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
     --motion-duration-scene-reveal: 2200ms;
     /* R313 (D10) — the loader's center-out split on its measured rung
-       (canonical seat for the entrance sheet's exit). */
+    (canonical seat for the entrance sheet's exit).
+*/
     --motion-duration-sheet-exit: var(--t-sheet-exit);
     --motion-duration-guest-reveal: var(--t-guest-reveal);
 
     /* Ambient loop durations — the dedicated scale for INFINITE
-       decorative loops (breathe / sway / float / pulse / drift). These
-       are perceptual RHYTHM, not UI transition time — never use them
-       for a hover/press/entrance. motion.css zeroes the family under
-       prefers-reduced-motion. */
+    decorative loops (breathe / sway / float / pulse / drift). These
+    are perceptual RHYTHM, not UI transition time — never use them
+    for a hover/press/entrance. motion.css zeroes the family under
+    prefers-reduced-motion.
+*/
     --motion-duration-ambient-pulse:  1.6s;
     --motion-duration-ambient:        2.4s;
     --motion-duration-ambient-slow:   3.6s;
@@ -344,17 +395,19 @@
     --motion-ease-accelerate:  var(--ease-in);
     --motion-ease-emphasized:  var(--ease-soft);
     /* r339 T-18 — the recorded band-exit curve (r335 _motion spec, the
-       .loading-progress-item / .loading-main slit exit: cubic-bezier
-       (1,0,0.44,1)). Seated in the CANONICAL tokens.css motion block
-       because the unified-parity --motion-ease-band seat does NOT
-       resolve on the landing sheet (r339 T-11c computed-:root finding:
-       the parity layer's :root block loses the cascade there) — this
-       is the landing-resolvable home for the same recorded curve. */
+    .loading-progress-item / .loading-main slit exit: cubic-bezier
+    (1,0,0.44,1)). Seated in the CANONICAL tokens.css motion block
+    because the unified-parity --motion-ease-band seat does NOT
+    resolve on the landing sheet (r339 T-11c computed-:root finding:
+    the parity layer's :root block loses the cascade there) — this
+    is the landing-resolvable home for the same recorded curve.
+*/
     --motion-ease-band-exit:   cubic-bezier(1, 0, 0.44, 1);
     /* r339 T-18 — the recorded preloader exit ground (the reference's
-       .loading-progress-item tint at exit: #b3b3af, the chrome
-       cell-grammar grey). Canonical seat so the landing sheet resolves
-       it (same reasoning as --motion-ease-band-exit above). */
+    .loading-progress-item tint at exit: #b3b3af, the chrome
+    cell-grammar grey). Canonical seat so the landing sheet resolves
+    it (same reasoning as --motion-ease-band-exit above).
+*/
     --preloader-exit-ground:   #b3b3af;
 
     --motion-distance-small:   6px;
@@ -365,69 +418,80 @@
     --motion-stagger-cap:      6;
 
     /* Direction multiplier — flipped under [dir="rtl"] so logical
-       motion expressions ("toward content") work in both directions. */
+    motion expressions ("toward content") work in both directions.
+*/
     --motion-direction:        1;
 
-    /* ─── Interaction state tokens (see contracts/interaction-tokens.md) ── */
+    /* ─── Interaction state tokens (see contracts/interaction-tokens.md) ──
+*/
     --state-focus-ring-color:  var(--accent);
     --state-focus-ring-width:  2px;
     --state-focus-ring-offset: 2px;
     --state-focus-ring:        0 0 0 var(--state-focus-ring-width) var(--state-focus-ring-color);
     /* The ONE focus language: --state-focus-ring (outline) + the input
-       halo below. Dropdown/tooltip decorative halos may use --accent-soft,
-       but every *focus* halo consumes this token. */
+    halo below. Dropdown/tooltip decorative halos may use --accent-soft,
+    but every *focus* halo consumes this token.
+*/
     --state-input-focus-halo:  0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 
     --state-card-hover-border:    var(--rule-strong, var(--rule, var(--neutral-200)));
     --state-card-pressed-scale:   0.99;
     /* The bottom-nav thumb press — the one deliberately stronger
-       register (mobile thumb ergonomics). */
+    register (mobile thumb ergonomics).
+*/
     --state-nav-pressed-scale:    0.93;
     --state-card-selected-ring:   inset 0 0 0 2px var(--accent);
 
     --state-input-focus-border:   var(--accent);
     /* R353 P4 — the Heron input-focus SIGNAL seat: the reference's
-       measured #ED4C1F (R313 D16). It is deliberately NOT --accent
-       (the shared input recipe's live digest uses this exact orange);
-       theme-invariant (a measured signal, not a themed surface). The
-       raw literal previously lived in components.css + student.css —
-       this seat retires both (css-ratchet rawHex 37→35). */
+    measured #ED4C1F (R313 D16). It is deliberately NOT --accent
+    (the shared input recipe's live digest uses this exact orange);
+    theme-invariant (a measured signal, not a themed surface). The
+    raw literal previously lived in components.css + student.css —
+    this seat retires both (css-ratchet rawHex 37→35).
+*/
     --input-focus-signal: #ED4C1F;
     --state-input-error-border:   var(--danger);
     --state-input-disabled-opacity: 0.6;
     /* Two disabled-opacity tiers: buttons/pills/actions here, inputs one
-       step above. */
+    step above.
+*/
     --state-btn-disabled-opacity: 0.55;
     --state-input-loading-cursor: progress;
 
     /* ─── R362 (Agent 4) — the complete state seat map ──────────────
-       Additive ALIAS seats only (no raw values, no new namespaces):
-       they compose the canonical theme roles at use-time exactly like
-       --state-card-hover-border above, so both themes resolve first-
-       class without a second system. Consumers landed in the same
-       round: .btn.outline (secondary action), the restored shared
-       recipes (disabled text controls, table pagination selected/
-       hover states — components.css). The full state→seat map this
-       completes: backgrounds/surfaces/text/borders → the generated
-       semantic roles; primary action → --primary/-fg; SECONDARY
-       action → --secondary/-fg (the outline slab pair); success/
-       warning/error(danger)/information → the --*-soft/-ink triads;
-       disabled → these seats + the two opacity rungs; selected →
-       these seats (+ --state-card-selected-ring above); focus → the
-       focus-ring family above; active/pressed → the press-scale
-       register (--press-scale and friends). */
+    Additive ALIAS seats only (no raw values, no new namespaces):
+    they compose the canonical theme roles at use-time exactly like
+    --state-card-hover-border above, so both themes resolve first-
+    class without a second system. Consumers landed in the same
+    round: .btn.outline (secondary action), the restored shared
+    recipes (disabled text controls, table pagination selected/
+    hover states — components.css). The full state→seat map this
+    completes: backgrounds/surfaces/text/borders → the generated
+    semantic roles; primary action → --primary/-fg; SECONDARY
+    action → --secondary/-fg (the outline slab pair); success/
+    warning/error(danger)/information → the --*-soft/-ink triads;
+    disabled → these seats + the two opacity rungs; selected →
+    these seats (+ --state-card-selected-ring above); focus → the
+    focus-ring family above; active/pressed → the press-scale
+    register (--press-scale and friends).
+*/
     /* Secondary action — the quiet alternative to the primary slab
-       (the .btn.outline recipe): ink slab + label, hairline edge. */
+    (the .btn.outline recipe): ink slab + label, hairline edge.
+*/
     --secondary:      var(--primary);
     --secondary-fg:   var(--primary-fg);
-    /* Selected — a picked row/cell/chip/current page. */
+    /* Selected — a picked row/cell/chip/current page.
+*/
     --state-selected-bg:     var(--accent-soft);
     --state-selected-ink:    var(--accent-ink);
     --state-selected-border: var(--accent);
-    /* Hover — the one interactive surface wash rows/cells take. */
+    /* Hover — the one interactive surface wash rows/cells take.
+*/
     --state-hover-bg: var(--surface-2);
     /* Disabled — the locked-control ground/ink/edge (opacity rides
-       the --state-input/btn-disabled-opacity rungs above). */
+    the --state-input/btn-disabled-opacity rungs above).
+*/
     --state-disabled-bg:     var(--surface-2);
     --state-disabled-ink:    var(--text-faint);
     --state-disabled-border: var(--border);
@@ -436,107 +500,141 @@
     --state-loading-spinner-stroke: 2px;
 
     /* ─── Type roles (see contracts/type-system.md) ───
-       Role-locked semantic typography. New code MUST consume roles,
-       not raw --fs-*. Each role pins size + weight + line-height +
-       letter-spacing so consumers don't drift. */
+    Role-locked semantic typography. New code MUST consume roles,
+    not raw --fs-*. Each role pins size + weight + line-height +
+    letter-spacing so consumers don't drift.
+*/
 
-    /* Display — hero headlines only. One per page max. */
-    --type-display-size-md:        var(--fs-display-md);   /* 24..38px */
-    --type-display-weight:         var(--fw-black);        /* → 700: Plex has no 800 */
+    /* Display — hero headlines only. One per page max.
+*/
+    --type-display-size-md:        var(--fs-display-md);   /* 24..38px
+*/
+    --type-display-weight:         var(--fw-black);        /* → 700: Plex has no 800
+*/
     /* 1.28 is the proven-safe Arabic display floor for Alexandria —
-       tight enough for impact, open enough that diacritic stacks never
-       collide across wrapped lines (r192, measured). */
+    tight enough for impact, open enough that diacritic stacks never
+    collide across wrapped lines (r192, measured).
+*/
     --type-display-line-height:    1.28;
-    --type-display-letter-spacing: var(--ls-normal);      /* 0 */
+    --type-display-letter-spacing: var(--ls-normal);      /* 0
+*/
 
     /* Headline — page titles, section titles, modal headers.
-       r325 Y4 — re-keyed onto the CLAMPED display rungs (the --fs-h1/h2
-       aliases are rem runs that grow on the fluid root: 55.6/47.6px at
-       390 — off the ladder exactly where the d-clamps hold 31.74px),
-       and the ONE weight law (§R324: 500/600 ONLY) re-seats the 700. */
+    r325 Y4 — re-keyed onto the CLAMPED display rungs (the --fs-h1/h2
+    aliases are rem runs that grow on the fluid root: 55.6/47.6px at
+    390 — off the ladder exactly where the d-clamps hold 31.74px),
+    and the ONE weight law (§R324: 500/600 ONLY) re-seats the 700.
+*/
     --type-headline-size-lg:        var(--fs-d1);
     --type-headline-size-md:        var(--fs-d2);
-    --type-headline-size-sm:        var(--fs-h3);          /* the statement rung — unclamped but within 1.3× of d1@390 */
-    --type-headline-weight:         var(--fw-semibold);    /* 600 — the §R324 weight law */
-    /* 1.34 keeps app headlines compact but never clips tashkeel. */
+    --type-headline-size-sm:        var(--fs-h3);          /* the statement rung — unclamped but within 1.3× of d1@390
+*/
+    --type-headline-weight:         var(--fw-semibold);    /* 600 — the §R324 weight law
+*/
+    /* 1.34 keeps app headlines compact but never clips tashkeel.
+*/
     --type-headline-line-height:    1.34;
-    --type-headline-letter-spacing: var(--ls-normal);      /* 0 */
+    --type-headline-letter-spacing: var(--ls-normal);      /* 0
+*/
 
-    /* Body — paragraphs, descriptions, prose. */
-    --type-body-size:           var(--fs-body);            /* 16px */
-    --type-body-size-lg:        var(--fs-body-lg);         /* 18px */
-    --type-body-weight:         var(--fw-regular);         /* 400 */
-    --type-body-line-height:    var(--lh-base);            /* 1.65 */
-    --type-body-letter-spacing: var(--ls-normal);          /* 0 */
+    /* Body — paragraphs, descriptions, prose.
+*/
+    --type-body-size:           var(--fs-body);            /* 16px
+*/
+    --type-body-size-lg:        var(--fs-body-lg);         /* 18px
+*/
+    --type-body-weight:         var(--fw-regular);         /* 400
+*/
+    --type-body-line-height:    var(--lh-base);            /* 1.65
+*/
+    --type-body-letter-spacing: var(--ls-normal);          /* 0
+*/
     --type-body-max-measure:    72ch;
 
-    /* Label — form labels, KPI labels, captions, helper text. */
-    --type-label-size:           var(--fs-sm);             /* 13px */
-    --type-label-size-sm:        var(--fs-xs);             /* 13px — the floor */
-    --type-label-weight:         var(--fw-medium);         /* 500 */
+    /* Label — form labels, KPI labels, captions, helper text.
+*/
+    --type-label-size:           var(--fs-sm);             /* 13px
+*/
+    --type-label-size-sm:        var(--fs-xs);             /* 13px — the floor
+*/
+    --type-label-weight:         var(--fw-medium);         /* 500
+*/
     --type-label-line-height:    1.50;
-    --type-label-letter-spacing: var(--ls-normal);         /* 0 */
+    --type-label-letter-spacing: var(--ls-normal);         /* 0
+*/
 
-    /* Metric — KPI numbers, big stats, counters. Always tabular. */
-    --type-metric-size:               var(--fs-metric-md); /* 24px */
-    --type-metric-size-lg:            var(--fs-metric-lg); /* 30px */
-    --type-metric-size-xl:            var(--fs-metric-xl); /* 48px */
-    --type-metric-weight:             var(--fw-bold);      /* 700 */
+    /* Metric — KPI numbers, big stats, counters. Always tabular.
+*/
+    --type-metric-size:               var(--fs-metric-md); /* 24px
+*/
+    --type-metric-size-lg:            var(--fs-metric-lg); /* 30px
+*/
+    --type-metric-size-xl:            var(--fs-metric-xl); /* 48px
+*/
+    --type-metric-weight:             var(--fw-bold);      /* 700
+*/
     --type-metric-line-height:        1.10;
     --type-metric-letter-spacing:     var(--ls-normal);
     --type-metric-feature-settings:   'tnum' 1, 'lnum' 1;
 
-    /* Section rhythm — every primary section uses one value. */
-    --section-pad-y-narrow: clamp(var(--sp-9), 6vw, var(--sp-11));   /* 48..72px */
+    /* Section rhythm — every primary section uses one value.
+*/
+    --section-pad-y-narrow: clamp(var(--sp-9), 6vw, var(--sp-11));   /* 48..72px
+*/
 
-    /* ─── Layout ────────────────────────────────────────────────────── */
+    /* ─── Layout ──────────────────────────────────────────────────────
+*/
     /* R325 P2.3 migration (DESIGN.md §R325.a — ONE migration, no silent
-       re-key): the shell chrome rides the §R325 trio now. The old
-       literals (--sidebar-w 256 · --sidebar-w-collapsed 64 · --topbar-h
-       60) are RETIRED — the seats alias the --app-* tokens (r325-app.css,
-       imported by AppShell.tsx) with the migrated values as fallbacks so
-       the pre-shell bundle (landing/auth never render .sidebar/.topbar)
-       still resolves. Every consumer — the .has-shell grid, the sidebar
-       rail, the topbar band AND the sticky --topbar-h offsets in
-       pdf/research/teacher-quality/patterns — follows in this one move. */
+    re-key): the shell chrome rides the §R325 trio now. The old
+    literals (--sidebar-w 256 · --sidebar-w-collapsed 64 · --topbar-h
+    60) are RETIRED — the seats alias the --app-* tokens (r325-app.css,
+    imported by AppShell.tsx) with the migrated values as fallbacks so
+    the pre-shell bundle (landing/auth never render .sidebar/.topbar)
+    still resolves. Every consumer — the .has-shell grid, the sidebar
+    rail, the topbar band AND the sticky --topbar-h offsets in
+    pdf/research/teacher-quality/patterns — follows in this one move.
+*/
     --sidebar-w: var(--app-sidebar-w, 264px);
     --sidebar-w-collapsed: var(--app-sidebar-rail, 72px);
     --topbar-h: var(--app-topbar-h, 56px);
     --content-max-w: 1280px;
     --marketing-max-w: 1200px;
 
-    /* ─── Composition ───────────────────────────────────────────────── */
+    /* ─── Composition ─────────────────────────────────────────────────
+*/
     --card-padding: var(--sp-6);
     --page-gutter:  var(--sp-9);
     --page-gutter-mobile: var(--sp-5);
 
     /* ─── r150a color-gate basis constants ──────────────────────────
-       Theme-independent achromatic extremes the alpha derivations route
-       through: --black (veil/shadow/matte basis), --white (sheens, text
-       on luminous fills), --warm-ink (the #191918 that must NOT flip
-       with the theme — terminal grounds, labels on the orange/coral
-       fills: 4.69:1 on #FA3600 and 5.10:1 on #F15534, both AA). R313:
-       the LIGHT accent label seat moves to --white (the reference's
-       own white-on-#FA3600 labels, 3.76:1 — AA-large; see --accent-fg);
-       --warm-ink keeps the danger-fill + dark-theme seats where it
-       measures stronger. */
+    Theme-independent achromatic extremes the alpha derivations route
+    through: --black (veil/shadow/matte basis), --white (sheens, text
+    on luminous fills), --warm-ink (the #191918 that must NOT flip
+    with the theme — terminal grounds, labels on the orange/coral
+    fills: 4.69:1 on #FA3600 and 5.10:1 on #F15534, both AA). R313:
+    the LIGHT accent label seat moves to --white (the reference's
+    own white-on-#FA3600 labels, 3.76:1 — AA-large; see --accent-fg);
+    --warm-ink keeps the danger-fill + dark-theme seats where it
+    measures stronger.
+*/
     --black:     #000000;
     --white:     #FFFFFF;
     --warm-ink:  #191918;
   }
 
   /* ─── R313 — the FLUID REM ROOT (the Heron D5 foundation) ──────────
-     Measured live on heronaiapp.com (reference/digest.json →
-     rootFontSize; the EXACT rules read from the site's inline CSS):
-       html { font-size: 0.5787037037vw }  desktop/base  (1440 → 8.333px · 1024 → 5.926px)
-       ≤991px → 1.1990407674vw               tablet band  (768 → 9.209px)
-       ≤767px → 2.5445292621vw               mobile band  (390 → 9.924px · 360 → 9.160px)
-     The root is the type ladder's gear-box: every rem rung above (and
-     every rem consumer) scales with the viewport exactly like the
-     reference; the 1024 dip (5.926px — the pure vw formula) is
-     intentional reference behaviour, and the mobile bands RAISE the
-     root so micro text stays legible on small screens. Print re-pins
-     a fixed 16px root so printed documents keep absolute sizes. */
+   Measured live on heronaiapp.com (reference/digest.json →
+   rootFontSize; the EXACT rules read from the site's inline CSS):
+    html { font-size: 0.5787037037vw }  desktop/base  (1440 → 8.333px · 1024 → 5.926px)
+    ≤991px → 1.1990407674vw               tablet band  (768 → 9.209px)
+    ≤767px → 2.5445292621vw               mobile band  (390 → 9.924px · 360 → 9.160px)
+   The root is the type ladder's gear-box: every rem rung above (and
+   every rem consumer) scales with the viewport exactly like the
+   reference; the 1024 dip (5.926px — the pure vw formula) is
+   intentional reference behaviour, and the mobile bands RAISE the
+   root so micro text stays legible on small screens. Print re-pins
+   a fixed 16px root so printed documents keep absolute sizes.
+*/
   html {
     font-size: 0.5787037037vw;
   }
@@ -548,202 +646,234 @@
   }
   @media print {
     /* the fluid root is a screen device — printed grades/schedules
-       ride a fixed 16px root so rem rungs keep their absolute size on
-       paper (the vw formula would resolve against the sheet width and
-       shrink everything ~45%). */
+    ride a fixed 16px root so rem rungs keep their absolute size on
+    paper (the vw formula would resolve against the sheet width and
+    shrink everything ~45%).
+*/
     html { font-size: 16px; }
   }
 
   /* RTL flips the direction multiplier so logical motion expressions
-     ("toward content", "from trailing edge") work without per-component
-     RTL forks. See specs/001-premium-motion-system/contracts/motion-tokens.md */
+   ("toward content", "from trailing edge") work without per-component
+   RTL forks. See specs/001-premium-motion-system/contracts/motion-tokens.md
+*/
   [dir="rtl"] {
     --motion-direction: -1;
   }
 
   /* Raw-ladder reduced-motion kill — theme-independent by placement
-     (no theme block re-declares a --t-* value). --t-micro has its own
-     appended kill at the file's tail (kept append-only). */
+   (no theme block re-declares a --t-* value). --t-micro has its own
+   appended kill at the file's tail (kept append-only).
+*/
   @media (prefers-reduced-motion: reduce) {
     :root {
       --t-fast: 0ms; --t-base: 0ms; --t-slow: 0ms;
       --t-slower: 0ms; --t-cinema: 0ms;
       /* R313 — the sheet instruments' rungs join the kill (the JS
-         gates already skip both; this is the CSS-side belt). */
+     gates already skip both; this is the CSS-side belt).
+*/
       --t-sheet-exit: 0ms;
     }
   }
 
-  /* ════════════════════════════════════════════════════════════════════
-     LIGHT THEME — the Heron blueprint paper
-     ════════════════════════════════════════════════════════════════════ */
+  /* ═══
+   LIGHT THEME — the Heron blueprint paper
+     ═══
+*/
 
   :root,
   [data-theme="light"] {
 
     /* R313 — the warm vintage-paper neutral ramp, re-keyed from the
-       live reference: --neutral-900 is the charcoal INK #282828 (the
-       reference's --content--primary; 13.57:1 on the R313 ground,
-       AAA); --neutral-50 is the warm PAGE GROUND #F6F6EE (the R313
-       canon — live-sampled #F4F4EE–#F5F5EF family; the r305/r308
-       blue-grey #F6F8FA ground is retired); the band rungs shift warm
-       with it (#F0F0E6 / #EFEFE4 — the same paper family, no blue-grey
-       tints); --neutral-0 is the clear card/input ground; --neutral-200
-       keeps the reference's guide grey #E0E0DA; --neutral-300 re-keys
-       to the reference's construction hairline #B3B3AF
-       (--content--border — the border-strong/rule/grid-line seat); the
-       mid rungs stay the reference's own technical greys. */
+    live reference: --neutral-900 is the charcoal INK #282828 (the
+    reference's --content--primary; 13.57:1 on the R313 ground,
+    AAA); --neutral-50 is the warm PAGE GROUND #F6F6EE (the R313
+    canon — live-sampled #F4F4EE–#F5F5EF family; the r305/r308
+    blue-grey #F6F8FA ground is retired); the band rungs shift warm
+    with it (#F0F0E6 / #EFEFE4 — the same paper family, no blue-grey
+    tints); --neutral-0 is the clear card/input ground; --neutral-200
+    keeps the reference's guide grey #E0E0DA; --neutral-300 re-keys
+    to the reference's construction hairline #B3B3AF
+    (--content--border — the border-strong/rule/grid-line seat); the
+    mid rungs stay the reference's own technical greys.
+*/
     /* R326 M0.4 — the ramp values moved to tokens.generated.css
-       (source: shared/design-tokens.json); the provenance comments
-       above remain the documentation of record: #F6F6EE ground ·
-       #282828 charcoal ink · the reference's own technical greys. */
+    (source: shared/design-tokens.json); the provenance comments
+    above remain the documentation of record: #F6F6EE ground ·
+    #282828 charcoal ink · the reference's own technical greys.
+*/
 
     /* The 9 section families (r305 re-key). Each has a soft tinted
-       ground (band fill), a saturated "ink" for fills/UI accents, and a
-       deep shade for text. The status triads adopt the computed r305
-       set (engine-verified): success/warning/info stay green/amber/
-       slate but re-tuned to the cool paper; DANGER now rhymes with the
-       coral #F15534 (the reference's secondary — fill labels stay
-       --warm-ink at 5.10:1); PEACH is re-keyed to the same coral seat
-       as the warm decorative family, with --c-coral-* added below as
-       the semantic alias namespace. Lavender and sand are unchanged
-       (no conflict with the new grounds). Badge-rarity pins
-       (yellow/grey/peach deep-vs-bg ≥4.5 both themes) and the
-       icon-well pins (light -deep on -bg ≥3:1) re-verified numerically:
-       mint 7.31 · yellow 7.85 · rose 7.22 · sky 7.74 · peach 6.29 ·
-       grey 12.55 · sand 7.62 · lavender 9.24 · copper 6.10. */
+    ground (band fill), a saturated "ink" for fills/UI accents, and a
+    deep shade for text. The status triads adopt the computed r305
+    set (engine-verified): success/warning/info stay green/amber/
+    slate but re-tuned to the cool paper; DANGER now rhymes with the
+    coral #F15534 (the reference's secondary — fill labels stay
+    --warm-ink at 5.10:1); PEACH is re-keyed to the same coral seat
+    as the warm decorative family, with --c-coral-* added below as
+    the semantic alias namespace. Lavender and sand are unchanged
+    (no conflict with the new grounds). Badge-rarity pins
+    (yellow/grey/peach deep-vs-bg ≥4.5 both themes) and the
+    icon-well pins (light -deep on -bg ≥3:1) re-verified numerically:
+    mint 7.31 · yellow 7.85 · rose 7.22 · sky 7.74 · peach 6.29 ·
+    grey 12.55 · sand 7.62 · lavender 9.24 · copper 6.10.
+*/
     /* R326 M0.4 — the 9 families moved to tokens.generated.css (source:
-       shared/design-tokens.json; the contrast pins live in its notes). */
+    shared/design-tokens.json; the contrast pins live in its notes).
+*/
 
     /* r305 — the coral alias namespace (additive; the warm secondary of
-       the reference). R326 M0.4: emitted by tokens.generated.css now. */
+    the reference). R326 M0.4: emitted by tokens.generated.css now.
+*/
 
     /* ═════ ROLE TOKENS — components consume these ═════
-       Two-surface rule: --bg is the PAGE GROUND (paper), --surface the
-       CARD GROUND — hierarchy via surface step + one soft shadow, not
-       border stacks. */
+    Two-surface rule: --bg is the PAGE GROUND (paper), --surface the
+    CARD GROUND — hierarchy via surface step + one soft shadow, not
+    border stacks.
+*/
     /* R326 M0.4 — the shared role seats (bg · surface · surface-1..3 ·
-       bg-soft · surface-elevated · the text/border/accent/status
-       families · brand/gold/primary) moved to tokens.generated.css
-       (source: shared/design-tokens.json); values unchanged. */
-    /* r304 restorations — the subtle/elevated surface roles: */
+    bg-soft · surface-elevated · the text/border/accent/status
+    families · brand/gold/primary) moved to tokens.generated.css
+    (source: shared/design-tokens.json); values unchanged.
+*/
+    /* r304 restorations — the subtle/elevated surface roles:
+*/
 
 
     /* R313 — muted is the solid equivalent of the reference's own
-       rgba(40,40,40,.72) tertiary ink, derived on the NEW paper:
-       #62625F = the exact alpha blend on #F6F6EE = 5.63:1 bg ·
-       6.12:1 surface · 5.34:1 surface-2 · 5.29:1 surface-3 — clears
-       4.5 on every light text ground (warm, unlike the retired cool
-       #626260 granite). */
+    rgba(40,40,40,.72) tertiary ink, derived on the NEW paper:
+    #62625F = the exact alpha blend on #F6F6EE = 5.63:1 bg ·
+    6.12:1 surface · 5.34:1 surface-2 · 5.29:1 surface-3 — clears
+    4.5 on every light text ground (warm, unlike the retired cool
+    #626260 granite).
+*/
     /* R313 — faint is one step FAINTER than muted, re-derived warm on
-       the new paper. R362 truth repair: the shipped value is #666660
-       (source: shared/design-tokens.json → tokens.generated.css) —
-       5.32:1 bg · 5.78:1 surface · 5.04:1 surface-2 · 4.99:1 surface-3,
-       clearing 4.5 on EVERY light text ground. The #70706A this
-       comment used to quote measures 4.59/4.98 but DIPS UNDER AA on
-       the inset wells (4.34 surface-2 · 4.30 surface-3); deliberately
-       under AA on --accent-soft — faint never carries text there
-       (contract unchanged from r304/r305; the print remap below is
-       aligned to the same shipped value in this round). */
+    the new paper. R362 truth repair: the shipped value is #666660
+    (source: shared/design-tokens.json → tokens.generated.css) —
+    5.32:1 bg · 5.78:1 surface · 5.04:1 surface-2 · 4.99:1 surface-3,
+    clearing 4.5 on EVERY light text ground. The #70706A this
+    comment used to quote measures 4.59/4.98 but DIPS UNDER AA on
+    the inset wells (4.34 surface-2 · 4.30 surface-3); deliberately
+    under AA on --accent-soft — faint never carries text there
+    (contract unchanged from r304/r305; the print remap below is
+    aligned to the same shipped value in this round).
+*/
     /* R313 — labels on the orange fill read WHITE (the reference's own
-       recipe, measured on every button; 3.76:1 = AA-large). The r305
-       warm-ink-only rule is SUPERSEDED. AA EXCEPTION: small Arabic
-       labels on the accent fill get font-weight ≥600 (the .btn
-       semibold default) and size ≥14px where feasible; body-size
-       accent TEXT still routes through --accent-ink (5.06:1). */
+    recipe, measured on every button; 3.76:1 = AA-large). The r305
+    warm-ink-only rule is SUPERSEDED. AA EXCEPTION: small Arabic
+    labels on the accent fill get font-weight ≥600 (the .btn
+    semibold default) and size ≥14px where feasible; body-size
+    accent TEXT still routes through --accent-ink (5.06:1).
+*/
 
 
     --border-faint:  rgba(40,40,40,0.07);
     /* R313 — the rule tier re-keys to the reference's construction
-       hairline #B3B3AF (--content--border — every 1px line on the
-       reference: frame, inputs, loader bar items); the guide grey
-       #E0E0DA stays the soft border tier above. */
+    hairline #B3B3AF (--content--border — every 1px line on the
+    reference: frame, inputs, loader bar items); the guide grey
+    #E0E0DA stays the soft border tier above.
+*/
     /* One step stronger than --rule on the hairline→divider ramp —
-       referencing the token keeps the prefers-contrast + dark remaps
-       working for free. */
+    referencing the token keeps the prefers-contrast + dark remaps
+    working for free.
+*/
     /* R313 — the grid/rule grey is the reference's own #B3B3AF
-       (via --neutral-300): DECORATIVE construction lines only on light
-       (1.94:1 — the reference uses it exactly so); on dark the same
-       rung family is a legitimate text tone. Never the only carrier of
-       meaning on light. */
+    (via --neutral-300): DECORATIVE construction lines only on light
+    (1.94:1 — the reference uses it exactly so); on dark the same
+    rung family is a legitimate text tone. Never the only carrier of
+    meaning on light.
+*/
     --grid-line:     var(--neutral-300);
-    /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
+    /* 012 theme-tokens contract §1 — formalised surface edge tokens.
+*/
     --surface-border:  rgba(40,40,40,0.07);
     --surface-divider: rgba(40,40,40,0.05);
 
     /* The ONE signal: the vivid orange #FA3600 (r305 — the reference's
-       --content--brand, verified live). Links, active states, focus,
-       chart-1. Raw orange is a LARGE-TEXT/UI tone on light (3.53:1 bg ·
-       3.76:1 surface — same class as the reference's own usage);
-       body-size text routes through --accent-ink. Fill labels stay
-       --warm-ink (4.69:1). Gold leaves the accent seat for achievements
-       only — and re-claims the retired copper hexes (circular economy:
-       the old signal IS the new gold). */
+    --content--brand, verified live). Links, active states, focus,
+    chart-1. Raw orange is a LARGE-TEXT/UI tone on light (3.53:1 bg ·
+    3.76:1 surface — same class as the reference's own usage);
+    body-size text routes through --accent-ink. Fill labels stay
+    --warm-ink (4.69:1). Gold leaves the accent seat for achievements
+    only — and re-claims the retired copper hexes (circular economy:
+    the old signal IS the new gold).
+*/
 
     /* r305 — label ink on the accent fill → R313: WHITE (the reference
-       ships white-on-#FA3600 labels on every measured button recipe;
-       3.76:1 = AA-large). The r305 warm-ink-only rule is superseded by
-       the owner decision. AA EXCEPTION: small Arabic labels on the
-       accent fill get weight ≥600 + size ≥14px where feasible (the
-       .btn semibold default already satisfies the weight); body-size
-       accent TEXT keeps routing through --accent-ink (5.06:1 AA). */
+    ships white-on-#FA3600 labels on every measured button recipe;
+    3.76:1 = AA-large). The r305 warm-ink-only rule is superseded by
+    the owner decision. AA EXCEPTION: small Arabic labels on the
+    accent fill get weight ≥600 + size ≥14px where feasible (the
+    .btn semibold default already satisfies the weight); body-size
+    accent TEXT keeps routing through --accent-ink (5.06:1 AA).
+*/
     /* r305 — the TEXT-safe accent: #C72E00 = 5.16:1 bg · 5.50:1 surface
-       · 5.27:1 #FAFAFA (AA as link/label text; the binary-searched
-       floor was #D92F00 at 4.53 — one step darker for margin). The raw
-       --accent stays the fill/stroke tone (3.53:1 — UI-large only). */
+    · 5.27:1 #FAFAFA (AA as link/label text; the binary-searched
+    floor was #D92F00 at 4.53 — one step darker for margin). The raw
+    --accent stays the fill/stroke tone (3.53:1 — UI-large only).
+*/
 
     /* r305 — the focus ring clears ≥3:1 against every adjacent light
-       surface (#C72E00 = 5.16:1 bg · 5.50:1 surface · 4.48:1 on
-       --accent-soft). Dark re-keys the ring to its luminous hover tier
-       (see the night block). */
+    surface (#C72E00 = 5.16:1 bg · 5.50:1 surface · 4.48:1 on
+    --accent-soft). Dark re-keys the ring to its luminous hover tier
+    (see the night block).
+*/
     --state-focus-ring-color: #C72E00;
 
     /* R362 (Agent 4) — the AA ACTION-FILL seat, tokenized from the
-       R318/R323 contrast-gate ruling that lived as four allowlisted
-       #DB3A00 literals in components.css/patterns.css (white label
-       4.548:1 — the least-shift orange ground that clears AA; the
-       raw --accent #FA3600 measures 3.755:1 under white and stays a
-       large-text/UI tone). Dark keeps its own passing seat (ember
-       #FF5A1F = 4.79:1 with white) — no override needed there. */
+    R318/R323 contrast-gate ruling that lived as four allowlisted
+    #DB3A00 literals in components.css/patterns.css (white label
+    4.548:1 — the least-shift orange ground that clears AA; the
+    raw --accent #FA3600 measures 3.755:1 under white and stays a
+    large-text/UI tone). Dark keeps its own passing seat (ember
+    #FF5A1F = 4.79:1 with white) — no override needed there.
+*/
     --accent-fill-aa: #DB3A00;
 
     /* Status INK tokens for TEXT usages — the deep "text-on-pastel"
-       shades of the same families (all ≥7.2:1 on their tints and ≥7:1
-       on the paper): mint-deep 7.31:1, yellow-deep 7.85:1, rose-deep
-       7.22:1, sky-deep 7.74:1. */
+    shades of the same families (all ≥7.2:1 on their tints and ≥7:1
+    on the paper): mint-deep 7.31:1, yellow-deep 7.85:1, rose-deep
+    7.22:1, sky-deep 7.74:1.
+*/
 
 
     /* Label ink ON A --danger FILL: r305 — the danger fill is the coral
-       family; warm-ink labels carried 5.10:1 on the old #F15534. R366
-       (Agent 3, CVD audit): --danger follows the tuned rose ink
-       #E5481F, and #191918 dropped to 4.42:1 — the label deepens two
-       steps to #101010 (4.78:1, visually identical warm-black).
-       Consumed by .btn.danger + notif-badge via --_btn-fg. */
+    family; warm-ink labels carried 5.10:1 on the old #F15534. R366
+    (Agent 3, CVD audit): --danger follows the tuned rose ink
+    #E5481F, and #191918 dropped to 4.42:1 — the label deepens two
+    steps to #101010 (4.78:1, visually identical warm-black).
+    Consumed by .btn.danger + notif-badge via --_btn-fg.
+*/
     --danger-fg:   #101010;
 
     --brand-purple:  var(--c-lavender-ink);
     /* r305 — the achievement gold re-claims the retired copper seat
-       (circular economy: #B57438 was the r303/r304 signal; demoted to
-       the achievement tone it is distinct from the orange signal
-       again). 3.57:1 on the paper — large/decorative tier; text routes
-       through --gold-ink #8F5A28 (5.39:1, AA). Achievements ONLY. */
+    (circular economy: #B57438 was the r303/r304 signal; demoted to
+    the achievement tone it is distinct from the orange signal
+    again). 3.57:1 on the paper — large/decorative tier; text routes
+    through --gold-ink #8F5A28 (5.39:1, AA). Achievements ONLY.
+*/
 
 
     /* ─── Elevation — R313: the decorative ladder is RETIRED ─────────
-       The reference measures 1 shadow in 2774 sampled surfaces (a
-       cookie-banner drafting drop). Depth comes from hairlines and
-       surface steps; every --elev-* rung and --shadow-* alias resolves
-       none. The prefers-contrast outline-ring fallbacks below STAY
-       (a11y), and the focus ring tokens are untouched. */
-    /* R313 override: decorative shadows removed — depth via hairlines only */
+    The reference measures 1 shadow in 2774 sampled surfaces (a
+    cookie-banner drafting drop). Depth comes from hairlines and
+    surface steps; every --elev-* rung and --shadow-* alias resolves
+    none. The prefers-contrast outline-ring fallbacks below STAY
+    (a11y), and the focus ring tokens are untouched.
+*/
+    /* R313 override: decorative shadows removed — depth via hairlines only
+*/
     --shadow-card:    none;
     --shadow-card-h:  none;
     --shadow-pop:     none;
     --shadow-modal:   none;
     --shadow-card-premium:  none;
     --shadow-card-premium-h: none;
-    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* selection ring kept — the elev tail retired */
-    /* r304 — the utility shadow aliases (historical names) restored: */
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* selection ring kept — the elev tail retired
+*/
+    /* r304 — the utility shadow aliases (historical names) restored:
+*/
     --shadow-sm: none;
     --shadow-md: none;
     --shadow-lg: none;
@@ -751,191 +881,231 @@
     --shadow-2xl: none;
     --shadow-mockup: none;
 
-    --glass-bg:    rgba(246,246,238,0.78);   /* warm paper glass (R313) */
+    --glass-bg:    rgba(246,246,238,0.78);   /* warm paper glass (R313)
+*/
     --glass-blur:  16px;
     --glass-border: rgba(40,40,40,0.08);
     /* The strong glass tier = more opaque ground, blur stays 16px
-       (r140: nothing stronger than 16). */
+    (r140: nothing stronger than 16).
+*/
     --glass-bg-strong:   rgba(246,246,238,0.92);
     --glass-blur-strong: 16px;
-    /* Scrim blur for dimming overlays (modal/sheet/dialog backdrops). */
+    /* Scrim blur for dimming overlays (modal/sheet/dialog backdrops).
+*/
     --scrim-blur:  4px;
 
     /* Overlay veil ramp (one grammar for every dimming backdrop; dark
-       remaps below). modal + sheet ride the base, the sidebar backdrop
-       the deep step, the command palette the max step. */
+    remaps below). modal + sheet ride the base, the sidebar backdrop
+    the deep step, the command palette the max step.
+*/
     --overlay-veil:      rgb(28 28 28 / 0.40);
     --overlay-veil-deep: rgb(28 28 28 / 0.45);
     --overlay-veil-max:  rgb(28 28 28 / 0.50);
 
-    /* sidebar / topbar */
+    /* sidebar / topbar
+*/
     --sidebar-bg:        var(--neutral-50);
-    --sidebar-rule:      var(--border-strong); /* R313 (5-f deferral): structural seam rides the strong hairline #B3B3AF (Heron grammar) */
+    --sidebar-rule:      var(--border-strong); /* R313 (5-f deferral): structural seam rides the strong hairline #B3B3AF (Heron grammar)
+*/
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
     --sidebar-item-active-bg:   var(--neutral-150);
     --sidebar-item-active-text: var(--neutral-900);
 
-    --topbar-bg:    rgba(246,246,238,0.86);   /* warm paper chrome glass (R313) */
+    --topbar-bg:    rgba(246,246,238,0.86);   /* warm paper chrome glass (R313)
+*/
     --topbar-border:var(--neutral-200);
 
     --scrollbar-thumb: rgba(40,40,40,0.16);
     --scrollbar-thumb-hover: rgba(40,40,40,0.28);
 
     /* legacy aliases (21-c sweep survivors + r304 restoration of
-       --accent-border's documented slot): */
+    --accent-border's documented slot):
+*/
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
 
-    --chart-text: var(--text-muted);  /* 5.74:1 on the paper — AA */
+    --chart-text: var(--text-muted);  /* 5.74:1 on the paper — AA
+*/
     --chart-grid: rgba(40,40,40,0.08);
     /* R366 (Agent 3, CVD audit): series 1 leaves the raw --accent for
-       DATA-VIS — under deuteranopia #FA3600 measured 2.91:1 on the warm
-       paper (the brand accent itself stays frozen; this is the series
-       seat only). #E84000: 3.74:1 normal · 3.20:1 deuteranopia · 5.37:1
-       protanopia — the signal voice, one step deeper. */
-    --chart-1: #E84000;   /* series 1 = the orange signal (data-vis seat) */
+    DATA-VIS — under deuteranopia #FA3600 measured 2.91:1 on the warm
+    paper (the brand accent itself stays frozen; this is the series
+    seat only). #E84000: 3.74:1 normal · 3.20:1 deuteranopia · 5.37:1
+    protanopia — the signal voice, one step deeper.
+*/
+    --chart-1: #E84000;   /* series 1 = the orange signal (data-vis seat)
+*/
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     /* R366 (Agent 3, CVD audit): series 4 leaves the rose-ink triad —
-       red-oranges collapse against the warm paper AND against series 1
-       under CVD (the old #F15534: 2.76:1 deuteranopia, ΔE76 5.4 from
-       the signal). The warm UMBER #8C4A2F fits the vintage-paper
-       palette: 5.70:1 deuteranopia · ΔE76 23.9/31.6 from series 1
-       (protan/deutan) · 32.5 from the series amber. */
+    red-oranges collapse against the warm paper AND against series 1
+    under CVD (the old #F15534: 2.76:1 deuteranopia, ΔE76 5.4 from
+    the signal). The warm UMBER #8C4A2F fits the vintage-paper
+    palette: 5.70:1 deuteranopia · ΔE76 23.9/31.6 from series 1
+    (protan/deutan) · 32.5 from the series amber.
+*/
     --chart-4: #8C4A2F;
     --chart-5: var(--c-lavender-ink);
     /* The series amber (#A6791F = 3.67:1 on the paper — clears the 3:1
-       non-text bar). The gold DISCIPLINE (--gold achievements only) is
-       untouched: chart series colors are a data-vis palette. */
+    non-text bar). The gold DISCIPLINE (--gold achievements only) is
+    untouched: chart series colors are a data-vis palette.
+*/
     --chart-6: #A6791F;
     /* R366 (Agent 3, CVD audit): series 7 retunes steel-blue → teal —
-       the old #2273A0 sat ΔE76 7.1 from series 3 (sky-ink), 5.8 under
-       protanopia. #0F7B8A: 4.58:1 on paper, ΔE76 20.5/13.2/11.5
-       (normal/protan/deutan) from series 3. */
-    --chart-7: #0F7B8A;   /* teal series — 4.58:1 on paper, CVD-safe */
-    --chart-8: #A65D8A;   /* mauve — 4.33:1 */
+    the old #2273A0 sat ΔE76 7.1 from series 3 (sky-ink), 5.8 under
+    protanopia. #0F7B8A: 4.58:1 on paper, ΔE76 20.5/13.2/11.5
+    (normal/protan/deutan) from series 3.
+*/
+    --chart-7: #0F7B8A;   /* teal series — 4.58:1 on paper, CVD-safe
+*/
+    --chart-8: #A65D8A;   /* mauve — 4.33:1
+*/
 
     /* r305 — the auth ambient wash re-keys to the orange seat (the
-       value was the retired copper). */
-    --journey-glow:        rgba(250, 54, 0, 0.10);   /* ember ambient wash */
+    value was the retired copper).
+*/
+    --journey-glow:        rgba(250, 54, 0, 0.10);   /* ember ambient wash
+*/
 
     /* R341 H1-a — the hero drafting-grid hairline family, measured from
-       the frozen Heron spec (docs/redesign/r335/heron-spec/
-       home-hero-wrap.1440/390.json): the grid's own paper-tinted
-       hairline, rule grey, 72% ink, and full ink. Constant in BOTH
-       themes (the frozen spec is the light census; the grid divs carry
-       no text, so the dark ink census is unaffected). */
+    the frozen Heron spec (docs/redesign/r335/heron-spec/
+    home-hero-wrap.1440/390.json): the grid's own paper-tinted
+    hairline, rule grey, 72% ink, and full ink. Constant in BOTH
+    themes (the frozen spec is the light census; the grid divs carry
+    no text, so the dark ink census is unaffected).
+*/
     --grid-line-paper:     rgb(224, 224, 218);
     --grid-line-rule:      rgb(179, 179, 175);
     --grid-ink-72:         rgba(40, 40, 40, 0.72);
     --grid-ink:            rgb(40, 40, 40);
     /* the hero grid layer's own stacking rung (css-counts: raw z-index
-       literals live in the token sources, not the sheets) */
+    literals live in the token sources, not the sheets)
+*/
     --z-hero-grid: 2;
   }
 
-  /* ════════════════════════════════════════════════════════════════════
-     DARK THEME — the charcoal night: the reference's own dark fills
-     promoted to a full theme. Deep charcoal ground, cool raised
-     surfaces one step at a time, luminous ember — the deliberate
-     counterpart, never a cold inversion.
-     ════════════════════════════════════════════════════════════════════ */
+  /* ═══
+   DARK THEME — the charcoal night: the reference's own dark fills
+   promoted to a full theme. Deep charcoal ground, cool raised
+   surfaces one step at a time, luminous ember — the deliberate
+   counterpart, never a cold inversion.
+     ═══
+*/
   [data-theme="dark"] {
     /* One more leading step for light-on-dark display text (compensate
-       on all perceptual axes; tracking/weight are banned on Arabic
-       cursive, leading is the legal one). */
+    on all perceptual axes; tracking/weight are banned on Arabic
+    cursive, leading is the legal one).
+*/
     --type-display-line-height: 1.30;
 
     /* The charcoal night ramp (r305): the page ground IS the
-       reference's charcoal #282828; surfaces sit one cool step up; the
-       ink is the paper twin #F6F8FA. The technical greys come home:
-       #B4B4B0 — a decorative non-text rung on light — is a legitimate
-       TEXT tone here (7.09:1 on the ground, AAA). */
+    reference's charcoal #282828; surfaces sit one cool step up; the
+    ink is the paper twin #F6F8FA. The technical greys come home:
+    #B4B4B0 — a decorative non-text rung on light — is a legitimate
+    TEXT tone here (7.09:1 on the ground, AAA).
+*/
     /* R326 M0.4 — the night ramp moved to tokens.generated.css; the
-       R324 X22 override (ink #F6F6EE, was #F6F8FA) is preserved there
-       and the old spelling stays on the parity gate's FORBIDDEN list. */
+    R324 X22 override (ink #F6F6EE, was #F6F8FA) is preserved there
+    and the old spelling stays on the parity gate's FORBIDDEN list.
+*/
 
     /* Night families: deep ember-tinted bgs + luminous inks. Contrast
-       on --bg #282828 (engine-verified, r305): mint 8.08, yellow 9.28,
-       rose 6.54, sky 7.82, lavender 6.56 — all text-AA; the status
-       badge triads re-verified (family ink-on-bg ≥6.5; the copper/
-       ember ink IS the signal — 4.73, the AA-large/UI register by
-       design). */
+    on --bg #282828 (engine-verified, r305): mint 8.08, yellow 9.28,
+    rose 6.54, sky 7.82, lavender 6.56 — all text-AA; the status
+    badge triads re-verified (family ink-on-bg ≥6.5; the copper/
+    ember ink IS the signal — 4.73, the AA-large/UI register by
+    design).
+*/
     /* R326 M0.4 — the night families moved to tokens.generated.css
-       (source: shared/design-tokens.json). */
+    (source: shared/design-tokens.json).
+*/
 
     /* r305 — the night coral alias namespace (additive). R326 M0.4:
-       emitted by tokens.generated.css now. */
+    emitted by tokens.generated.css now.
+*/
 
     /* Night roles: the subtle surface is the raised step; the elevated
-       surface lifts one further (deliberate counterpart, not inversion).
-       R326 M0.4 — the seat values moved to tokens.generated.css. */
+    surface lifts one further (deliberate counterpart, not inversion).
+    R326 M0.4 — the seat values moved to tokens.generated.css.
+*/
 
 
     /* #B4B4B0 — the reference's disable grey redeemed as the dark
-       muted TEXT tier: 7.09:1 bg · 6.53:1 surface · 5.90:1 surface-2
-       (worst dark ground) — clears 4.5 everywhere (r305, measured). */
+    muted TEXT tier: 7.09:1 bg · 6.53:1 surface · 5.90:1 surface-2
+    (worst dark ground) — clears 4.5 everywhere (r305, measured).
+*/
     /* #A2A29D — the AA-verified one-step-fainter tier: 5.75:1 bg ·
-       5.30:1 surface — clears 4.5 on every dark text surface; under AA
-       on --accent-soft by construction (faint never carries text
-       there). */
+    5.30:1 surface — clears 4.5 on every dark text surface; under AA
+    on --accent-soft by construction (faint never carries text
+    there).
+*/
 
 
-    --border-faint:  rgba(246,248,250,0.08);   /* paper-white hairline */
+    --border-faint:  rgba(246,248,250,0.08);   /* paper-white hairline
+*/
     --grid-line:     var(--neutral-300);
-    /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
+    /* 012 theme-tokens contract §1 — formalised surface edge tokens.
+*/
     --surface-border:  rgba(246,248,250,0.12);
     --surface-divider: rgba(246,248,250,0.07);
 
     /* Night signal discipline (r305): the FILL stays the luminous ember
-       (#FF5A1F — 4.73:1 bg, AA-large/UI; --warm-ink labels 5.64:1);
-       --accent-strong becomes the light ember tier for text/icons/
-       links on the night ground (9.72:1 bg). */
+    (#FF5A1F — 4.73:1 bg, AA-large/UI; --warm-ink labels 5.64:1);
+    --accent-strong becomes the light ember tier for text/icons/
+    links on the night ground (9.72:1 bg).
+*/
 
     /* r305 — the night ring re-keys to the luminous ember hover tier
-       (#FF6B33 = 5.20:1 on the night ground · 6.14:1 on a generic
-       near-black ground · 4.32:1 on the worst raised surface — clears
-       the ≥3:1 ring rule). */
+    (#FF6B33 = 5.20:1 on the night ground · 6.14:1 on a generic
+    near-black ground · 4.32:1 on the worst raised surface — clears
+    the ≥3:1 ring rule).
+*/
     --state-focus-ring-color: var(--accent-hover);
 
     /* R362 (Agent 4) — the AA action-fill seat resolves the theme's
-       own passing ground (ember #FF5A1F + white = 4.79:1): the light
-       block carries the darkened #DB3A00 exception, the night needs
-       none. Consumed unconditionally by the button/auth-submit fills
-       so the [data-theme='light'] override blocks retire. */
+    own passing ground (ember #FF5A1F + white = 4.79:1): the light
+    block carries the darkened #DB3A00 exception, the night needs
+    none. Consumed unconditionally by the button/auth-submit fills
+    so the [data-theme='light'] override blocks retire.
+*/
     --accent-fill-aa: var(--accent);
 
     /* Night -ink family: the status inks clear AA on the night ground
-       (mint 7.69, yellow 7.87, rose 6.97, sky 6.87 on --bg), so -ink maps
-       to the same values the base tokens resolve to — the icon-well pin
-       (dark --x-ink ≡ --x) holds via those aliases. r315 C4-D EXCEPTS the
-       accent: the luminous ember fill #FF5A1F read 4.35:1 on --surface —
-       under the 4.5 AA floor for 13px labels (the W6 .vc-kind probe) — so
-       the text seat rides the family's OWN lighter hover rung #FF6B33
-       (measured 4.79:1 surface · 5.20:1 bg · 5.08:1 accent-soft; ==
-       --accent-hover, the exact value of W6's page-scoped fix, now carried
-       by the token itself — the campus override retired). */
+    (mint 7.69, yellow 7.87, rose 6.97, sky 6.87 on --bg), so -ink maps
+    to the same values the base tokens resolve to — the icon-well pin
+    (dark --x-ink ≡ --x) holds via those aliases. r315 C4-D EXCEPTS the
+    accent: the luminous ember fill #FF5A1F read 4.35:1 on --surface —
+    under the 4.5 AA floor for 13px labels (the W6 .vc-kind probe) — so
+    the text seat rides the family's OWN lighter hover rung #FF6B33
+    (measured 4.79:1 surface · 5.20:1 bg · 5.08:1 accent-soft; ==
+    --accent-hover, the exact value of W6's page-scoped fix, now carried
+    by the token itself — the campus override retired).
+*/
 
 
     /* Label ink on the night coral fill (ink #191918 on #FF8E68 =
-       7.81:1). Consumed by .btn.danger / notif badge. */
+    7.81:1). Consumed by .btn.danger / notif badge.
+*/
     --danger-fg:    var(--warm-ink);
 
     --brand-purple:  var(--c-lavender-ink);
 
     /* Night shadows — R313: the decorative ladder is retired here too
-       (the shadow-removal policy is theme-wide); dark depth = surface
-       step + hairline, exactly as before but with zero shadow
-       contribution. */
-    /* R313 override: decorative shadows removed — depth via hairlines only */
+    (the shadow-removal policy is theme-wide); dark depth = surface
+    step + hairline, exactly as before but with zero shadow
+    contribution.
+*/
+    /* R313 override: decorative shadows removed — depth via hairlines only
+*/
     --shadow-card:    none;
     --shadow-card-h:  none;
     --shadow-pop:     none;
     --shadow-modal:   none;
     --shadow-card-premium:  none;
     --shadow-card-premium-h: none;
-    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* selection ring kept — the elev tail retired */
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft); /* selection ring kept — the elev tail retired
+*/
     --shadow-sm: none;
     --shadow-md: none;
     --shadow-lg: none;
@@ -943,27 +1113,33 @@
     --shadow-2xl: none;
     --shadow-mockup: none;
 
-    --glass-bg:    rgba(30,30,30,0.78);   /* charcoal night glass */
+    --glass-bg:    rgba(30,30,30,0.78);   /* charcoal night glass
+*/
     --glass-blur:  16px;
-    --glass-border: rgba(246,248,250,0.10);   /* paper hairline on dark glass */
+    --glass-border: rgba(246,248,250,0.10);   /* paper hairline on dark glass
+*/
     --glass-bg-strong:   rgba(30,30,30,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;
 
     /* Night scrims go pure black, a touch heavier so the same UI feels
-       equally "closed" against luminous dark surfaces. */
+    equally "closed" against luminous dark surfaces.
+*/
     --overlay-veil:      rgb(0 0 0 / 0.62);
     --overlay-veil-deep: rgb(0 0 0 / 0.65);
     --overlay-veil-max:  rgb(0 0 0 / 0.66);
 
     --sidebar-bg:        var(--neutral-50);
-    --sidebar-rule:      var(--border-strong); /* R313 (5-f deferral): structural seam rides the strong hairline #B3B3AF (Heron grammar) */
+    --sidebar-rule:      var(--border-strong); /* R313 (5-f deferral): structural seam rides the strong hairline #B3B3AF (Heron grammar)
+*/
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   rgb(255 90 31 / 0.16);  /* night ember wash — the traveller's current orbit */
+    --sidebar-item-active-bg:   rgb(255 90 31 / 0.16);  /* night ember wash — the traveller's current orbit
+*/
     --sidebar-item-active-text: var(--neutral-900);
 
-    --topbar-bg:    rgba(30,30,30,0.86);   /* charcoal-night chrome */
+    --topbar-bg:    rgba(30,30,30,0.86);   /* charcoal-night chrome
+*/
     --topbar-border:var(--neutral-200);
 
     --scrollbar-thumb: rgba(246,248,250,0.16);
@@ -974,52 +1150,62 @@
 
     --chart-text: var(--neutral-500);
     --chart-grid: rgba(246,248,250,0.08);
-    --chart-1: var(--accent);   /* series 1 = the night ember signal */
+    --chart-1: var(--accent);   /* series 1 = the night ember signal
+*/
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
-    --chart-6: #E8C064;   /* amber (lifted for dark) — 8.53:1 */
+    --chart-6: #E8C064;   /* amber (lifted for dark) — 8.53:1
+*/
     /* R366 (Agent 3, CVD audit): dark series 7 retunes with the light
-       seat — #6FB3D9 sat ΔE76 8.6 from dark sky-ink #93C2E9. The teal
-       #4FC4CF: 7.11:1 on the night ground, ΔE76 25.2 from series 3. */
-    --chart-7: #4FC4CF;   /* teal (lifted for dark) — 7.11:1, CVD-safe */
-    --chart-8: #D18AB4;   /* mauve (lifted for dark) — 5.62:1 */
+    seat — #6FB3D9 sat ΔE76 8.6 from dark sky-ink #93C2E9. The teal
+    #4FC4CF: 7.11:1 on the night ground, ΔE76 25.2 from series 3.
+*/
+    --chart-7: #4FC4CF;   /* teal (lifted for dark) — 7.11:1, CVD-safe
+*/
+    --chart-8: #D18AB4;   /* mauve (lifted for dark) — 5.62:1
+*/
 
-    /* The night wash re-keys to the luminous ember tier. */
-    --journey-glow:        rgba(255, 90, 31, 0.12);   /* ember ambient wash */
+    /* The night wash re-keys to the luminous ember tier.
+*/
+    --journey-glow:        rgba(255, 90, 31, 0.12);   /* ember ambient wash
+*/
   }
 
 }
 
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    012-design-graphics-uplift — additive token layer
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Adds:
-     1. Role-accent table (per data-role attribute on body)
-     2. College-accent slot + soft derivation
-     3. 5-level elevation language (--elev-1..5)
-     4. Illustration palette (--ill-hue-1..6 + stroke/paper/shadow)
-     5. prefers-contrast: more adaptations for both themes
+   1. Role-accent table (per data-role attribute on body)
+   2. College-accent slot + soft derivation
+   3. 5-level elevation language (--elev-1..5)
+   4. Illustration palette (--ill-hue-1..6 + stroke/paper/shadow)
+   5. prefers-contrast: more adaptations for both themes
 
    IMPORTANT: this section MUST NOT redefine surface/text/accent tokens
    already shipped above. It only LAYERS new variables on top.
    See specs/012-design-graphics-uplift/contracts/theme-tokens.md.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer tokens {
 
   /* ─── 1. Role-accent (Light) — seven slots, each ≥3.0 vs the paper
-     (computed against the live --bg by tests/unit/token-snapshot.test.ts;
-     role-accents tint chrome only, never body text). R313 re-verified
-     against #F6F6EE: student 5.06 · faculty 3.15 · department-head
-     3.11 · dean 3.56 · admin 3.08 · quality 3.31 · owner 5.24. */
+   (computed against the live --bg by tests/unit/token-snapshot.test.ts;
+   role-accents tint chrome only, never body text). R313 re-verified
+   against #F6F6EE: student 5.06 · faculty 3.15 · department-head
+   3.11 · dean 3.56 · admin 3.08 · quality 3.31 · owner 5.24.
+*/
   :root[data-theme="light"] body[data-role="student"]         { --role-accent: #C72E00; }
   /* r305: faculty + department-head + quality retuned one step against
-     the cooler paper — the r304 values measured 3.05/3.17/3.00, with
-     quality sitting exactly ON the 3.0 floor (rounding-risk); the
-     retints clear it with margin (3.22/3.17→3.17 stays/3.38) and keep
-     the hue identity. */
+   the cooler paper — the r304 values measured 3.05/3.17/3.00, with
+   quality sitting exactly ON the 3.0 floor (rounding-risk); the
+   retints clear it with margin (3.22/3.17→3.17 stays/3.38) and keep
+   the hue identity.
+*/
   :root[data-theme="light"] body[data-role="faculty"]         { --role-accent: #3F9C5F; }
   :root[data-theme="light"] body[data-role="department-head"] { --role-accent: #DA6C46; }
   :root[data-theme="light"] body[data-role="dean"]            { --role-accent: #8A6FE0; }
@@ -1028,8 +1214,9 @@
   :root[data-theme="light"] body[data-role="owner"]           { --role-accent: #6B665E; }
 
   /* ─── Role-accent (Dark) — each ≥3.0 vs #282828 (r305 re-verified:
-     student 4.73 · faculty 7.69 · department-head 7.10 · dean 6.56 ·
-     admin 6.87 · quality 6.97 · owner 6.97). ─────────────────────── */
+   student 4.73 · faculty 7.69 · department-head 7.10 · dean 6.56 ·
+   admin 6.87 · quality 6.97 · owner 6.97). ───────────────────────
+*/
   :root[data-theme="dark"]  body[data-role="student"]         { --role-accent: #FF5A1F; }
   :root[data-theme="dark"]  body[data-role="faculty"]         { --role-accent: #82CB99; }
   :root[data-theme="dark"]  body[data-role="department-head"] { --role-accent: #F2A07F; }
@@ -1038,27 +1225,33 @@
   :root[data-theme="dark"]  body[data-role="quality"]         { --role-accent: #F09BA3; }
   :root[data-theme="dark"]  body[data-role="owner"]           { --role-accent: #B7B2A6; }
 
-  /* Default when no data-role is set: fall through to existing --accent. */
+  /* Default when no data-role is set: fall through to existing --accent.
+*/
   /* (PI-45 R333: the formerly separate :root blocks — role-accent
-     default, college-accent slot, z-order scale, and the Wave-6
-     --gold-soft/--text-2xl block — are consolidated into this single
-     block, declaration order preserved, cascade-identical.) */
+   default, college-accent slot, z-order scale, and the Wave-6
+   --gold-soft/--text-2xl block — are consolidated into this single
+   block, declaration order preserved, cascade-identical.)
+*/
   :root {
     --role-accent: var(--accent);
 
-    /* ─── 2. College-accent slot ──────────────────────────────────────── */
+    /* ─── 2. College-accent slot ────────────────────────────────────────
+*/
     /* Pages SET --college-accent inline (after the runtime contrast gate
-       in lib/theme.ts → gateCollegeAccent()). The soft derivation below
-       gives a tinted surface usable for header glow / breadcrumb fill. */
+    in lib/theme.ts → gateCollegeAccent()). The soft derivation below
+    gives a tinted surface usable for header glow / breadcrumb fill.
+*/
     --college-accent: var(--role-accent);
     --college-accent-soft: color-mix(in srgb, var(--college-accent) 18%, transparent);
 
     /* ─── 3a. Z-order tokens (theme-independent) ───────────────────────
-       One scale for BOTH themes (dropdown 100 < popover 200 < tooltip 250
-       < sheet 300 < modal 400 < toast 500 < lightbox 600). */
+    One scale for BOTH themes (dropdown 100 < popover 200 < tooltip 250
+    < sheet 300 < modal 400 < toast 500 < lightbox 600).
+*/
     --z-base: 0;
     --z-dropdown: 100;
-  /* R353 P4 — the sheet-frame chrome rung: above header/dropdown chrome, below popovers */
+  /* R353 P4 — the sheet-frame chrome rung: above header/dropdown chrome, below popovers
+*/
   --z-frame: 150;
     --z-popover: 200;
     --z-tooltip: 250;
@@ -1067,74 +1260,89 @@
     --z-toast: 500;
     --z-lightbox: 600;
 
-    /* ─── 6. Wave additions (append-only heritage, r305 values) ────── */
+    /* ─── 6. Wave additions (append-only heritage, r305 values) ──────
+*/
 
     /* --gold-soft — soft gold ground for chip/tint surfaces placed
-       behind gold text. One definition suffices for both themes
-       because --c-yellow-bg is itself re-mapped by the theme blocks.
-       WCAG (r305): light gold-ink #8F5A28 on this ground = 4.84:1 (AA);
-       dark #F2B782 on the night yellow bg = 7.07:1 (AAA). */
+    behind gold text. One definition suffices for both themes
+    because --c-yellow-bg is itself re-mapped by the theme blocks.
+    WCAG (r305): light gold-ink #8F5A28 on this ground = 4.84:1 (AA);
+    dark #F2B782 on the night yellow bg = 7.07:1 (AAA).
+*/
     --gold-soft: var(--c-yellow-bg);
 
     /* --text-2xl — backing token for the `.text-2xl` size utility.
-       Follows the legacy alias family: --fs-2xl = --fs-h1 = 30px. */
+    Follows the legacy alias family: --fs-2xl = --fs-h1 = 30px.
+*/
     --text-2xl: var(--fs-2xl);
   }
 
   /* ─── 3. Elevation language — R313: RETIRED (decorative shadows ────
-     removed; depth via hairlines only). The rungs resolve none in both
-     themes; the prefers-contrast outline-ring ports below remain the
-     a11y fallback and are the ONLY non-none elev values left. */
+   removed; depth via hairlines only). The rungs resolve none in both
+   themes; the prefers-contrast outline-ring ports below remain the
+   a11y fallback and are the ONLY non-none elev values left.
+*/
   /* (PI-45 R333: the light-theme elevation + illustration blocks are
-     consolidated into this single block, cascade-identical.) */
+   consolidated into this single block, cascade-identical.)
+*/
   :root[data-theme="light"] {
-    /* R313 override: decorative shadows removed — depth via hairlines only */
+    /* R313 override: decorative shadows removed — depth via hairlines only
+*/
     --elev-1: none;
     --elev-2: none;
     --elev-3: none;
     --elev-4: none;
     --elev-5: none;
 
-    /* ─── 4. Illustration palette — Light ─────────────────────────────── */
+    /* ─── 4. Illustration palette — Light ───────────────────────────────
+*/
     --ill-hue-1: var(--c-copper-ink);
     --ill-hue-2: var(--c-mint-ink);
     --ill-hue-3: var(--c-sky-ink);
     --ill-hue-4: var(--c-rose-ink);
     --ill-hue-5: var(--c-lavender-ink);
-    --ill-hue-6: var(--chart-6);   /* the series amber, one home */
+    --ill-hue-6: var(--chart-6);   /* the series amber, one home
+*/
     --ill-stroke: var(--neutral-900);
     --ill-paper: var(--neutral-50);
     --ill-shadow: rgba(28,28,28,0.10);
   }
 
-  /* ─── Elevation language — Dark (R313: retired with the light set) ── */
+  /* ─── Elevation language — Dark (R313: retired with the light set) ──
+*/
   /* (PI-45 R333: the dark-theme elevation + illustration blocks are
-     consolidated into this single block, cascade-identical.) */
+   consolidated into this single block, cascade-identical.)
+*/
   :root[data-theme="dark"] {
-    /* R313 override: decorative shadows removed — depth via hairlines only */
+    /* R313 override: decorative shadows removed — depth via hairlines only
+*/
     --elev-1: none;
     --elev-2: none;
     --elev-3: none;
     --elev-4: none;
     --elev-5: none;
 
-    /* ─── Illustration palette — Dark ─────────────────────────────────── */
+    /* ─── Illustration palette — Dark ───────────────────────────────────
+*/
     --ill-hue-1: var(--c-copper-ink);
     --ill-hue-2: var(--c-mint-ink);
     --ill-hue-3: var(--c-sky-ink);
     --ill-hue-4: var(--c-rose-ink);
     --ill-hue-5: var(--c-lavender-ink);
-    --ill-hue-6: var(--chart-6);   /* the series amber, one home */
+    --ill-hue-6: var(--chart-6);   /* the series amber, one home
+*/
     --ill-stroke: var(--neutral-700);
     --ill-paper: var(--neutral-100);
     --ill-shadow: rgba(0,0,0,0.30);
   }
 
   /* (── 4. Illustration palette: the Light/Dark :root[data-theme] blocks
-     that stood here are consolidated into the elevation blocks above —
-     PI-45 R333, cascade-identical.) ─────────────────────────────────── */
+   that stood here are consolidated into the elevation blocks above —
+   PI-45 R333, cascade-identical.) ───────────────────────────────────
+*/
 
-  /* ─── 5. prefers-contrast: more — Light ───────────────────────────── */
+  /* ─── 5. prefers-contrast: more — Light ─────────────────────────────
+*/
   @media (prefers-contrast: more) {
     :root[data-theme="light"] {
       --elev-1: 0 0 0 1px rgba(0,0,0,0.32);
@@ -1145,7 +1353,8 @@
       --glass-bg: var(--surface);
       --glass-border: rgba(0,0,0,0.32);
       --ill-shadow: transparent;
-      /* 012 theme-tokens contract §8 — border strengthening. */
+      /* 012 theme-tokens contract §8 — border strengthening.
+*/
       --surface-border:  rgba(0,0,0,0.32);
       --surface-divider: rgba(0,0,0,0.20);
       --border:        rgba(0,0,0,0.42);
@@ -1169,42 +1378,49 @@
     }
 
     /* 012 illustration-system family rule: under prefers-contrast: more
-       the 1.5 unit strokes thicken to 2.0 (CSS overrides the SVG
-       presentation attributes). Solid fills stay; --ill-shadow is
-       already transparent above. */
+    the 1.5 unit strokes thicken to 2.0 (CSS overrides the SVG
+    presentation attributes). Solid fills stay; --ill-shadow is
+    already transparent above.
+*/
     .illustration svg :is(path, circle, rect, line, polyline, polygon, ellipse) {
       stroke-width: 2;
     }
   }
 
   /* (── 6. Wave additions (append-only heritage, r305 values): the
-     --gold-soft / --text-2xl :root block that stood here is consolidated
-     into the single :root block above — PI-45 R333, cascade-identical.) */
+   --gold-soft / --text-2xl :root block that stood here is consolidated
+   into the single :root block above — PI-45 R333, cascade-identical.)
+*/
 }
 
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    Wave 2-a heritage (append-only) + r305 sync
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer tokens {
 
   /* (PI-45 R333: the no-JS :root elevation-defaults block that stood
-     below the reduced-motion gap is consolidated into this single block,
-     cascade-identical.) */
+   below the reduced-motion gap is consolidated into this single block,
+   cascade-identical.)
+*/
   :root {
     /* Display-weight honesty: the self-hosted IBM Plex Sans Arabic ships
-       400/500/600/700 only (public/fonts/, verified) — the family has no
-       true 800 anywhere. --fw-black resolves to the real 700 so the
-       token says what renders. Alexandria (display) ships 500/600/700. */
+    400/500/600/700 only (public/fonts/, verified) — the family has no
+    true 800 anywhere. --fw-black resolves to the real 700 so the
+    token says what renders. Alexandria (display) ships 500/600/700.
+*/
     --fw-black: var(--fw-bold);
 
     /* no-JS elevation defaults: --elev-1..5 are defined under the
-       :root[data-theme] blocks, so with JS disabled (data-theme never set)
-       every --elev-* consumer needs a plain-:root default. R313: the
-       default IS none — the decorative ladder is retired everywhere;
-       the [data-theme] blocks repeat the same value (a default, not a
-       fork). */
-    /* R313 override: decorative shadows removed — depth via hairlines only */
+    :root[data-theme] blocks, so with JS disabled (data-theme never set)
+    every --elev-* consumer needs a plain-:root default. R313: the
+    default IS none — the decorative ladder is retired everywhere;
+    the [data-theme] blocks repeat the same value (a default, not a
+    fork).
+*/
+    /* R313 override: decorative shadows removed — depth via hairlines only
+*/
     --elev-1: none;
     --elev-2: none;
     --elev-3: none;
@@ -1213,9 +1429,10 @@
   }
 
   /* Close the reduced-motion gap: the raw block above zeroes
-     --t-fast…--t-cinema but not --t-micro, so the direct --t-micro
-     consumers (press snap-backs) still animated under reduced motion.
-     The semantic layer (motion.css) already zeroes --motion-duration-micro. */
+   --t-fast…--t-cinema but not --t-micro, so the direct --t-micro
+   consumers (press snap-backs) still animated under reduced motion.
+   The semantic layer (motion.css) already zeroes --motion-duration-micro.
+*/
   @media (prefers-reduced-motion: reduce) {
     :root {
       --t-micro: 0ms;
@@ -1223,27 +1440,30 @@
   }
 
   /* (no-JS elevation defaults: --elev-1..5 are defined under the
-     :root[data-theme] blocks, so with JS disabled (data-theme never set)
-     every --elev-* consumer needs a plain-:root default. R313: the
-     default IS none — the decorative ladder is retired everywhere;
-     the [data-theme] blocks repeat the same value (a default, not a
-     fork). The :root block that stood here is consolidated into the
-     --fw-black :root block above — PI-45 R333, cascade-identical.) */
+   :root[data-theme] blocks, so with JS disabled (data-theme never set)
+   every --elev-* consumer needs a plain-:root default. R313: the
+   default IS none — the decorative ladder is retired everywhere;
+   the [data-theme] blocks repeat the same value (a default, not a
+   fork). The :root block that stood here is consolidated into the
+   --fw-black :root block above — PI-45 R333, cascade-identical.)
+*/
 
-  /* ══════════════════════════════════════════════════════════════
-     PRINT LIGHT-LOCK (from polish.css, r150a) — "color-scheme: light"
-     alone is not enough: this dark-theme remap re-points the dark
-     block's custom properties at the Light values so dark-theme users
-     printing on white paper get readable grades/schedules. Raw hex is
-     unavoidable here — it IS the light palette, quoted by value because
-     var() would resolve dark. Placed AFTER the dark block inside this
-     layer so source order wins during print. The color-scheme: light
-     lock itself stays in polish.css. r305: synced to the Heron
-     palette; R313: synced to the warm vintage paper (AA muted/faint,
-     orange text inks, white accent-fill labels). ═════ */
+  /* ═══
+   PRINT LIGHT-LOCK (from polish.css, r150a) — "color-scheme: light"
+   alone is not enough: this dark-theme remap re-points the dark
+   block's custom properties at the Light values so dark-theme users
+   printing on white paper get readable grades/schedules. Raw hex is
+   unavoidable here — it IS the light palette, quoted by value because
+   var() would resolve dark. Placed AFTER the dark block inside this
+   layer so source order wins during print. The color-scheme: light
+   lock itself stays in polish.css. r305: synced to the Heron
+   palette; R313: synced to the warm vintage paper (AA muted/faint,
+   orange text inks, white accent-fill labels). ═════
+*/
   @media print {
     :root[data-theme="dark"] {
-      /* light neutral ramp (the warm vintage paper, R313) */
+      /* light neutral ramp (the warm vintage paper, R313)
+*/
       --neutral-0:   #FFFFFF;
       --neutral-50:  #F6F6EE;
       --neutral-100: #F0F0E6;
@@ -1255,7 +1475,8 @@
       --neutral-700: #414140;
       --neutral-800: #333330;
       --neutral-900: #282828;
-      /* light families (the r305 re-key) */
+      /* light families (the r305 re-key)
+*/
       --c-peach-bg:     #FCE5DE;  --c-peach-ink:    #F15534;  --c-peach-deep:    #9C2B0F;
       --c-mint-bg:      #E3EBE1;  --c-mint-ink:     #3F8F5C;  --c-mint-deep:     #1B5430;
       --c-lavender-bg:  #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
@@ -1265,16 +1486,20 @@
       --c-sand-bg:      #F1ECDF;  --c-sand-ink:     #B59868;  --c-sand-deep:     #5A4623;
       --c-grey-bg:      #ECEDEB;  --c-grey-ink:     #626260;  --c-grey-deep:     #282828;
       --c-copper-bg:    #FCE3D9;  --c-copper-ink:   #FA3600;  --c-copper-deep:   #A32400;
-      /* literals the dark block hardcodes (not chained to neutrals) */
+      /* literals the dark block hardcodes (not chained to neutrals)
+*/
       --text-muted:     #62625F;
-      --text-faint:     #666660;   /* R362: aligned to the shipped light value (was #70706A — see the faint note above) */
+      --text-faint:     #666660;   /* R362: aligned to the shipped light value (was #70706A — see the faint note above)
+*/
       --text-on-accent: #FFFFFF;
       --accent-hover:   #D92F00;
       --accent-fg:      #FFFFFF;
-      /* print rides the orange seat */
+      /* print rides the orange seat
+*/
       --accent:          #FA3600;
       --accent-strong:   #A32400;
-      --accent-fill-aa:  #DB3A00;   /* R362: the AA action-fill seat joins the print light-lock */
+      --accent-fill-aa:  #DB3A00;   /* R362: the AA action-fill seat joins the print light-lock
+*/
       --state-focus-ring-color: #C72E00;
       --border-faint:   rgba(40,40,40,0.06);
       --surface-border: rgba(40,40,40,0.06);
@@ -1282,8 +1507,10 @@
       --chart-text:     #62625F;
       --gold:           #B57438;
       /* text-safe inks: dark maps them to the -ink shades; light uses
-         the deeper -deep shades so status text stays ≥4.5:1 on paper */
-      --accent-ink:  #C12B00;   /* R366: synced with the tuned semantic seat (4.74:1 on accent-soft) */
+     the deeper -deep shades so status text stays ≥4.5:1 on paper
+*/
+      --accent-ink:  #C12B00;   /* R366: synced with the tuned semantic seat (4.74:1 on accent-soft)
+*/
       --success-ink: var(--c-mint-deep);
       --warning-ink: var(--c-yellow-deep);
       --danger-ink:  var(--c-rose-deep);
@@ -1294,9 +1521,9 @@
   }
 }
 
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    R322 — the DESIGN DIRECTOR layer (DESIGN.md §R322; additive only)
-   ═════════════════════════════════════════════════════════════════════
+   ═══
    Round R322's owner brief (docs/redesign/r322/BRIEF.md §4) orders the
    system re-founded on measured evidence before any page restyles. This
    block adds the NEW canonical seats — the ONE display scale, the rem
@@ -1309,14 +1536,14 @@
 
    Evidence chain (audits/evidence/r322/dsys/):
    · type-census.md — the live sweep that proved the V5 defect: 5–6
-     ad-hoc display sizes (60–85.55px @1440/991), 100% weight 700, and
-     the fluid root's tablet band amplifying --fs-display-lg to
-     85.55px at 991 (the owner's «80–110px» reading, quantified).
+   ad-hoc display sizes (60–85.55px @1440/991), 100% weight 700, and
+   the fluid root's tablet band amplifying --fs-display-lg to
+   85.55px at 991 (the owner's «80–110px» reading, quantified).
    · font-vote.md — the blind 3-reviewer display-face election:
-     IBM Plex Sans Arabic 26.5/30 (two #1, one #2). The display voice
-     moves onto Plex 400/500/600 — ALREADY self-hosted (fonts.css
-     seats, arabic + latin subsets), so this layer ships zero font
-     bytes; Alexandria 600/700 stays wired for legacy consumers.
+   IBM Plex Sans Arabic 26.5/30 (two #1, one #2). The display voice
+   moves onto Plex 400/500/600 — ALREADY self-hosted (fonts.css
+   seats, arabic + latin subsets), so this layer ships zero font
+   bytes; Alexandria 600/700 stays wired for legacy consumers.
 
    Type rungs: FINAL (the 1-d re-pin, measured from the Heron
    extraction's own ladder — task 1-c landed; the rungs are no longer
@@ -1341,73 +1568,98 @@
    Grid: 12 columns; margin/gutter in rem; logical properties only
    (inline-start/end) so RTL is native. PROVISIONAL — re-pin after
    the Heron extraction lands (measured header cells 137px/166.67px
-   @1440 are the derivation source). ═══════════════════════════ */
+   @1440 are the derivation source). ═══════════════════════════
+*/
 
 @layer tokens {
 
   :root {
     /* ─── R322 · the ONE display scale (DESIGN.md §4.c) — FINAL 1-d re-pin
-       D1 — one per page, the H1 (hero/opens): weight 600, lh 1.05.
-       D2 — the section statement (H2): weight 600, lh 1.10.
-       D3 — the card title (H3): weight 500, lh 1.15.
-       ST — the statement-band scrub title (the special seat): weight 600, lh 1.10.
-       text-wrap: balance at the consumer; zero tashkeel; zero
-       letter-spacing on Arabic (permanent exception 2).
+    D1 — one per page, the H1 (hero/opens): weight 600, lh 1.05.
+    D2 — the section statement (H2): weight 600, lh 1.10.
+    D3 — the card title (H3): weight 500, lh 1.15.
+    ST — the statement-band scrub title (the special seat): weight 600, lh 1.10.
+    text-wrap: balance at the consumer; zero tashkeel; zero
+    letter-spacing on Arabic (permanent exception 2).
 
-       FINAL RE-PIN (1-d) — computed from the Heron extraction ladder
-       (roots 8.33px @1440 · 9.21 @768 · 9.92 @390 · 11.88 @991 ·
-       19.52 @767-band): the px FLOORS kill the 767-band root spike by
-       construction (the provisional rem floors would have resolved
-       2.5rem → 48.8px @767 — the V5 blowup reborn inside the mobile
-       band), the rem CAPS ride the desktop root like the R313 ladder,
-       and the 4.8vw mid-term reproduces Heron's 768/991 values
-       EXACTLY. Floors are Heron's own phone sizes: H1/H2 3.2rem/
-       31.76px @390 · cards 23.33px · statement band 22.1px — type
-       GROWS at phone widths (31.74 vs the provisional 24.8px floor),
-       which is the brief's legibility intent. Evidence: the
-       extraction ladder (docs/redesign/r322/heron/*.md) +
-       audits/evidence/r322/dsys/type-census-after.md. */
-    --fs-d1: clamp(31.74px, 4.8vw, 5.6rem);  /* 46.7 @1440 · 47.6 @991 · 36.9 @768 · 31.74 @390 — Heron's own ladder */
-    --fs-d2: clamp(31.74px, 4.8vw, 4.8rem);  /* 40 @1440 · 47.6 @991 · 36.9 @768 · 31.74 @390 */
-    --fs-d3: clamp(23.33px, 2.8vw, 2.8rem);  /* 23.3 @1440 · 23.3 @768/390 (flat, like Heron's card titles) */
-    --fs-st:  clamp(22.1px, 2.87vw, 4rem);   /* the statement-band scrub seat: 33.3 @1440 · 22.1 @768/390 */
+    FINAL RE-PIN (1-d) — computed from the Heron extraction ladder
+    (roots 8.33px @1440 · 9.21 @768 · 9.92 @390 · 11.88 @991 ·
+    19.52 @767-band): the px FLOORS kill the 767-band root spike by
+    construction (the provisional rem floors would have resolved
+    2.5rem → 48.8px @767 — the V5 blowup reborn inside the mobile
+    band), the rem CAPS ride the desktop root like the R313 ladder,
+    and the 4.8vw mid-term reproduces Heron's 768/991 values
+    EXACTLY. Floors are Heron's own phone sizes: H1/H2 3.2rem/
+    31.76px @390 · cards 23.33px · statement band 22.1px — type
+    GROWS at phone widths (31.74 vs the provisional 24.8px floor),
+    which is the brief's legibility intent. Evidence: the
+    extraction ladder (docs/redesign/r322/heron/*.md) +
+    audits/evidence/r322/dsys/type-census-after.md.
+*/
+    --fs-d1: clamp(31.74px, 4.8vw, 5.6rem);  /* 46.7 @1440 · 47.6 @991 · 36.9 @768 · 31.74 @390 — Heron's own ladder
+*/
+    --fs-d2: clamp(31.74px, 4.8vw, 4.8rem);  /* 40 @1440 · 47.6 @991 · 36.9 @768 · 31.74 @390
+*/
+    --fs-d3: clamp(23.33px, 2.8vw, 2.8rem);  /* 23.3 @1440 · 23.3 @768/390 (flat, like Heron's card titles)
+*/
+    --fs-st:  clamp(22.1px, 2.87vw, 4rem);   /* the statement-band scrub seat: 33.3 @1440 · 22.1 @768/390
+*/
 
     /* r324 P3 — the APP-DENSITY ladder (dashboards/data surfaces; the
-       narrative display ladder above is for story pages). H1 28/24 ·
-       H2 20 · H3 16 — px-exact at the desktop root, px floors on
-       phones (density, not display). */
-    --fs-app-h1: clamp(24px, 2.34vw, 3.36rem); /* 28px @1440 · 24px @390 */
-    --fs-app-h2: clamp(18px, 1.67vw, 2.4rem);  /* 20px @1440 · 18px @390 */
-    --fs-app-h3: 1.92rem;                      /* 16px flat */
+    narrative display ladder above is for story pages). H1 28/24 ·
+    H2 20 · H3 16 — px-exact at the desktop root, px floors on
+    phones (density, not display).
+*/
+    --fs-app-h1: clamp(24px, 2.34vw, 3.36rem); /* 28px @1440 · 24px @390
+*/
+    --fs-app-h2: clamp(18px, 1.67vw, 2.4rem);  /* 20px @1440 · 18px @390
+*/
+    --fs-app-h3: 1.92rem;                      /* 16px flat
+*/
 
     /* ─── R322 · the rem spacing scale (DESIGN.md §4.b) ───────────────
-       Eleven rungs, rem on the fluid root — the ONLY allowed values
-       for new code (stylelint enforcement planned with the 1-d
-       migration). ≈px @1440 in the comments. */
-    --space-xs:  0.25rem;   /* ≈2px    — hairline nudges, optical alignment */
-    --space-sm:  0.5rem;    /* ≈4px    — chip/pair rhythm */
-    --space-md:  0.75rem;   /* ≈6px    — compact-control padding */
-    --space-lg:  1rem;      /* ≈8px    — the base rhythm */
-    --space-xl:  1.5rem;    /* ≈12.5px — card inner padding */
-    --space-2xl: 2rem;      /* ≈17px   — card/group gaps */
-    --space-3xl: 3rem;      /* ≈25px   — intra-section blocks */
-    --space-4xl: 4rem;      /* ≈33px   — section padding */
-    --space-6xl: 6rem;      /* ≈50px   — section breathing */
-    --space-8xl: 8rem;      /* ≈67px   — page bands */
-    --space-12xl: 12rem;    /* ≈100px  — the pinned-story runway class */
+    Eleven rungs, rem on the fluid root — the ONLY allowed values
+    for new code (stylelint enforcement planned with the 1-d
+    migration). ≈px @1440 in the comments.
+*/
+    --space-xs:  0.25rem;   /* ≈2px    — hairline nudges, optical alignment
+*/
+    --space-sm:  0.5rem;    /* ≈4px    — chip/pair rhythm
+*/
+    --space-md:  0.75rem;   /* ≈6px    — compact-control padding
+*/
+    --space-lg:  1rem;      /* ≈8px    — the base rhythm
+*/
+    --space-xl:  1.5rem;    /* ≈12.5px — card inner padding
+*/
+    --space-2xl: 2rem;      /* ≈17px   — card/group gaps
+*/
+    --space-3xl: 3rem;      /* ≈25px   — intra-section blocks
+*/
+    --space-4xl: 4rem;      /* ≈33px   — section padding
+*/
+    --space-6xl: 6rem;      /* ≈50px   — section breathing
+*/
+    --space-8xl: 8rem;      /* ≈67px   — page bands
+*/
+    --space-12xl: 12rem;    /* ≈100px  — the pinned-story runway class
+*/
 
     /* ─── R322 · the grid props (DESIGN.md §4.a) ──────────────────────
-       12 columns; margins/gutter in rem on the fluid root. Logical
-       properties only at the consumers (inline-start/end). */
+    12 columns; margins/gutter in rem on the fluid root. Logical
+    properties only at the consumers (inline-start/end).
+*/
     --grid-cols: 12;
-    --grid-margin: 4rem;    /* ≈33px @1440 · ≈40px @390 — PROVISIONAL */
-    --grid-gutter: 1.5rem;  /* ≈12.5px @1440 — PROVISIONAL */
+    --grid-margin: 4rem;    /* ≈33px @1440 · ≈40px @390 — PROVISIONAL
+*/
+    --grid-gutter: 1.5rem;  /* ≈12.5px @1440 — PROVISIONAL
+*/
   }
 }
 
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    ── R323 §A2 loader z-index contract ── (append-only · task 1-b)
-   ═════════════════════════════════════════════════════════════════════
+   ═══
    The requested mini-scale (splash 90 · loader 80 · menu-drawer 70 ·
    dialog 60 · consent 50 · toast 40 · header 30) COLLIDES with the
    live z-scale this file already ships (§3a, inside @layer tokens:
@@ -1417,27 +1669,28 @@
    legacy token is re-keyed (hundreds of consumers; --z-toast keeps its
    500) — and the R323 RELATIVE order is preserved exactly:
 
-     requested      adopted   note
-     ─────────────  ────────  ─────────────────────────────────────────
-     header   30 →  90        the free rung under --z-dropdown (100)
-     toast    40 →  (500)     NOT re-declared: the §3a block above
-                              already owns it; header 90 < toast 500
-     consent  50 →  510        above legacy toasts (R323: consent>toast)
-     dialog   60 →  520
-     menu-drawer 70 → 530      above dialogs; legacy sheet/modal (300/
-                              400) stay BELOW the R323 drawer family
-     loader   80 →  700        the full-screen loading family seat:
-                              SheetLoader · SlowServerCard · the
-                              RouteProgress strip (all mutually
-                              exclusive but the strip, and the strip
-                              must still top the header)
-     splash   90 →  800        TOPMOST — provably above --z-lightbox
-                              (600) so the boot splash covers everything
+   requested      adopted   note
+     ───
+   header   30 →  90        the free rung under --z-dropdown (100)
+   toast    40 →  (500)     NOT re-declared: the §3a block above
+               already owns it; header 90 < toast 500
+   consent  50 →  510        above legacy toasts (R323: consent>toast)
+   dialog   60 →  520
+   menu-drawer 70 → 530      above dialogs; legacy sheet/modal (300/
+               400) stay BELOW the R323 drawer family
+   loader   80 →  700        the full-screen loading family seat:
+               SheetLoader · SlowServerCard · the
+               RouteProgress strip (all mutually
+               exclusive but the strip, and the strip
+               must still top the header)
+   splash   90 →  800        TOPMOST — provably above --z-lightbox
+               (600) so the boot splash covers everything
 
    A lightbox (600) can never coexist with a boot splash (interaction
    is impossible before ready), but the loader family rides above it
    anyway so the invariant «exactly one full-screen layer, on top»
-   holds without caveats. */
+   holds without caveats.
+*/
 :root {
   --z-splash: 800;
   --z-loader: 700;
@@ -1445,44 +1698,50 @@
   --z-dialog: 520;
   --z-consent: 510;
   /* --z-toast is deliberately NOT re-declared here: the §3a block owns
-     it at 500 and re-keying it to 40 would demote every live toast
-     under every dropdown in the app. See the mapping table above. */
+   it at 500 and re-keying it to 40 would demote every live toast
+   under every dropdown in the app. See the mapping table above.
+*/
   --z-header: 90;
 }
 
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    R366 (Agent 3 · design system) — additive seats for the perfection
    program. Append-only: no token above is renamed, removed or re-keyed.
    Changelog for consumers: docs/redesign/r366/agent3-design-system/
    TOKENS-CHANGELOG.md.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer tokens {
 
   /* (Seat order note: the imagery pair declares first so this block's
-     opening token run differs from the generated sheet's — the jscpd
-     ratchet counts structural boilerplate otherwise.) */
+   opening token run differs from the generated sheet's — the jscpd
+   ratchet counts structural boilerplate otherwise.)
+*/
   :root {
     /* ─── Text-over-imagery contract (the guaranteed-legible pair) ───
-       Any Arabic text painted over photography/illustration consumes
-       BOTH: the ink AND the scrim that guarantees it. The flat floor
-       is MEASURED against the worst legal pixel — pure #FFFFFF —
-       0.62 × #141414 over white composites to #6D6D6D: 5.15:1 with
-       the #FFFFFF ink (AA body text with margin; gradients may go
-       stronger, never below). Theme-invariant on purpose: imagery is
-       the same pixels in both themes. Consumers: hero media, cards
-       with image headers, the landing story bands. */
+    Any Arabic text painted over photography/illustration consumes
+    BOTH: the ink AND the scrim that guarantees it. The flat floor
+    is MEASURED against the worst legal pixel — pure #FFFFFF —
+    0.62 × #141414 over white composites to #6D6D6D: 5.15:1 with
+    the #FFFFFF ink (AA body text with margin; gradients may go
+    stronger, never below). Theme-invariant on purpose: imagery is
+    the same pixels in both themes. Consumers: hero media, cards
+    with image headers, the landing story bands.
+*/
     --text-on-image-ink: #FFFFFF;
     --scrim-text: rgb(20 20 20 / 0.62);
 
     /* ─── The touch-target floor (§7 matrix · the 44px law) ───────────
-       Coarse-pointer hit areas resolve through this seat so the floor
-       is one number, not 400 local minimums. Equals shared
-       design-tokens.json touchFloor (the mobile contract). */
+    Coarse-pointer hit areas resolve through this seat so the floor
+    is one number, not 400 local minimums. Equals shared
+    design-tokens.json touchFloor (the mobile contract).
+*/
     --touch-target: 44px;
 
     /* The sunken well — the ONE inset surface (read-only digests,
-       code blocks, quota wells): one step BELOW the card ground. */
+    code blocks, quota wells): one step BELOW the card ground.
+*/
     --surface-sunken: var(--neutral-100);
   }
 
@@ -1491,7 +1750,8 @@
   }
 
   /* The page-transition rung joins the reduced-motion kill (the
-     raw block above predates it; append-only belt for the new rung). */
+   raw block above predates it; append-only belt for the new rung).
+*/
   @media (prefers-reduced-motion: reduce) {
     :root {
       --t-page: 0ms;

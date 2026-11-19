@@ -22,7 +22,7 @@ import {
   numOf,
   type QualityAlertsPayload,
 } from "@/features/governance/components";
-import { READ_ONLY } from "@/lib/copy";
+import {READ_ONLY, TEACHING_STAFF} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 /** (tabs) Quality reports — composite (web QualityReportsPage + dashboard sections). */
@@ -86,7 +86,7 @@ export default function QualityReports() {
             <RowList>
               <LedgerRow last>
                 <StatLine label="الطلاب النشطون" value={num(numOf(users.STUDENT))} />
-                <StatLine label="هيئة التدريس" value={num(numOf(users.TEACHER))} />
+                <StatLine label={TEACHING_STAFF} value={num(numOf(users.TEACHER))} />
                 <StatLine label="المقرّرات" value={num(numOf(ov?.courses))} />
                 <StatLine label="الشُّعب" value={num(numOf(ov?.offerings))} />
               </LedgerRow>
@@ -106,7 +106,7 @@ export default function QualityReports() {
                 <StatLine
                   label="معدل الحضور"
                   value={`${latn(Math.round(eng?.attendance?.presentRate ?? 0))}%`}
-                  hint={countAr(eng?.attendance?.total ?? 0, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
+                  hint={countAr(eng?.attendance?.total ?? 0, ["سجل", "سجلان", "سجلات", "سجلاً"])}
                 />
                 <StatLine
                   label="إكمال المحاضرات"
@@ -114,7 +114,7 @@ export default function QualityReports() {
                 />
                 <StatLine
                   label="التسجيلات"
-                  value={countAr(eng?.enrollments ?? 0, ["تسجيل واحد", "تسجيلان", "تسجيلات", "تسجيلاً"])}
+                  value={countAr(eng?.enrollments ?? 0, ["تسجيل", "تسجيلان", "تسجيلات", "تسجيلاً"])}
                 />
               </LedgerRow>
             </RowList>
@@ -132,7 +132,7 @@ export default function QualityReports() {
             <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} compact />
           ) : alertRows.length === 0 ? (
             <T variant="body" color="muted">
-              لا توجد تنبيهات — كل المؤشرات ضمن النطاق الطبيعي حالياً.
+              لا تنبيهات — المؤشرات ضمن النطاق الطبيعي.
             </T>
           ) : (
             <View style={{ gap: sp[12] }}>
@@ -218,7 +218,7 @@ export default function QualityReports() {
         </View>
 
         <T variant="xs" color="faint">
-          التقارير القابلة للتحميل (PDF/Excel) قيد التطوير — الأرقام أعلاه حيّة.
+          تحميل PDF/Excel قيد التطوير — الأرقام أعلاه حيّة.
         </T>
       </View>
     </Screen>

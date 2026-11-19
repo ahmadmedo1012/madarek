@@ -1,0 +1,24 @@
+{
+ "lighthouseVersion": "12.8.2",
+ "requestedUrl": "http://localhost:5307/capabilities",
+ "fetchTime": "2026-11-19T06:07:25.693Z",
+ "gatherMode": "navigation",
+ "formFactor": null,
+ "throttling": "simulate",
+ "categories": {
+  "accessibility": 100,
+  "best-practices": 100,
+  "seo": 100
+ },
+ "metrics": {
+  "server-response-time": null,
+  "first-contentful-paint": null,
+  "largest-contentful-paint": null,
+  "total-blocking-time": null,
+  "cumulative-layout-shift": null,
+  "speed-index": null,
+  "interactive": null,
+  "render-blocking-resources": []
+ },
+ "runWarnings": []
+}

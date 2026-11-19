@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/pressables";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { arCount } from "@/features/teacher/components";
-import { REPORT_PROBLEM, SAVED } from "@/lib/copy";
+import {REPORT_PROBLEM, SAVED, QB_AND_EXAMS} from "@/lib/copy";
 
 /** Wire shape of GET /me/teacher-profile (teacher-profile.routes.ts). */
 type TeacherProfileWire = {
@@ -73,7 +73,7 @@ const MENU_GROUPS: { title: string; items: { label: string; to: string }[] }[] =
     items: [
       { label: "المواد", to: "/teacher/materials" },
       { label: "التكاليف", to: "/teacher/assignments" },
-      { label: "بنك الأسئلة والاختبارات", to: "/teacher/exams" },
+      { label: QB_AND_EXAMS, to: "/teacher/exams" },
       { label: "بناء المنهج", to: "/teacher/curriculum" },
     ],
   },
@@ -252,7 +252,7 @@ export default function TeacherProfile() {
               </T>
             ) : (
               <T variant="sm" color="muted">
-                لم تُضف نبذة بعد. اضغط «تحرير السيرة» لإضافة وصف عن خلفيتك الأكاديمية.
+                لم تُضف نبذة بعد — اضغط «تحرير السيرة».
               </T>
             )}
             <StatLine label="موقع المكتب" value={me.officeLocation ?? "—"} />
@@ -283,14 +283,14 @@ export default function TeacherProfile() {
                   </T>
                   <T variant="xs" color="muted">
                     {c.code} · {c.term} ·{" "}
-                    {c.enrolled === 0 ? "لا طلاب" : arCount(c.enrolled, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
+                    {c.enrolled === 0 ? "لا طلاب" : arCount(c.enrolled, ["طالب", "طالبان", "طلاب", "طالباً"])}
                   </T>
                 </LedgerRow>
               ))}
             </RowList>
           ) : (
             <Card>
-              <T variant="sm" color="muted">لم يُسند إليك أي مقرّر بعد</T>
+              <T variant="sm" color="muted">لم تُسند إليك مقرّرات بعد</T>
             </Card>
           )}
 

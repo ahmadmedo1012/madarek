@@ -43,7 +43,7 @@ import {
   useSheetMounted,
   useTeacherOfferings,
 } from "@/features/teacher/components";
-import { CREATING, LIVE_NOW, UPDATE_FAILED } from "@/lib/copy";
+import {CREATING, LIVE_NOW, UPDATE_FAILED, TITLE_TWO_CHARS, INVALID_DATETIME} from "@/lib/copy";
 
 const NO_SESSIONS: Awaited<ReturnType<typeof liveApi.sessions>> = [];
 
@@ -129,10 +129,10 @@ export default function TeacherLive() {
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر مقرراً أولاً.");
-      if (title.trim().length < 3) throw new Error("العنوان: حرفان على الأقل.");
+      if (title.trim().length < 3) throw new Error(TITLE_TWO_CHARS);
       if (!schedDate) throw new Error("حدّد الموعد.");
       const t = Date.parse(`${schedDate}T${schedTime.trim() === "" ? "09:00" : schedTime}`);
-      if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
+      if (Number.isNaN(t)) throw new Error(INVALID_DATETIME);
       return liveApi.create({
         offeringId: effId,
         title: title.trim(),
@@ -145,7 +145,7 @@ export default function TeacherLive() {
     onSuccess: () => {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
-      toast.success("جُدولت — لطلاب المقرّر.", "تمّت الجدولة");
+      toast.success("جُدولت — لطلاب المقرّر.");
       setCreating(false);
       setTitle("");
       setTopic("");
@@ -168,9 +168,9 @@ export default function TeacherLive() {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
       setConfirmAction(null);
-      if (vars.action === "START") toast.success("بدأ البث — مباشر الآن.", "بدء البث");
-      else if (vars.action === "END") toast.success("انتهى — في السجلّ.", "انتهاء البث");
-      else toast.success("أُلغيت الجلسة.", "إلغاء الجلسة");
+      if (vars.action === "START") toast.success("بدأ البث — مباشر الآن.");
+      else if (vars.action === "END") toast.success("انتهى — في السجلّ.");
+      else toast.success("أُلغيت الجلسة.");
     },
     onError: (e) => {
       haptics.notify("error");
@@ -243,10 +243,7 @@ export default function TeacherLive() {
   return (
     <Screen scroll>
       <StackHeader title="إدارة البث المباشر" />
-      <PageHeader
-        title="إدارة البث المباشر"
-        kicker="جدولة الجلسات — لطلاب مقرّراتك."
-      />
+      <PageHeader title="إدارة البث المباشر" />
       <SectionBar
         index={1}
         title="حالة الجلسات"
@@ -284,7 +281,7 @@ export default function TeacherLive() {
             </>
           ) : (
             <T variant="sm" color="muted">
-              لا يوجد بث مباشر الآن — ابدأ جلسة مجدولة أو أنشئ جلسة جديدة.
+              لا بث مباشر — ابدأ مجدولة أو أنشئ جلسة.
             </T>
           )}
 
@@ -387,14 +384,14 @@ export default function TeacherLive() {
               setSchedDate(v);
               setCreateError(null);
             }}
-            hint="بصيغة YYYY-MM-DD"
+            hint="YYYY-MM-DD"
             accessibilityLabel="تاريخ الجلسة"
           />
           <SheetField
             label="موعد الجلسة (وقت)"
             value={schedTime}
             onChangeText={setSchedTime}
-            hint="بصيغة HH:MM"
+            hint="HH:MM"
             accessibilityLabel="وقت الجلسة"
           />
           <SheetField
@@ -428,8 +425,8 @@ export default function TeacherLive() {
         title={confirmAction?.action === "END" ? "إنهاء البث" : "إلغاء الجلسة"}
         message={
           confirmAction?.action === "END"
-            ? `إنهاء «${confirmAction?.title ?? ""}» ينهي البث للطلاب فورًا وتنتقل الجلسة إلى السجل. هل تريد الإنهاء؟`
-            : `إلغاء «${confirmAction?.title ?? ""}» يحذفها من جدول الطلاب. هل تريد الإلغاء؟`
+            ? `ينهي البث للطلاب فورًا — والجلسة إلى السجلّ.`
+            : `يحذفها من جدول الطلاب.`
         }
         confirmLabel={confirmAction?.action === "END" ? "إنهاء" : "إلغاء الجلسة"}
         destructive={confirmAction?.action === "CANCEL"}

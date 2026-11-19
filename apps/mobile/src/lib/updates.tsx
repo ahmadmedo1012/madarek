@@ -75,7 +75,7 @@ export async function checkAndDownloadUpdate(showToast = true): Promise<boolean>
     crumb("ota: downloading update");
     await u.fetchUpdateAsync();
     if (showToast) {
-      toast.info("تحديث جاهز — أعد التشغيل لتطبيقه", "تحديث مدارك");
+      toast.info("تحديث جاهز — أعد التشغيل لتطبيقه.");
     }
     crumb("ota: update downloaded");
     return true;
@@ -184,8 +184,7 @@ export function BlockingUpdateGate({ updateUrl }: { updateUrl: string }) {
         <View style={[styles.rule, { backgroundColor: p.accent }]} />
         <Text style={[styles.title, { color: p.text }]}>يلزم تحديث التطبيق</Text>
         <Text style={[styles.body, { color: p.textSecondary }]}>
-          هذا الإصدار لم يعد مدعومًا. حمّل الإصدار الجديد من صفحة التطبيق ثم عُد —
-          بياناتك محفوظة على الخادم ولن تفقد شيئًا.
+          حمّل الجديد من صفحة التطبيق ثم عُد — بياناتك محفوظة.
         </Text>
         <Pressable
           accessibilityRole="button"

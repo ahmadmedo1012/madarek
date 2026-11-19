@@ -1,12 +1,14 @@
 @layer pages {
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    NotificationDropdown panel + mobile bottom navigation.
    Design language: copper academic accent (tokens.css --accent, see
    specs/012-design-graphics-uplift) + IBM Plex Sans Arabic type ramp.
    (T3-F4: header comment was stale — said “Indigo #4F46E5 · Cairo”.)
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
-/* ── Notification panel ─────────────────────────────────────── */
+/* ── Notification panel ───────────────────────────────────────
+*/
 
 .notif-dropdown {
   position: relative;
@@ -16,7 +18,8 @@
    overrides) removed in the WS-D2 orphan sweep: NotificationDropdown now
    mounts the <NotificationPanel> primitive (className="notification-panel",
    styled in components.css). The notif-panel-* children below remain in
-   the markup and keep their styles. */
+   the markup and keep their styles.
+*/
 
 .notif-panel-head {
   display: flex;
@@ -24,37 +27,47 @@
   justify-content: space-between;
   gap: var(--sp-2);
   /* r155d: 16px → --sp-4 (exact rung); the 14px block inset is off-ladder
-     (no 14px spacing rung) — left raw, noted as debt like the 8px at
-     .notif-panel-action. */
-  padding: var(--sp-3-5) var(--sp-4); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
+   (no 14px spacing rung) — left raw, noted as debt like the 8px at
+   .notif-panel-action.
+*/
+  padding: var(--sp-3-5) var(--sp-4); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade)
+*/
   border-bottom: 1px solid var(--border);
 }
 .notif-panel-title {
   /* r155d: raw 14px/700 → the chrome rung + bold token (exact values —
-     the panel title is interface chrome, not body copy). */
+   the panel title is interface chrome, not body copy).
+*/
   /* r325 Y4 — 600, the §R324 weight law: the panel title is a real <h3>
-     and the census asserts every heading ≤ 600 (was --fw-bold). */
+   and the census asserts every heading ≤ 600 (was --fw-bold).
+*/
   font-size: var(--fs-chrome);
   font-weight: var(--fw-semibold);
   color: var(--text);
   /* 5-C2 (A3 P3-8 dead-declaration sweep): letter-spacing -0.01em
-     removed — superseded by polish.css:1393 (ls normal, 21-c ruling
-     #2); the remaining declarations mirror the polish values (the
-     overrides layer owns the render), margin:0 stays unique-live. */
+   removed — superseded by polish.css:1393 (ls normal, 21-c ruling
+   #2); the remaining declarations mirror the polish values (the
+   overrides layer owns the render), margin:0 stays unique-live.
+*/
   margin: 0;
 }
-.notif-panel-actions { display: flex; align-items: center; gap: var(--sp-1); } /* r157: 4px → --sp-1 */
+.notif-panel-actions { display: flex; align-items: center; gap: var(--sp-1); } /* r157: 4px → --sp-1
+*/
 .notif-panel-action {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1); /* r157: 4px → --sp-1 */
-  padding: var(--sp-1-5) var(--sp-2); /* r153h: 6px → --sp-1-5 (الـ8px = --sp-2 — دين منفصل) */
+  gap: var(--sp-1); /* r157: 4px → --sp-1
+*/
+  padding: var(--sp-1-5) var(--sp-2); /* r153h: 6px → --sp-1-5 (الـ8px = --sp-2 — دين منفصل)
+*/
   border: 0;
   background: transparent;
   color: var(--accent-ink, var(--accent));
-  /* r155d: raw 12px → --fs-xs (exact rung). */
+  /* r155d: raw 12px → --fs-xs (exact rung).
+*/
   font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold); /* r157: 600 → --fw-semibold */
+  font-weight: var(--fw-semibold); /* r157: 600 → --fw-semibold
+*/
   cursor: pointer;
   border-radius: var(--r-sm);
   transition: background var(--t-fast) var(--ease);
@@ -64,8 +77,9 @@
 }
 .notif-panel-close {
   /* S-1b: width/height → the logical twins (identical at horizontal-tb;
-     polish never declares either on this control, so this rule is the
-     live geometry owner). */
+   polish never declares either on this control, so this rule is the
+   live geometry owner).
+*/
   inline-size: 28px; block-size: 28px;
   border: 0;
   background: transparent;
@@ -83,11 +97,13 @@
 
 .notif-panel-list {
   /* S-1b: max-height → max-block-size (logical twin; horizontal-tb identical,
-     and the gate prefers the logical form — layout.css same idiom). */
+   and the gate prefers the logical form — layout.css same idiom).
+*/
   max-block-size: 420px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: var(--sp-1); /* r157: 4px → --sp-1 */
+  padding: var(--sp-1); /* r157: 4px → --sp-1
+*/
 }
 
 .notif-empty {
@@ -96,29 +112,34 @@
   align-items: center;
   gap: var(--sp-2);
   /* (r157 dead-declaration sweep: padding 48px/20px deleted — dead
-     since polish.css's overrides-layer .notif-empty re-specifies the
-     rendered 40px/20px (→ --sp-8/--sp-5 there, the live owner).) */
+   since polish.css's overrides-layer .notif-empty re-specifies the
+   rendered 40px/20px (→ --sp-8/--sp-5 there, the live owner).)
+*/
   text-align: center;
 }
 .notif-empty-icon {
   /* S-1b: width/height → logical twins (polish's overrides twin already
-     declares inline-size/block-size 44px — this rule now mirrors it
-     instead of shipping the physical residue). */
+   declares inline-size/block-size 44px — this rule now mirrors it
+   instead of shipping the physical residue).
+*/
   inline-size: 44px; block-size: 44px;
   /* r155d: was var(--r-lg) — never painted: polish.css's overrides-layer
-     .notif-empty-icon wins this property with var(--r-full) (the pill
-     well). Aligned to the rendered winner; the rest of this rule is
-     property-disjoint from polish's twin. */
+   .notif-empty-icon wins this property with var(--r-full) (the pill
+   well). Aligned to the rendered winner; the rest of this rule is
+   property-disjoint from polish's twin.
+*/
   border-radius: var(--r-full);
   background: var(--surface-2);
   color: var(--text-subtle);
   /* R329 (gate:clean): display is polish.css's overrides seat
-     (inline-flex) — this pages-layer copy was inert. */
+   (inline-flex) — this pages-layer copy was inert.
+*/
   align-items: center;
   justify-content: center;
 }
 .notif-empty-text {
-  font-size: var(--fs-sm); /* r157: 13px → --fs-sm (exact rung) */
+  font-size: var(--fs-sm); /* r157: 13px → --fs-sm (exact rung)
+*/
   color: var(--text-muted);
   margin: 0;
 }
@@ -126,7 +147,8 @@
 .notif-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--sp-3); /* r155d: raw 12px → --sp-3 (exact rung) */
+  gap: var(--sp-3); /* r155d: raw 12px → --sp-3 (exact rung)
+*/
   width: 100%;
   border: 0;
   background: transparent;
@@ -135,13 +157,15 @@
   border-radius: var(--r-md);
   position: relative;
   /* S-1b (Superlist re-skin): hard row floor — a title-only row never
-     dips under the platform's 44px hit floor (min-* beats nothing today:
-     polish's overrides-layer .notif-item declares padding/border/transition
-     only, so this floor is the live minimum at used-value time). */
+   dips under the platform's 44px hit floor (min-* beats nothing today:
+   polish's overrides-layer .notif-item declares padding/border/transition
+   only, so this floor is the live minimum at used-value time).
+*/
   min-block-size: 44px;
   /* (r151c dead-twin sweep: padding + transition deleted — polish's
-     overrides-layer .notif-item re-specifies both with the identical
-     values; the r149 alignment note retired with them.) */
+   overrides-layer .notif-item re-specifies both with the identical
+   values; the r149 alignment note retired with them.)
+*/
 }
 @media (hover: hover) and (pointer: fine) {
   .notif-item:hover { background: var(--surface-2); }
@@ -155,7 +179,8 @@
   align-items: center;
   justify-content: center;
   /* (r151c: width/height/border-radius/flex-shrink deleted — polish's
-     overrides-layer icon rule re-specifies all four.) */
+   overrides-layer icon rule re-specifies all four.)
+*/
 }
 /* r366 (2-d) — the unread dot's GEOMETRY, restored. The sizing rule
    (6px / 50% / accent) was swept out with polish's re-skin and the
@@ -164,7 +189,8 @@
    dot is the ONLY unread marker that survives print + high-contrast,
    so it is a real state carrier, not decoration: trailing seat in the
    row's inline axis, flexed never, with the accent halo the re-skin
-   notes describe. Unread is urgent-tone (the bell badge's own ink). */
+   notes describe. Unread is urgent-tone (the bell badge's own ink).
+*/
 .notif-item-dot {
   flex: none;
   inline-size: 6px;
@@ -182,7 +208,8 @@
    dark change). tone-neutral never had a producer after r164-j moved
    SYSTEM to the amber well (MorePages semantics) and was deleted;
    tone-warn consumes the same WCAG-pinned --warning-soft/--warning-ink
-   pair the toast warning well ships (line .toast-icon-warning). */
+   pair the toast warning well ships (line .toast-icon-warning).
+*/
 .notif-item.tone-accent  .notif-item-icon { background: var(--accent-soft);  color: var(--accent-ink);  }
 .notif-item.tone-danger  .notif-item-icon { background: var(--danger-soft);  color: var(--danger-ink);  }
 .notif-item.tone-success .notif-item-icon { background: var(--success-soft); color: var(--success-ink); }
@@ -202,10 +229,12 @@
    below); .notif-item-dot's sizing declarations (6px/50%/accent)
    likewise lost to polish's absolute-positioned 8px dot, and the
    unread background lost to polish's color-mix wash — only the
-   hover-tint variant above stays, which polish never touches.) */
+   hover-tint variant above stays, which polish never touches.)
+*/
 .notif-item-title {
   /* Long titles wrap, never overflow — the one declaration polish
-     does NOT own (r151c survivor). */
+   does NOT own (r151c survivor).
+*/
   overflow-wrap: anywhere;
 }
 
@@ -217,14 +246,16 @@
   align-items: center;
   justify-content: center;
   /* (r157 dead-declaration sweep: gap 4px / font-size 13px /
-     font-weight 600 deleted — polish.css's overrides-layer
-     .notif-panel-viewall re-specifies all three (→ --sp-1/--fs-xs/
-     --fw-semibold there, the live owner). justify-content/padding/
-     transition below are properties polish does NOT own — they stay.
-     R329 gate:clean: display (inline-flex) + color (accent-strong)
-     join the sweep — polish's overrides twin owns both; these
-     pages-layer copies were inert.) */
-  /* r155d: raw 12px/16px → --sp-3/--sp-4 (exact rungs). */
+   font-weight 600 deleted — polish.css's overrides-layer
+   .notif-panel-viewall re-specifies all three (→ --sp-1/--fs-xs/
+   --fw-semibold there, the live owner). justify-content/padding/
+   transition below are properties polish does NOT own — they stay.
+   R329 gate:clean: display (inline-flex) + color (accent-strong)
+   join the sweep — polish's overrides twin owns both; these
+   pages-layer copies were inert.)
+*/
+  /* r155d: raw 12px/16px → --sp-3/--sp-4 (exact rungs).
+*/
   padding: var(--sp-3) var(--sp-4);
   text-decoration: none;
   transition: background var(--t-fast) var(--ease);
@@ -236,9 +267,11 @@
 }
 
 /* RTL: chevron direction natural via inline-flex; the icon itself
-   is ChevronLeft which is correct for RTL "view all → " indicator. */
+   is ChevronLeft which is correct for RTL "view all → " indicator.
+*/
 
-/* Mobile sizing — keep within viewport */
+/* Mobile sizing — keep within viewport
+*/
 @media (max-width: 480px) {
   .notif-panel-list { max-block-size: 60vh; }
 }
@@ -253,40 +286,46 @@
    tablets in the ≥921px desktop band (the .cmd-row idiom). min-*
    grows only the hit area (glyphs/labels stay compact) and beats the
    physical sizes above at used-value time — same idiom as the
-   4-A2 P2-6 / 5-D1 floors. */
+   4-A2 P2-6 / 5-D1 floors.
+*/
 @media (max-width: 920px), (hover: none) {
   .notif-panel-close { min-inline-size: 44px; min-block-size: 44px; }
   .notif-panel-action { min-block-size: 44px; }
   .notif-panel-viewall { min-block-size: 44px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    MOBILE BOTTOM NAVIGATION (plan #9)
    Quick-access strip on phone. Hidden on desktop.
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 .bottom-nav {
   /* (r151c dead-twin sweep: the container's geometry — display,
-     position, insets, z-index, background, glass, border, padding,
-     align/justify — is owned wholesale by polish v22's overrides-layer
-     .bottom-nav (grid, opaque paper since R319, rule border). What
-     survives here is exactly what polish never sets.) */
+   position, insets, z-index, background, glass, border, padding,
+   align/justify — is owned wholesale by polish v22's overrides-layer
+   .bottom-nav (grid, opaque paper since R319, rule border). What
+   survives here is exactly what polish never sets.)
+*/
   /* R319 (c1-A · B1b): the five cells sit FLUSH — the inter-cell
-     hairlines below ARE the separation (gap 4px read as broken
-     lines). Equal 1fr tracks + one row = five equal square-cornered
-     cells. */
+   hairlines below ARE the separation (gap 4px read as broken
+   lines). Equal 1fr tracks + one row = five equal square-cornered
+   cells.
+*/
   gap: 0;
   /* R313 override (D3/D16): dock lift shadow retired — depth comes from
-     the rule hairline alone (owner decision — Heron grammar, no
-     decorative shadows anywhere). The polish layer's 1px rule border
-     carries the separation. */
+   the rule hairline alone (owner decision — Heron grammar, no
+   decorative shadows anywhere). The polish layer's 1px rule border
+   carries the separation.
+*/
 }
 
 /* R319 (c1-A · B1b): the bottom bar joins the paired-state contract —
    the wash/press states flip --_bg and --_fg TOGETHER and the base
    routes both paints through them (same grammar as .nav-item in
    layout.css; see the B1 root-cause note there). Square cells on the
-   hairline grid — radius 0, no pill chrome. */
+   hairline grid — radius 0, no pill chrome.
+*/
 .bottom-nav-item {
   --_bg: transparent;
   --_fg: var(--text-subtle);
@@ -295,18 +334,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-1); /* r157: 4px → --sp-1 */
-  padding: var(--sp-1-5) var(--sp-0-5) var(--sp-1); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1); /* r157: 4px → --sp-1
+*/
+  padding: var(--sp-1-5) var(--sp-0-5) var(--sp-1); /* r153h: 6px → --sp-1-5
+*/
   border: 0;
   background: var(--_bg);
   color: var(--_fg);
   text-decoration: none;
   /* r211: the fifth slot is a <button> (المزيد → drawer) — inherit the
-     app font so the UA button font never leaks into the label. */
+   app font so the UA button font never leaks into the label.
+*/
   font: inherit;
-  font-weight: var(--fw-semibold); /* r157: 600 → --fw-semibold */
+  font-weight: var(--fw-semibold); /* r157: 600 → --fw-semibold
+*/
   /* R319 (c1-A · B1b): radius 0 — the dock is a hairline grid of
-     square cells, no pill. */
+   square cells, no pill.
+*/
   border-radius: 0;
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
@@ -317,17 +361,20 @@
 }
 /* The inter-cell hairlines: 1px quiet row rules between the five
    cells (the bar's own top edge is the structural --rule hairline
-   in polish.css). */
+   in polish.css).
+*/
 .bottom-nav-item + .bottom-nav-item {
   border-inline-start: 1px solid var(--border);
 }
 @media (hover: hover) and (pointer: fine) {
   /* R319 (c1-A · B1): guarded fine-pointer wash — ink steps on the
-     constant transparent ground, pair whole. */
+   constant transparent ground, pair whole.
+*/
   .bottom-nav-item:hover { --_fg: var(--text); --_bg: transparent; }
 }
 /* R319 (c1-A · B1): the press twin — same pair, always-on (the dock
-   is touch-first; the press must carry the acknowledgment), instant. */
+   is touch-first; the press must carry the acknowledgment), instant.
+*/
 .bottom-nav-item:active {
   --_fg: var(--text);
   --_bg: transparent;
@@ -337,7 +384,8 @@
 /* Active item — R319 (c1-A · B1b): ONE grammar with the sidebar's
    active row: the INK label + the 2px accent TOP rule on the cell.
    The role-accent color twin, the 14% icon wash and the -8px ring
-   (polish.css) are deleted — no pill chrome. */
+   (polish.css) are deleted — no pill chrome.
+*/
 .bottom-nav-item[aria-current="page"],
 .bottom-nav-item.active {
   --_fg: var(--text);
@@ -348,13 +396,15 @@
   content: '';
   position: absolute;
   /* the square 2px accent top rule — the dock's twin of the sidebar's
-     2px start rule (R313 WP-F · D16 marker grammar, now mirrored on
-     the bottom band). */
+   2px start rule (R313 WP-F · D16 marker grammar, now mirrored on
+   the bottom band).
+*/
   inset-block-start: 0;
   inset-inline: 0;
   block-size: 2px;
   /* R329 (gate:clean): the rule ground is r325-shell.css's unlayered
-     --app-signal seat — this pages-layer copy was inert. */
+   --app-signal seat — this pages-layer copy was inert.
+*/
   animation: polish-bottomnav-rule var(--motion-duration-medium) var(--ease-out);
 }
 @keyframes polish-bottomnav-rule {
@@ -363,7 +413,8 @@
 }
 
 /* r294 (polish v8 fold): icon scale-up on activate — the single
-   bottom-nav moment; dies under reduced motion. */
+   bottom-nav moment; dies under reduced motion.
+*/
 .bottom-nav-item.active .bottom-nav-icon {
   animation: polish-bottomnav-pop var(--motion-duration-page) var(--ease-out);
 }
@@ -375,7 +426,8 @@
 @media (prefers-reduced-motion: reduce) {
   .bottom-nav-item.active .bottom-nav-icon { animation: none; }
   /* R319 (c1-A · B1b): the 2px accent top rule's entrance dies with
-     the rest of the dock motion (the rule simply IS there). */
+   the rest of the dock motion (the rule simply IS there).
+*/
   .bottom-nav-item[aria-current="page"]::before,
   .bottom-nav-item.active::before { animation: none; }
 }
@@ -387,39 +439,46 @@
   width: 36px;
   height: 28px;
   /* R319 (c1-A · B1b): radius 0 + the wash ground gone — the icon is
-     the inked glyph itself ("filled" = the theme ink stroke), carried
-     by the item's --_fg pair. will-change: background died with the
-     wash (nothing paints a background here anymore). */
+   the inked glyph itself ("filled" = the theme ink stroke), carried
+   by the item's --_fg pair. will-change: background died with the
+   wash (nothing paints a background here anymore).
+*/
   border-radius: 0;
   transition:
     transform var(--motion-duration-medium) var(--ease);
 }
 
 .bottom-nav-label {
-  font-size: var(--fs-xxs); /* r157: 11px → --fs-xxs (exact rung) */
+  font-size: var(--fs-xxs); /* r157: 11px → --fs-xxs (exact rung)
+*/
   font-weight: 600;
   /* 5-C2 (A3 P2-5 / ruling #2): tracking removed (+0.055px rendered on
-     «الرئيسية») — no letter-spacing on Arabic, ever. */
+   «الرئيسية») — no letter-spacing on Arabic, ever.
+*/
   letter-spacing: normal;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
   /* 5-C2 (A3 P2-5): was 1.0 — Arabic descenders (ج/ي/ك tails) crowded
-     at 1.0 single-line; 1.3 gives the labels real descender room
-     (bar grows ~3px, well inside the 80px content clearance). */
+   at 1.0 single-line; 1.3 gives the labels real descender room
+   (bar grows ~3px, well inside the 80px content clearance).
+*/
   line-height: 1.3;
   /* Tabular-nums via font feature is on globally; ensures any number
-     in the label aligns. */
+   in the label aligns.
+*/
 }
 
 .bottom-nav-item.active .bottom-nav-label {
   /* R319 (c1-A · B1b): the INK label — the active marker is the 2px
-     accent top rule; the label reads as ink like the sidebar's active
-     row (the accent-ink color twin retired with the role-accent
-     system on this surface). */
+   accent top rule; the label reads as ink like the sidebar's active
+   row (the accent-ink color twin retired with the role-accent
+   system on this surface).
+*/
   color: var(--text);
-  font-weight: var(--fw-bold); /* r157: 700 → --fw-bold */
+  font-weight: var(--fw-bold); /* r157: 700 → --fw-bold
+*/
 }
 
 /* On tighter phones the labels can be condensed — the icon and gaps
@@ -427,48 +486,56 @@
    sat below the --fs-xxs 11px scale floor and under any sane Arabic
    legibility floor — the label now holds 11px at every width and the
    ≤360 band only buys back space via the smaller icon/padding.
-   (5 items × 11px labels + 32px icons still fit the 320px viewport.) */
+   (5 items × 11px labels + 32px icons still fit the 320px viewport.)
+*/
 @media (max-width: 360px) {
   /* (r151c: padding deleted — polish's overrides-layer container owns
-     it. R319 c1-A · B1b: the ≤360 gap tightening retired — the five
-     cells sit FLUSH behind their inter-cell hairlines at every width;
-     only the icon shrinks.) */
+   it. R319 c1-A · B1b: the ≤360 gap tightening retired — the five
+   cells sit FLUSH behind their inter-cell hairlines at every width;
+   only the icon shrinks.)
+*/
   .bottom-nav-icon { width: 32px; height: 26px; }
 }
 
 @media (max-width: 640px) {
   /* (r151c: `.bottom-nav { display: flex }` deleted — polish's ≤920px
-     overrides-layer `display: grid` always won.) */
-  /* Push content above the bottom nav so it isn't clipped */
-  .content { padding-bottom: max(80px, calc(var(--sp-11) + env(safe-area-inset-bottom))); } /* spacing-gate: allow — bottom clearance floor 80px for the floating toast stack */
+   overrides-layer `display: grid` always won.)
+*/
+  /* Push content above the bottom nav so it isn't clipped
+*/
+  .content { padding-bottom: max(80px, calc(var(--sp-11) + env(safe-area-inset-bottom))); } /* spacing-gate: allow — bottom clearance floor 80px for the floating toast stack
+*/
 }
 
 /* (r211: the reduced-motion box-shadow carve-out for the retired
    active-icon glow went with the glow itself — the active state is
-   flat paint now, nothing to still.) */
+   flat paint now, nothing to still.)
+*/
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    wave 7-a: TOAST STACK — the app-wide passive-feedback region
    (audit 0-c P1-7/P1-8). Rendered by <ToastStack /> (overlays/
    Toast.tsx) from the lib/toast.ts store; the standalone <Toast />
    primitive keeps its own fixed anchoring in components.css.
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 .toast-stack {
   position: fixed;
   /* Y6 (R325) — the BOTTOM-STACK seat: the manager (lib/bottomStack.ts)
-     writes the layer's measured base offset into the inline
-     --app-bottom-stack (the height of everything BELOW this layer in
-     the stack — the consent gate when it occupies the seat), :root
-     carries the total. 0px fallback = the idle natural seat.
-     P2.3 gate fix (check-motion-tokens · 4-A11 P2-10): the offset used
-     to ride the inset itself (`transition: inset-block-end …` — a
-     layout-property transition, reflow on every seat change). The
-     geometry is identical translated: the inset parks at the natural
-     seat and the stack offset lifts the layer via `translate`
-     (transform-family, composite-only), easing between seats exactly
-     as before (--t-fast = 200ms; the reduced-motion raw-ladder kill
-     zeroes the token, collapsing this to an instant jump). */
+   writes the layer's measured base offset into the inline
+   --app-bottom-stack (the height of everything BELOW this layer in
+   the stack — the consent gate when it occupies the seat), :root
+   carries the total. 0px fallback = the idle natural seat.
+   P2.3 gate fix (check-motion-tokens · 4-A11 P2-10): the offset used
+   to ride the inset itself (`transition: inset-block-end …` — a
+   layout-property transition, reflow on every seat change). The
+   geometry is identical translated: the inset parks at the natural
+   seat and the stack offset lifts the layer via `translate`
+   (transform-family, composite-only), easing between seats exactly
+   as before (--t-fast = 200ms; the reduced-motion raw-ladder kill
+   zeroes the token, collapsing this to an instant jump).
+*/
   inset-block-end: var(--sp-5);
   translate: 0 calc(-1 * var(--app-bottom-stack, 0px));
   inset-inline-end: var(--sp-5);
@@ -478,15 +545,17 @@
   align-items: flex-end;
   gap: var(--sp-2);
   /* The region never blocks the page beneath it; each toast
-     re-enables pointer events for itself. */
+   re-enables pointer events for itself.
+*/
   pointer-events: none;
   max-inline-size: min(420px, calc(100vw - var(--sp-6)));
   /* Y6 — the seat eases at --t-fast, but on the TRANSFORM family only:
-     the original authored the transition on inset-block-end (a layout
-     property the motion gate and §R325.k ban — the P2.2 gate repair
-     caught it red at its base). The shell merge re-keyed the easing to
-     the `translate` family (same var, same geometry, gate-legal); the
-     toasts themselves keep their transform/opacity entrances. */
+   the original authored the transition on inset-block-end (a layout
+   property the motion gate and §R325.k ban — the P2.2 gate repair
+   caught it red at its base). The shell merge re-keyed the easing to
+   the `translate` family (same var, same geometry, gate-legal); the
+   toasts themselves keep their transform/opacity entrances.
+*/
   transition: translate var(--t-fast) var(--ease);
 }
 
@@ -494,15 +563,18 @@
    RETIRED by Y6: the manager measures the consent gate's REAL box —
    correct at every root font-size (the fluid rem root is 8.33px @1440
    but 9.92px @390, so the rem numbers drifted) and every bar state
-   (the phone expand toggle). The stack simply reads its offset. */
+   (the phone expand toggle). The stack simply reads its offset.
+*/
 
 /* Stack items reuse the .toast surface (components.css + polish v18/v22
    variant hairlines) but live in flow inside the region — the (0,2,0)
-   selector takes the cascade over the standalone (0,1,0) fixed rules. */
+   selector takes the cascade over the standalone (0,1,0) fixed rules.
+*/
 .toast-stack .toast {
   position: static;
   pointer-events: auto;
-  touch-action: pan-y; /* horizontal swipes dismiss; vertical scrolls pass */
+  touch-action: pan-y; /* horizontal swipes dismiss; vertical scrolls pass
+*/
   will-change: transform;
   animation: madarek-toast-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
 }
@@ -516,19 +588,22 @@
    release phase springs a cancelled swipe back. The state persists
    after a cancelled swipe (removing it would REPLAY the entrance);
    these rules sit BEFORE the closing rule so the equal-specificity
-   exit animation wins the tie when the toast finally dismisses. */
+   exit animation wins the tie when the toast finally dismisses.
+*/
 .toast-stack .toast[data-dragging] { animation: none; }
 .toast-stack .toast[data-dragging][data-drag-phase='active'] { transition: none; }
 .toast-stack .toast[data-dragging][data-drag-phase='release'] {
   /* --ease-spring-soft: the raw spring family (no semantic spring in
-     --motion-ease-*); a gentle overshoot fits a released toast. */
+   --motion-ease-*); a gentle overshoot fits a released toast.
+*/
   transition: transform var(--motion-duration-short) var(--ease-spring-soft);
 }
 
 .toast-stack .toast[data-closing="true"] {
   animation: madarek-toast-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
 }
-/* المسافة 12px سعةُ حركةٍ بين درجتي ‎--motion-distance-small (6px) و‎--motion-distance-medium (16px) — ليست فراغًا ولا درجة حركة، فتبقى خامًا عمدًا ولا تُستبدل بـ‎--sp-3. */
+/* المسافة 12px سعةُ حركةٍ بين درجتي ‎--motion-distance-small (6px) و‎--motion-distance-medium (16px) — ليست فراغًا ولا درجة حركة، فتبقى خامًا عمدًا ولا تُستبدل بـ‎--sp-3.
+*/
 @keyframes madarek-toast-in {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: none; }
@@ -538,7 +613,8 @@
 }
 
 /* Toast anatomy: tone-coded icon well (soft ground + -ink icon —
-   WCAG-pinned status pairing, same language as .notif-item-icon). */
+   WCAG-pinned status pairing, same language as .notif-item-icon).
+*/
 .toast-stack .toast-icon {
   inline-size: 28px;
   block-size: 28px;
@@ -547,12 +623,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-block-start: 1px; /* spacing-gate: allow — toast icon optical baseline nudge (glyph sits high) */
+  margin-block-start: 1px; /* spacing-gate: allow — toast icon optical baseline nudge (glyph sits high)
+*/
 }
-.toast-icon-info    { background: var(--info-soft);    color: var(--info-ink); }
-.toast-icon-success { background: var(--success-soft); color: var(--success-ink); }
-.toast-icon-warning { background: var(--warning-soft); color: var(--warning-ink); }
-.toast-icon-error   { background: var(--danger-soft);  color: var(--danger-ink); }
 
 .toast-stack .toast-title {
   font-size: var(--fs-sm);
@@ -584,10 +657,12 @@
   color: var(--accent-ink);
   cursor: pointer;
   border-radius: var(--r-xs);
-  min-block-size: 44px; /* craft floor: touch target */
+  min-block-size: 44px; /* craft floor: touch target
+*/
   /* 5-D3 (A10 P3-2): the block floor alone left short labels («عرض»)
-     with a ~30px-wide hit area — floor the inline axis too; the button
-     is transparent, so the wider target is invisible. */
+   with a ~30px-wide hit area — floor the inline axis too; the button
+   is transparent, so the wider target is invisible.
+*/
   min-inline-size: 44px;
   justify-content: center;
   display: inline-flex;
@@ -599,7 +674,8 @@
 .toast-stack .toast-action:focus-visible { outline: var(--state-focus-ring); outline-offset: -2px; }
 .toast-stack .toast-action:active { opacity: 0.7; }
 
-/* Toasts never render in print output. */
+/* Toasts never render in print output.
+*/
 @media print {
   .toast-stack { display: none; }
 }
@@ -608,16 +684,18 @@
    dock + home-indicator safe area. r148 (AUDIT-3 M2): النطاق كان ≤640px
    بينما الدوك توسّع إلى ≤920px (polish.css:5277) — في 641–920px كان
    التوست يرسم فوق الدوك ويحجب نقراته حتى انتهائه. التمديد الكامل
-   يبقى ≤640؛ 641–920 يرفع المكدس فقط فوق الدوك دون تغيير عرضه. */
+   يبقى ≤640؛ 641–920 يرفع المكدس فقط فوق الدوك دون تغيير عرضه.
+*/
 @media (max-width: 920px) {
   .toast-stack {
     /* r299: 76px predated the r211 dock re-skin — the measured dock is
-       ~78px (6 + 64.9 + 6 + 1 at 390px), so toasts overlapped its top
-       border by ~2px (live-measured: toast bottom 768 vs dock top
-       766.1). 72 + 8 = 80px clears the dock; both sides keep their own
-       env(safe-area-inset-bottom) growth (the dock pads to it too).
-       Y6: the bottom-stack offset rides on top — the FAB (and the
-       consent gate on the landing) still lift the stack when present. */
+    ~78px (6 + 64.9 + 6 + 1 at 390px), so toasts overlapped its top
+    border by ~2px (live-measured: toast bottom 768 vs dock top
+    766.1). 72 + 8 = 80px clears the dock; both sides keep their own
+    env(safe-area-inset-bottom) growth (the dock pads to it too).
+    Y6: the bottom-stack offset rides on top — the FAB (and the
+    consent gate on the landing) still lift the stack when present.
+*/
     inset-block-end: calc(
       var(--app-bottom-stack, 0px) + var(--sp-11) + var(--sp-2) +
         env(safe-area-inset-bottom, 0px)
@@ -642,7 +720,8 @@
    --t-fast, this keeps it honest if the rung ever grows. Rule ORDER is
    contract: the r164-j on-disk scan reads this block by its FIRST rule
    (.toast-stack .toast — the animationend belt), so the Y6 seat rule
-   rides after it. */
+   rides after it.
+*/
 @media (prefers-reduced-motion: reduce) {
   .toast-stack .toast,
   .toast-stack .toast[data-closing="true"] {
@@ -654,9 +733,9 @@
 }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    UNLAYERED — panel shell re-skin (S-1b, Superlist calm tier)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The .notification-panel CONTAINER surface is owned by components.css
    (4E family — not editable from this sheet): it ships radius --r-xl
    (14px) on the three rounded corners + the --elev-3 shadow.
@@ -672,20 +751,17 @@
 
    Kept verbatim from the primitive's contract:
    - the ANCHORED corner stays square (border-start-end is the one
-     corner components.css never rounds — it points at the bell);
+   corner components.css never rounds — it points at the bell);
    - the glass @supports band and the popover entrance animation
-     (components.css) are untouched;
+   (components.css) are untouched;
    - polish.css's @media print belt (`box-shadow: none !important`)
-     still wins in print — !important outranks unlayered normal.
+   still wins in print — !important outranks unlayered normal.
    --elev-2 / --r-2xl are theme- and contrast-mode-aware tokens, so
-   dark + high-contrast re-resolve with zero extra rules. */
-.notification-panel {
-  border-start-start-radius: var(--r-2xl);
-  border-end-start-radius: var(--r-2xl);
-  border-end-end-radius: var(--r-2xl);
-  box-shadow: var(--elev-2);
-}
-
+   dark + high-contrast re-resolve with zero extra rules. R369-C
+   (C4.2): the presentation pair folded into the container contract
+   block below — one owner per selector, computed result identical
+   (the two blocks were property-disjoint).
+*/
 /* r366 (2-d) — the CONTAINER CONTRACT, restored in full. R313 D16
    retired the components.css T065 @supports glass block and the
    geometry never came back: the portal panel computed
@@ -698,19 +774,24 @@
    popover rung of the z ladder, opaque --surface, --rule hairline,
    and a width that can never leave the viewport at 320. Declared
    UNLAYERED for the same reason as the re-skin block above — a rule
-   in this sheet must beat every layered one without !important. */
+   in this sheet must beat every layered one without !important.
+*/
 .notification-panel {
   position: fixed;
   z-index: var(--z-popover);
   inline-size: min(380px, calc(100vw - var(--sp-4) * 2));
   background: var(--surface);
   border: 1px solid var(--rule);
+  border-start-start-radius: var(--r-2xl);
+  border-end-start-radius: var(--r-2xl);
+  border-end-end-radius: var(--r-2xl);
+  box-shadow: var(--elev-2);
   overflow: clip;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    UNLAYERED — notification badge (R342-08 contrast repair)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The badge's geometry/font live in polish.css's `@layer overrides`
    (.topbar-notif-badge — 13px digits via --fs-xxs, tabular-nums, the
    2px var(--surface) isolation ring, the pulse); its COLORS live here
@@ -723,24 +804,26 @@
    1.98:1 on every page. The tokens' own documented pair (tokens.css
    §danger: "Label ink ON A --danger FILL … consumed by .btn.danger +
    notif badge") is the coral fill + warm-ink label:
-     light — bg var(--danger) #F15534 + var(--danger-fg) #191918 = 5.10:1
-     dark  — bg var(--danger) #FF8E68 + var(--danger-fg) #191918 = 7.81:1
+   light — bg var(--danger) #F15534 + var(--danger-fg) #191918 = 5.10:1
+   dark  — bg var(--danger) #FF8E68 + var(--danger-fg) #191918 = 7.81:1
    Both re-resolve per theme/contrast block. The unread count itself
    is REAL server truth (meta.unread of GET /notifications?limit=1,
    polled 60s — useUnreadNotifications); digits are Western, ≥13px,
-   tabular. */
+   tabular.
+*/
 .topbar-notif-badge {
   background: var(--danger);
   color: var(--danger-fg);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    §PAGE — صفحة الإشعارات (AlertsPage · عائلة 4E، r261)
    صفوف إدارة هادئة على اتجاه Superlist: القائمة أولًا والتفصيل على
    الصف نفسه، فواصل شعرية وسطح ساكن بلا بطاقات ملوّنة متعدّدة. حالة
    القراءة تُقرأ من بئر الإشارة والعنوان قبل أي شارة؛ التحكّم «تعليم
    كمقروء» يسكن الصف. كل القيم من tokens.css (لا خام).
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 .np-list {
   display: flex;
   flex-direction: column;
@@ -790,7 +873,8 @@
   font-size: var(--fs-sm);
   color: var(--text-faint);
 }
-/* غير المقروء: بئر الإشارة + عنوان قويّ — تُقرأ الحالة قبل أي شارة */
+/* غير المقروء: بئر الإشارة + عنوان قويّ — تُقرأ الحالة قبل أي شارة
+*/
 .np-row.unread .np-well.danger,
 .np-row.unread .np-well.accent,
 .np-row.unread .np-well.warning,
@@ -819,7 +903,8 @@
 
 /* r267 — الجوال: ترويسة بطاقة الإشعارات تلتفّ تحت العنوان بدل أن
    تسحقه (الشارة المعدودة + زرّ «تعليم الكلّ» لا يتسعان سطرًا واحدًا
-   مع «إشعاراتي» على 390px). :has يُبقي القاعدة محصورة بصفحاتي. */
+   مع «إشعاراتي» على 390px). :has يُبقي القاعدة محصورة بصفحاتي.
+*/
 @media (max-width: 640px) {
   .card-header:has(.np-head-actions) {
     flex-wrap: wrap;

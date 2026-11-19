@@ -1,3 +1,5 @@
+import { ALL, PREV, NEXT, LABEL_STATUS, E_LIBRARY, FROM, PUBLISHED_RESEARCH, STATUS_ACTIVE_F, MY_RESEARCH, DAYS, NOUN_DAY_ACC, AI, ONE_RESEARCH, RESEARCH } from '../../lib/copy';
+
 import { useState, useEffect } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -40,11 +42,11 @@ import '../../styles/student/pages.css';
 import '../../styles/student/academic-pages.css';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
-  { id: 'all', label: 'الكل', icon: LibraryIcon },
+  { id: 'all', label: ALL, icon: LibraryIcon },
   { id: 'prog', label: 'برمجة', icon: Code },
   { id: 'net', label: 'شبكات', icon: Network },
   { id: 'db', label: 'قواعد بيانات', icon: Database },
-  { id: 'ai', label: 'ذكاء اصطناعي', icon: Bot },
+  { id: 'ai', label: AI, icon: Bot },
   { id: 'sec', label: 'أمن', icon: ShieldCheck },
 ];
 
@@ -57,9 +59,9 @@ const BOOKS_PAGE_SIZE = 24;
 /* Copy-diet: ONE shared plural unit per counted noun (the loan meter's
  * days, the filtered-results count, the research count) — the four
  * forms live once instead of per call site. */
-const DAY_UNIT: [string, string, string, string] = ['يوم واحد', 'يومين', 'أيام', 'يوماً'];
+const DAY_UNIT: [string, string, string, string] = ['يوم واحد', 'يومين', DAYS, NOUN_DAY_ACC];
 const RESULT_UNIT: [string, string, string, string] = ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'];
-const RESEARCH_UNIT: [string, string, string, string] = ['بحث واحد', 'بحثان', 'بحوث', 'بحوثاً'];
+const RESEARCH_UNIT: [string, string, string, string] = [ONE_RESEARCH, 'بحثان', RESEARCH, 'بحوثاً'];
 
 const categoryIcon = (cat: string): LucideIcon =>
   CATEGORIES.find((c) => c.id === cat)?.icon ?? LibraryIcon;
@@ -232,7 +234,7 @@ function BookRow({ book }: { book: Book }) {
         <div className="lib-book-detail-row">
           <span className="lib-book-detail-k">النسخ</span>
           <span className="lib-book-detail-v">
-            <bdi>{formatInt(book.availableCopies)}</bdi> من <bdi>{formatInt(book.totalCopies)}</bdi> متاحة
+            <bdi>{formatInt(book.availableCopies)}</bdi> {FROM} <bdi>{formatInt(book.totalCopies)}</bdi> متاحة
           </span>
         </div>
         <div className="lib-book-detail-row">
@@ -251,7 +253,7 @@ function BookRow({ book }: { book: Book }) {
         </div>
         {unavailable && (
           <div className="lib-book-detail-row">
-            <span className="lib-book-detail-k">الحالة</span>
+            <span className="lib-book-detail-k">{LABEL_STATUS}</span>
             <span className="lib-book-detail-v">جميع النسخ مستعارة.</span>
           </div>
         )}
@@ -303,7 +305,7 @@ function LoanRow({ loan }: { loan: MyLoan }) {
     ? { tone: 'danger' as const, label: 'متأخر الإرجاع' }
     : dueSoon
       ? { tone: 'warning' as const, label: 'ينتهي قريباً' }
-      : { tone: 'success' as const, label: 'نشطة' };
+      : { tone: 'success' as const, label: STATUS_ACTIVE_F };
 
   const onReturn = async () => {
     try {
@@ -506,7 +508,7 @@ export default function LibraryPage() {
   // summary reads as a metric register (mono numerals over labels).
   const researchCells: Array<{ label: string; value: ReactNode }> = [
     {
-      label: 'بحوث منشورة',
+      label: PUBLISHED_RESEARCH,
       value: research.data?.length != null ? formatInt(research.data.length) : '—',
     },
     {
@@ -626,7 +628,7 @@ export default function LibraryPage() {
     <div className="r305rp r319s-page">
     <PageFrame width="default">
       <PageHeader
-        title="المكتبة الإلكترونية"
+        title={E_LIBRARY}
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «بحوثي» is the shelf's sibling workflow (your own
@@ -636,7 +638,7 @@ export default function LibraryPage() {
           <>
             <Link to="/student/research" className="btn primary sm">
               <Icon icon={BookMarked} size={13} />
-              بحوثي
+              {MY_RESEARCH}
             </Link>
             <Link to="/student/downloads" className="btn ghost sm">
               <Icon icon={Download} size={13} />
@@ -720,7 +722,7 @@ export default function LibraryPage() {
               <ErrorState error={loans.error} onRetry={() => loans.refetch()} />
             ) : openLoans.length === 0 ? (
               <div className="r305rp-empty">
-                <span className="r305rp-eyebrow">الحالة</span>
+                <span className="r305rp-eyebrow">{LABEL_STATUS}</span>
                 <p className="r305rp-lib-loansempty-line">
                   <strong>لا استعارات نشطة</strong>
                 </p>
@@ -845,7 +847,7 @@ export default function LibraryPage() {
               style={{ marginBlockStart: 'var(--sp-4)' }}
             >
               <span className="text-xs text-muted">
-                الصفحة <bdi>{booksMeta.page}</bdi> من <bdi>{booksTotalPages}</bdi> ·{' '}
+                الصفحة <bdi>{booksMeta.page}</bdi> {FROM} <bdi>{booksTotalPages}</bdi> ·{' '}
                 {countAr(booksMeta.total, BOOK_UNIT)}
               </span>
               <div className="flex gap-2">
@@ -856,7 +858,7 @@ export default function LibraryPage() {
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   aria-label="الصفحة السابقة"
                 >
-                  <Icon icon={ChevronRight} size={14} /> السابق
+                  <Icon icon={ChevronRight} size={14} /> {PREV}
                 </button>
                 <button
                   type="button"
@@ -865,7 +867,7 @@ export default function LibraryPage() {
                   onClick={() => setPage((p) => Math.min(booksTotalPages, p + 1))}
                   aria-label="الصفحة التالية"
                 >
-                  التالي <Icon icon={ChevronLeft} size={14} />
+                  {NEXT} <Icon icon={ChevronLeft} size={14} />
                 </button>
               </div>
             </div>

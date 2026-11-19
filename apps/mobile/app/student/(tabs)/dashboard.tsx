@@ -42,13 +42,14 @@ import { AppTopBar } from "@/components/shell/AppTopBar";
 import { useNow } from "@/hooks/useNow";
 import { SectionNote, countAr } from "@/features/student/more";
 import { GapList, ScrollBody, classWhenLabel, nextStep } from "@/features/student/components";
+import {WEEKLY_SCHEDULE, NO_ATTENDANCE_DATA, EXAM_WINDOW_OPEN} from "@/lib/copy";
 
 /** Module-scoped: the idempotent onboarding POST fires once per app run. */
 let onboardingFired = false;
 
 /** Quick actions — the four doors students open most (PressableScale tiles). */
 const QUICK_ACTIONS: { icon: typeof CalendarClock; label: string; href: string; a11y: string }[] = [
-  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: "الجدول الأسبوعي" },
+  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: WEEKLY_SCHEDULE },
   { icon: ClipboardList, label: "التكاليف", href: "/student/assignments", a11y: "افتح التكاليف" },
   { icon: ClipboardCheck, label: "الاختبارات", href: "/student/online-exams", a11y: "الاختبارات الإلكترونية" },
   { icon: Library, label: "المكتبة", href: "/student/library", a11y: "افتح المكتبة" },
@@ -229,7 +230,7 @@ export default function StudentDashboard() {
                 progress={(kpi.attendancePct ?? 0) / 100}
                 accessibilityLabel={
                   kpi.attendancePct === null
-                    ? "لا بيانات حضور"
+                    ? NO_ATTENDANCE_DATA
                     : `نسبة الحضور ${pct(kpi.attendancePct)}`
                 }
               >
@@ -331,7 +332,7 @@ export default function StudentDashboard() {
             <SectionBar
               index={2}
               title="حصص اليوم وغدًا"
-              action={<BarCount n={todayTomorrow.length} a11y={countAr(todayTomorrow.length, ["حصة واحدة", "حصتان", "حصص", "حصة"])} />}
+              action={<BarCount n={todayTomorrow.length} a11y={countAr(todayTomorrow.length, ["حصة", "حصتان", "حصص", "حصة"])} />}
             />
             <ScrollView
               horizontal
@@ -446,7 +447,7 @@ export default function StudentDashboard() {
             />
           ) : !agenda ||
             (agenda.assignments.length === 0 && agenda.exams.length === 0 && agenda.live.length === 0) ? (
-            <SectionNote>لا تكليفات ولا اختبارات في النافذة القريبة — استرح أو راجع محاضراتك.</SectionNote>
+            <SectionNote>لا تكليفات ولا اختبارات قريبة — راجع محاضراتك.</SectionNote>
           ) : (
             <RowList>
               {agenda.assignments.slice(0, 3).map((a, i, arr) => {
@@ -480,7 +481,7 @@ export default function StudentDashboard() {
                   ? `يفتح باب الاختبار ${dateTime(e.openAt)}`
                   : e.closeAt
                     ? `آخر موعد للتسليم ${dateTime(e.closeAt)}`
-                    : "نافذة الاختبار مفتوحة";
+                    : EXAM_WINDOW_OPEN;
                 return (
                   <LedgerRow
                     key={e.id}
@@ -529,7 +530,7 @@ export default function StudentDashboard() {
 
         {d && agenda && agenda.classes.length > 0 ? (
           <T variant="xs" color="faint">
-            {countAr(agenda.classes.length, ["حصة في الأجندة", "حصتان في الأجندة", "حصص في الأجندة", "حصة في الأجندة"])}
+            {countAr(agenda.classes.length, ["حصة", "حصتان", "حصص", "حصة"])}
           </T>
         ) : null}
       </ScrollBody>

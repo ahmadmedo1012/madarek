@@ -1,3 +1,5 @@
+import { RETRY_ACTION, EMPTY_COURSES_YET, EMPTY_COURSES, LABEL_LECTURES, LABEL_TODAY, NEXT_STEP, LABEL_THE_COURSES, COMMA_AR, EXAM, SUBMIT, SEMESTER, START, ACTIVE_COURSES, GAPS, TODAY_COMMITMENTS, COURSES_GUIDE, TOMORROW, GOOD, START_PATH, ACHIEVEMENT_POINTS, AI_ASSISTANT, NOW, CLOSE_THE_GAP } from '../../lib/copy';
+
 import { Fragment, useMemo, type ReactNode } from 'react';
 import { Play, Eye, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -88,15 +90,15 @@ function useGreeting(): string {
 }
 
 const DAY_LABEL: Record<'today' | 'tomorrow', string> = {
-  today: 'اليوم',
-  tomorrow: 'غداً',
+  today: LABEL_TODAY,
+  tomorrow: TOMORROW,
 };
 
 /* Copy-diet: labels repeated across mutually-exclusive render branches
  * (pending mirror / error / preview / resolved) live ONCE. */
 const PAGE_TITLE = 'لوحة التحكم';
 const RESUME_EYEBROW = 'أكمل من حيث توقفت';
-const NEXT_EYEBROW = 'الخطوة التالية';
+const NEXT_EYEBROW = NEXT_STEP;
 const MOMENTUM_LABEL = 'زخم الفصل';
 
 function formatDue(iso: string): string {
@@ -177,7 +179,7 @@ export function examAgendaRow(e: AgendaExamSource): ExamAgendaRow {
     id: `e-${e.id}`,
     whenMs: safeMs(e.whenAt),
     to: `/student/online-exams/${e.id}`,
-    kindLabel: (EXAM_KIND_LABEL as Record<string, string>)[e.kind] ?? 'اختبار',
+    kindLabel: (EXAM_KIND_LABEL as Record<string, string>)[e.kind] ?? EXAM,
     metaLabel: e.phase === 'opens' ? 'يفتح باب الاختبار' : 'آخر موعد للتسليم',
   };
 }
@@ -185,7 +187,7 @@ export function examAgendaRow(e: AgendaExamSource): ExamAgendaRow {
 function gpaTone(gpa: number): { label: string; color: 'green' | 'amber' | 'red'; trend: 'up' | 'down' | 'flat' } {
   if (gpa >= 3.5) return { label: 'ممتاز', color: 'green', trend: 'up' };
   if (gpa >= 3.0) return { label: 'جيد جدّاً', color: 'green', trend: 'up' };
-  if (gpa >= 2.0) return { label: 'جيد', color: 'amber', trend: 'flat' };
+  if (gpa >= 2.0) return { label: GOOD, color: 'amber', trend: 'flat' };
   return { label: 'بحاجة لتحسين', color: 'red', trend: 'down' };
 }
 
@@ -417,7 +419,7 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
             </div>
             {segments && (
               <div className="dash-resume-segments">
-                <span className="ind-microlabel">محاضرات</span>
+                <span className="ind-microlabel">{LABEL_LECTURES}</span>
                 <div className="dash-resume-segments-row">
                   <SegmentedProgress
                     segments={segments}
@@ -464,7 +466,7 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
         <div className="dash-resume-cta stu-hero-side">
           <Link to={`/training/${focus.slug}`} className="btn accent lg">
             <Icon icon={Play} size={16} />
-            {focus.started ? 'متابعة المسار' : 'ابدأ المسار'}
+            {focus.started ? 'متابعة المسار' : START_PATH}
           </Link>
         </div>
       </div>
@@ -511,7 +513,7 @@ function DashCourseRow({ e }: { e: MyEnrollment }) {
             ariaLabel={`تقدّم مقرّر ${c.name}: ${e.progressPct}%`}
           />
           <span className="btn ghost sm courses-row-go">
-            {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
+            {e.progressPct > 0 ? 'تابع' : START}
             <Icon icon={ArrowLeft} size={12} />
           </span>
         </span>
@@ -682,7 +684,7 @@ export default function StudentDashboardPage() {
       whenMs: safeMs(a.dueAt),
       to: `/student/courses/${a.offeringId}`,
       title: <>{a.title} (<bdi>{a.courseCode}</bdi>)</>,
-      meta: <>تسليم <bdi>{formatDue(a.dueAt)}</bdi></>,
+      meta: <>{SUBMIT} <bdi>{formatDue(a.dueAt)}</bdi></>,
       tone: 'gold',
     })),
     ...d.agenda.live.slice(0, 2).map<AgendaItem>((l) => ({
@@ -793,7 +795,7 @@ export default function StudentDashboardPage() {
       tone: d.kpi.pendingAssignmentsCount === 0 ? 'positive' : 'neutral',
     },
     {
-      label: 'نقاط الإنجاز',
+      label: ACHIEVEMENT_POINTS,
       value: <CountIn value={d.kpi.totalXp} />,
       hint: d.kpi.cohortSize > 1
         ? `المركز ${d.kpi.rank} من ${d.kpi.cohortSize}`
@@ -804,12 +806,12 @@ export default function StudentDashboardPage() {
       label: 'إنجاز المقرّرات',
       value: d.kpi.courseCount > 0 ? <CountIn value={courseProgressPct} suffix="%" /> : '—',
       hint: d.kpi.courseCount > 0
-        ? `${countAr(d.kpi.courseCount, ['مقرّر نشط واحد', 'مقرّران نشطان', 'مقرّرات نشطة', 'مقررًا نشطًا'])} · ${
+        ? `${countAr(d.kpi.courseCount, ['مقرّر نشط واحد', 'مقرّران نشطان', ACTIVE_COURSES, 'مقررًا نشطًا'])} · ${
             courseProgressPct >= 75 ? 'متقدّم كثيراً عن المطلوب'
             : courseProgressPct >= 50 ? 'على الطريق الصحيح'
             : courseProgressPct === 0 ? 'ابدأ أول محاضرة لتتقدّم'
             : 'تحتاج إلى دفعة إضافيّة'}`
-        : 'لا مقرّرات',
+        : EMPTY_COURSES,
       tone: d.kpi.courseCount === 0 ? 'warning' : courseProgressPct >= 75 ? 'positive' : courseProgressPct === 0 ? 'warning' : 'neutral',
     },
   ];
@@ -843,7 +845,7 @@ export default function StudentDashboardPage() {
           title={PAGE_TITLE}
           description={
             <>
-              {greeting}{studentName ? <>، <bdi>{studentName}</bdi></> : null}
+              {greeting}{studentName ? <>{COMMA_AR} <bdi>{studentName}</bdi></> : null}
               {identitySegments.length > 0 ? <> — {identitySegments}</> : null}
             </>
           }
@@ -862,10 +864,10 @@ export default function StudentDashboardPage() {
             start/end dates, and the API's % as quiet mono meta. The
             term code rides the SectionBar's meta seat (data, never
             decoration). */}
-        <section aria-label="الفصل الدراسي" className="dash-section">
+        <section aria-label={SEMESTER} className="dash-section">
           <SectionBar
             index="01"
-            title="الفصل الدراسي"
+            title={SEMESTER}
             meta={<bdi className="r319s-mono" dir="ltr">{d.term.code}</bdi>}
           />
           <div className="r319s-term">
@@ -890,15 +892,15 @@ export default function StudentDashboardPage() {
           current week as 7 hairline cells, today INKED (the app's own
           Sunday-first order flowing RTL). Every row carries its mono
           StatusChip; the pattern list below keeps the urgency dots. */}
-      <section aria-label="اليوم" className="dash-section">
+      <section aria-label={LABEL_TODAY} className="dash-section">
         <SectionBar
           index="02"
-          title="اليوم"
+          title={LABEL_TODAY}
           meta={
             today.length + exams.length > 0 ? (
               <BarCount
                 n={today.length + exams.length}
-                srLabel={countAr(today.length + exams.length, ['التزام واحد اليوم', 'التزامان اليوم', 'التزامات اليوم', 'التزاماً اليوم'])}
+                srLabel={countAr(today.length + exams.length, ['التزام واحد اليوم', 'التزامان اليوم', TODAY_COMMITMENTS, 'التزاماً اليوم'])}
               />
             ) : undefined
           }
@@ -967,11 +969,11 @@ export default function StudentDashboardPage() {
               !enrollments.isPending && !enrollments.isError && sortedEnrollments.length > 0 ? (
                 <BarCount
                   n={sortedEnrollments.length}
-                  srLabel={countAr(sortedEnrollments.length, ['مقرّر نشط واحد', 'مقرّران نشطان', 'مقرّرات نشطة', 'مقررًا نشطًا'])}
+                  srLabel={countAr(sortedEnrollments.length, ['مقرّر نشط واحد', 'مقرّران نشطان', ACTIVE_COURSES, 'مقررًا نشطًا'])}
                 />
               ) : undefined
             }
-            action={<Link to="/student/courses" className="btn ghost sm">المقرّرات</Link>}
+            action={<Link to="/student/courses" className="btn ghost sm">{LABEL_THE_COURSES}</Link>}
           />
           {enrollments.isPending ? (
             <ListSkeleton rows={2} />
@@ -980,15 +982,15 @@ export default function StudentDashboardPage() {
               <span className="ledger-lead"><b>مقرّراتك</b>—</span>
               <span className="ledger-what">
                 تعذَّر تحميل مقرّراتك —{' '}
-                <button type="button" className="btn ghost sm" onClick={() => enrollments.refetch()}>إعادة المحاولة</button>
+                <button type="button" className="btn ghost sm" onClick={() => enrollments.refetch()}>{RETRY_ACTION}</button>
               </span>
             </div>
           ) : sortedEnrollments.length === 0 ? (
             /* R319 (c2-G1): the actionable empty — hatched cell + the
                catalog link as its ONE action. */
             <EmptyCell
-              label="لا مقرّرات بعد"
-              action={<Link to="/student/catalog" className="btn ghost sm">دليل المقرّرات</Link>}
+              label={EMPTY_COURSES_YET}
+              action={<Link to="/student/catalog" className="btn ghost sm">{COURSES_GUIDE}</Link>}
             />
           ) : (
             <RowList aria-label="قائمة مقرّراتك">
@@ -1007,10 +1009,10 @@ export default function StudentDashboardPage() {
             <ListSkeleton rows={2} />
           ) : gaps.isError ? (
             <div className="ledger-row ledger-row-flat" role="alert">
-              <span className="ledger-lead"><b>فجوات</b>—</span>
+              <span className="ledger-lead"><b>{GAPS}</b>—</span>
               <span className="ledger-what">
                 تعذَّر تحميل فجواتك —{' '}
-                <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>إعادة المحاولة</button>
+                <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>{RETRY_ACTION}</button>
               </span>
             </div>
           ) : topGaps.length === 0 ? (
@@ -1027,14 +1029,14 @@ export default function StudentDashboardPage() {
                     to={`/student/lectures/${g.recommendedLectureId}`}
                     leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
                     title={g.conceptName}
-                    meta={<>{g.courseName} · <bdi className="dash-gap-pct">{formatInt(Math.round(g.level * 100))}%</bdi> الآن</>}
+                    meta={<>{g.courseName} · <bdi className="dash-gap-pct">{formatInt(Math.round(g.level * 100))}%</bdi> {NOW}</>}
                     trailing={
                       <span className="dash-gap-side">
                         <MasteryCells
                           mastery={g.level}
                           ariaLabel={`إتقان ${g.conceptName}: ${formatInt(Math.round(g.level * 100))}%`}
                         />
-                        <span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>
+                        <span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />{CLOSE_THE_GAP}</span>
                       </span>
                     }
                   />
@@ -1043,7 +1045,7 @@ export default function StudentDashboardPage() {
                     key={g.conceptId}
                     leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
                     title={g.conceptName}
-                    meta={<>{g.courseName} · <bdi className="dash-gap-pct">{formatInt(Math.round(g.level * 100))}%</bdi> الآن</>}
+                    meta={<>{g.courseName} · <bdi className="dash-gap-pct">{formatInt(Math.round(g.level * 100))}%</bdi> {NOW}</>}
                     trailing={
                       <span className="dash-gap-side">
                         {/* P2.5 — the concept's mastery as the 0–4 cell
@@ -1105,11 +1107,11 @@ export default function StudentDashboardPage() {
           hatch hover is its only flourish) pointing at the assistant the
           sidebar already carries. The mono AI mark is the route's own
           badge identity (nav.ts), never a new colour. */}
-      <section aria-label="المساعد الذكي" className="dash-ai">
+      <section aria-label={AI_ASSISTANT} className="dash-ai">
         <Link to="/student/ai" className="dash-ai-row">
           <span className="dash-ai-mark" dir="ltr" aria-hidden="true">AI</span>
           <span className="dash-ai-body">
-            <b>المساعد الذكي</b>
+            <b>{AI_ASSISTANT}</b>
           </span>
           <Icon icon={ArrowLeft} size={14} />
         </Link>

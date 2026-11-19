@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — R321 (c1 · WP-B3) — the LECTURE PLAYER page joins the
    SHEET SYSTEM (§B student sweep, the r321-exams/r321-map-live family
    contract).
@@ -20,45 +20,47 @@
    its SEATING (the paper around the stage) converts. This sheet
    carries ONLY what is unique to the player page family on top:
 
-     · §1 the side-panel wall retires — the boards («نقاط التفاعل» /
-       «فصول المحاضرة» / «مواد المقرّر») are §B2 title bars + hairline
-       rows sitting directly on the page paper; the sticky instrument
-       column keeps its scroll-with-the-player behavior (transparent —
-       it stays inside its own grid track, nothing slides under it).
-     · §2 the under-bar note rung — the honest answered-count copy the
-       old section-title meta carried (preserved verbatim) seats as a
-       quiet note under its §B2 bar (the ml-sec-note register).
-     · §3 the paper seats — the description paragraph and the keyboard
-       legend lose their Card/section paddings and sit on the paper;
-       the [01] mono index rides the now-playing band's OWN ink (the
-       deep band flips per theme — the page-index must inherit it,
-       never the page-ground faint ink).
-     · §4 (the unlayered tail) the inner-scale masthead re-seat — the
-       lecture title (the page's ONE display h1, seated in the
-       now-playing band under the video, this page's authored moment)
-       re-seats at the INNER scale: ≤32px at every band, the
-       r321-exams ladder (31.5px @1440 / ~27.6px @768 / 31.8px @390).
-       The color is deliberately NOT re-seated: the band owns the h1's
-       ink (.r305c-now .lecture-meta-title { color: inherit } stays
-       the winner — an unlayered color declaration would strand the
-       title on the page ground and vanish it on the ink band).
+   · §1 the side-panel wall retires — the boards («نقاط التفاعل» /
+    «فصول المحاضرة» / «مواد المقرّر») are §B2 title bars + hairline
+    rows sitting directly on the page paper; the sticky instrument
+    column keeps its scroll-with-the-player behavior (transparent —
+    it stays inside its own grid track, nothing slides under it).
+   · §2 the under-bar note rung — the honest answered-count copy the
+    old section-title meta carried (preserved verbatim) seats as a
+    quiet note under its §B2 bar (the ml-sec-note register).
+   · §3 the paper seats — the description paragraph and the keyboard
+    legend lose their Card/section paddings and sit on the paper;
+    the [01] mono index rides the now-playing band's OWN ink (the
+    deep band flips per theme — the page-index must inherit it,
+    never the page-ground faint ink).
+   · §4 (the unlayered tail) the inner-scale masthead re-seat — the
+    lecture title (the page's ONE display h1, seated in the
+    now-playing band under the video, this page's authored moment)
+    re-seats at the INNER scale: ≤32px at every band, the
+    r321-exams ladder (31.5px @1440 / ~27.6px @768 / 31.8px @390).
+    The color is deliberately NOT re-seated: the band owns the h1's
+    ink (.r305c-now .lecture-meta-title { color: inherit } stays
+    the winner — an unlayered color declaration would strand the
+    title on the page ground and vanish it on the ink band).
 
    Gate contract (this tree): var()/color-mix() colors only · token
    ladder for radius/spacing · zero :hover STATE rules of our own (the
    cp-row/chapter-row hover grammar stays in student.css) · static
    texture, nothing for the RM belt to collapse.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
   /* ── 1 · the side-panel wall retires — boards on the page paper ───
-     The old .lecture-panel Card wall (surface ground + hairline frame
-     + --r-lg) retires with the sheet: the boards sit on the page
-     paper, one honest breath between them (the column's own gap
-     rhythm — the aside's sp-4). The sticky + max-block-size +
-     overflow scroll-with-the-player behavior keeps its student.css
-     rules verbatim — the transparent column still tracks the video
-     without a wall (it never leaves its grid track). */
+   The old .lecture-panel Card wall (surface ground + hairline frame
+   + --r-lg) retires with the sheet: the boards sit on the page
+   paper, one honest breath between them (the column's own gap
+   rhythm — the aside's sp-4). The sticky + max-block-size +
+   overflow scroll-with-the-player behavior keeps its student.css
+   rules verbatim — the transparent column still tracks the video
+   without a wall (it never leaves its grid track).
+*/
   .r321p-page .lecture-panel {
     display: flex;
     flex-direction: column;
@@ -69,10 +71,11 @@
   }
 
   /* ── 2 · the under-bar note rung ──────────────────────────────────
-     The honest answered-count copy the old section-title meta carried
-     (preserved verbatim) seats as ONE quiet muted note under its §B2
-     bar — the r321m .ml-sec-note register carried into this family's
-     own sheet. */
+   The honest answered-count copy the old section-title meta carried
+   (preserved verbatim) seats as ONE quiet muted note under its §B2
+   bar — the r321m .ml-sec-note register carried into this family's
+   own sheet.
+*/
   .r321p-page .lecture-sec-note {
     margin: 0 0 var(--sp-3);
     font-size: var(--fs-sm);
@@ -82,9 +85,10 @@
   }
 
   /* ── 3 · the paper seats ──────────────────────────────────────────
-     The description paragraph loses its Card paddings (the frame's
-     flex gap owns the breath now), and the keyboard legend sits flush
-     with the boards' paper edge. */
+   The description paragraph loses its Card paddings (the frame's
+   flex gap owns the breath now), and the keyboard legend sits flush
+   with the boards' paper edge.
+*/
   .r321p-page .lecture-desc {
     margin: 0;
   }
@@ -93,11 +97,12 @@
   }
 
   /* The [01] mono index rides the band's OWN ink: r319-shell ships
-     `.page-index` in the page-ground faint color. The inherit fix used
-     to live here in @layer pages — dead letter: r319-shell's rule is
-     UNLAYERED and outranks any layered rule regardless of specificity
-     (P2.6 measured --text-faint #A2A29D ON the paper band, 2.06:1, in
-     Ink). The living rule sits in the UNLAYERED TAIL below. */
+   `.page-index` in the page-ground faint color. The inherit fix used
+   to live here in @layer pages — dead letter: r319-shell's rule is
+   UNLAYERED and outranks any layered rule regardless of specificity
+   (P2.6 measured --text-faint #A2A29D ON the paper band, 2.06:1, in
+   Ink). The living rule sits in the UNLAYERED TAIL below.
+*/
 }
 
 /* ═══ UNLAYERED TAIL — the masthead re-seat (cascade reasoning) ═══════
@@ -114,21 +119,28 @@
    the Alexandria display canon. NO color declaration here (see the
    §4 note above — the band owns the ink). The section h2s answer at
    the SectionBar register (26.7px @1440 / 19.8px @390) — the one
-   display voice rule holds. */
+   display voice rule holds.
+*/
 .r321p-page .lecture-meta-title {
   font-family: var(--font-display);
-  font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px), the inner-page display rung (the cover pages' 46.67px is not this page's brief), the r321-exams ladder */
-  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the §R324 weight law (was 700) */
-  line-height: 1.05;      /* the Alexandria display canon */
-  letter-spacing: 0;      /* Arabic joins — never tracked */
+  font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px), the inner-page display rung (the cover pages' 46.67px is not this page's brief), the r321-exams ladder
+*/
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the §R324 weight law (was 700)
+*/
+  line-height: 1.05;      /* the Alexandria display canon
+*/
+  letter-spacing: 0;      /* Arabic joins — never tracked
+*/
   overflow-wrap: break-word;
 }
 
 @media (max-width: 991px) {
-  .r321p-page .lecture-meta-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy */
+  .r321p-page .lecture-meta-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy
+*/
 }
 @media (max-width: 767px) {
-  .r321p-page .lecture-meta-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept) */
+  .r321p-page .lecture-meta-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept)
+*/
 }
 
 /* The [01] mono index rides the band's OWN ink (P2.6 — moved out of
@@ -136,7 +148,8 @@
    inherit never won and the index washed to --text-faint #A2A29D on the
    dark theme's paper band at 2.06:1). Unlayered + later + higher
    specificity: this wins, the index follows the h1's band ink in both
-   themes (the band flips, the index follows). */
+   themes (the band flips, the index follows).
+*/
 .r321p-page .lecture-meta-title .page-index {
   color: inherit;
 }
@@ -144,7 +157,8 @@
 /* Reduced-motion belt: this sheet's material is static texture (one
    spacing rung + the type/ink seats — nothing animates, nothing to
    collapse). Kept as the explicit contract, mirroring the family
-   sheets. */
+   sheets.
+*/
 @media (prefers-reduced-motion: reduce) {
   .r321p-page .lecture-panel,
   .r321p-page .lecture-sec-note,
@@ -158,12 +172,15 @@
 /* ── r323 B2.2 — the transcript panel (search + click-to-seek) ──────
    The §B2 row grammar: hairline rows, the mono chapter-time seat,
    paper ground, hover wash only under (hover:hover) — the family's
-   own register, no new vocabulary. */
+   own register, no new vocabulary.
+*/
 .tr-search { margin-block-start: var(--sp-2); }
 .tr-search-input {
   inline-size: 100%;
-  padding: 9px var(--sp-3); /* spacing-gate: allow — the r321 player rungs (authored literals, reviewed) */
-  font-size: 0.8125rem; /* type-gate: allow — the r321 player rungs (authored literals, reviewed) */
+  padding: 9px var(--sp-3); /* spacing-gate: allow — the r321 player rungs (authored literals, reviewed)
+*/
+  font-size: 0.8125rem; /* type-gate: allow — the r321 player rungs (authored literals, reviewed)
+*/
   border: 1px solid var(--border-strong, var(--border));
   background: transparent;
   color: var(--text);
@@ -193,9 +210,11 @@
   cursor: pointer;
   font: inherit;
   color: inherit;
-  min-block-size: 44px; /* the touch floor */
+  min-block-size: 44px; /* the touch floor
+*/
 }
-.tr-cue-text { font-size: 0.8125rem; /* type-gate: allow — the r321 player rungs (authored literals, reviewed) */ line-height: 1.7; color: var(--text); }
+.tr-cue-text { font-size: 0.8125rem; /* type-gate: allow — the r321 player rungs (authored literals, reviewed)
+*/ line-height: 1.7; color: var(--text); }
 @media (hover: hover) and (pointer: fine) {
   .tr-cue:hover { background: var(--surface); }
 }

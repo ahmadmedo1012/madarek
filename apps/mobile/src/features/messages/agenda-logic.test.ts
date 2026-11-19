@@ -97,8 +97,8 @@ describe("assignments — assignmentStatus", () => {
 
 describe("assignments — dueCountdown", () => {
   test("hours, days, minutes — Arabic counted grammar, latn digits", () => {
-    expect(dueCountdown(new Date(NOW + 3_600_000).toISOString(), NOW)).toContain("ساعة واحدة");
-    expect(dueCountdown(new Date(NOW + 2 * 86_400_000).toISOString(), NOW)).toContain("يومان");
+    expect(dueCountdown(new Date(NOW + 3_600_000).toISOString(), NOW)).toContain("ساعة");
+    expect(dueCountdown(new Date(NOW + 2 * 86_400_000).toISOString(), NOW)).toContain("يومين");
     expect(dueCountdown(new Date(NOW + 90_000).toISOString(), NOW)).toContain("دقيقة");
   });
 

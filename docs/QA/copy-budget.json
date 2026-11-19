@@ -3,42 +3,42 @@
     "admin/AdminExtraPages.tsx": {
       "baseline": 340,
       "class": "authed",
-      "max": 199
+      "max": 147
     },
     "admin/AdminGovernancePages.tsx": {
       "baseline": 443,
       "class": "authed",
-      "max": 259
+      "max": 183
     },
     "admin/AdminMailPage.tsx": {
       "baseline": 244,
       "class": "authed",
-      "max": 144
+      "max": 129
     },
     "admin/AdminPages.tsx": {
       "baseline": 922,
       "class": "authed",
-      "max": 470
+      "max": 258
     },
     "admin/ImportWizardPage.tsx": {
       "baseline": 381,
       "class": "authed",
-      "max": 224
+      "max": 197
     },
     "admin/ops/HostingUsage.tsx": {
       "baseline": 28,
       "class": "authed",
-      "max": 25
+      "max": 23
     },
     "admin/PeoplePages.tsx": {
       "baseline": 404,
       "class": "authed",
-      "max": 239
+      "max": 192
     },
     "admin/TablePaginationFooter.tsx": {
       "baseline": 7,
       "class": "authed",
-      "max": 7
+      "max": 5
     },
     "AppDownloadPage.tsx": {
       "baseline": 340,
@@ -48,17 +48,17 @@
     "auth/ForgotPasswordPage.tsx": {
       "baseline": 117,
       "class": "public",
-      "max": 83
+      "max": 71
     },
     "auth/ResetPasswordPage.tsx": {
       "baseline": 182,
       "class": "public",
-      "max": 122
+      "max": 111
     },
     "AuthPage.tsx": {
       "baseline": 160,
       "class": "public",
-      "max": 117
+      "max": 113
     },
     "BrandPage.tsx": {
       "baseline": 226,
@@ -73,17 +73,17 @@
     "colleges/CollegePages.tsx": {
       "baseline": 308,
       "class": "public",
-      "max": 166
+      "max": 164
     },
     "community/CommunityPages.tsx": {
       "baseline": 271,
       "class": "authed",
-      "max": 140
+      "max": 104
     },
     "competitions/CompetitionsPages.tsx": {
       "baseline": 291,
       "class": "authed",
-      "max": 138
+      "max": 101
     },
     "DesignPage.tsx": {
       "baseline": 624,
@@ -93,22 +93,22 @@
     "DocumentViewerPage.tsx": {
       "baseline": 54,
       "class": "authed",
-      "max": 31
+      "max": 29
     },
     "Error403Page.tsx": {
       "baseline": 36,
       "class": "public",
-      "max": 27
+      "max": 20
     },
     "Error500Page.tsx": {
       "baseline": 41,
       "class": "public",
-      "max": 30
+      "max": 29
     },
     "exams/OnlineExamsPages.tsx": {
       "baseline": 685,
       "class": "authed",
-      "max": 402
+      "max": 290
     },
     "LandingPage.tsx": {
       "baseline": 3,
@@ -118,7 +118,7 @@
     "legal/LegalPages.tsx": {
       "baseline": 1503,
       "class": "public",
-      "max": 627
+      "max": 600
     },
     "legal/LegalSheet.tsx": {
       "baseline": 27,
@@ -138,52 +138,52 @@
     "owner/FeedbackInboxPage.tsx": {
       "baseline": 147,
       "class": "authed",
-      "max": 77
+      "max": 62
     },
     "owner/OwnerActivityPage.tsx": {
       "baseline": 204,
       "class": "authed",
-      "max": 119
+      "max": 65
     },
     "owner/OwnerAiPage.tsx": {
       "baseline": 146,
       "class": "authed",
-      "max": 85
+      "max": 71
     },
     "owner/OwnerAlertsPage.tsx": {
       "baseline": 116,
       "class": "authed",
-      "max": 68
+      "max": 43
     },
     "owner/OwnerContentPage.tsx": {
       "baseline": 87,
       "class": "authed",
-      "max": 47
+      "max": 43
     },
     "owner/OwnerDashboardPage.tsx": {
       "baseline": 312,
       "class": "authed",
-      "max": 185
+      "max": 94
     },
     "owner/OwnerEducationPage.tsx": {
       "baseline": 221,
       "class": "authed",
-      "max": 119
+      "max": 91
     },
     "owner/OwnerGovernancePage.tsx": {
       "baseline": 172,
       "class": "authed",
-      "max": 102
+      "max": 95
     },
     "owner/OwnerInstitutionDetailPage.tsx": {
       "baseline": 456,
       "class": "authed",
-      "max": 227
+      "max": 81
     },
     "owner/OwnerInstitutionsPage.tsx": {
       "baseline": 301,
       "class": "authed",
-      "max": 173
+      "max": 142
     },
     "owner/OwnerPages.tsx": {
       "baseline": 0,
@@ -193,17 +193,17 @@
     "owner/OwnerRealtimePage.tsx": {
       "baseline": 65,
       "class": "authed",
-      "max": 37
+      "max": 14
     },
     "owner/OwnerSystemPage.tsx": {
       "baseline": 330,
       "class": "authed",
-      "max": 195
+      "max": 165
     },
     "owner/OwnerUsersPage.tsx": {
       "baseline": 159,
       "class": "authed",
-      "max": 93
+      "max": 71
     },
     "PlatesPage.tsx": {
       "baseline": 289,
@@ -213,87 +213,87 @@
     "PublicPages.tsx": {
       "baseline": 545,
       "class": "public",
-      "max": 212
+      "max": 201
     },
     "quality/QualityPages.tsx": {
       "baseline": 744,
       "class": "authed",
-      "max": 396
+      "max": 274
     },
     "RegisterPage.tsx": {
       "baseline": 341,
       "class": "public",
-      "max": 246
+      "max": 229
     },
     "SettingsPage.tsx": {
       "baseline": 232,
       "class": "authed",
-      "max": 83
+      "max": 65
     },
     "student/AiAssistantPage.tsx": {
       "baseline": 474,
       "class": "authed",
-      "max": 181
+      "max": 167
     },
     "student/CalendarPage.tsx": {
       "baseline": 94,
       "class": "authed",
-      "max": 66
+      "max": 59
     },
     "student/CampusMapPage.tsx": {
       "baseline": 87,
       "class": "authed",
-      "max": 50
+      "max": 34
     },
     "student/CatalogPage.tsx": {
       "baseline": 110,
       "class": "authed",
-      "max": 64
+      "max": 47
     },
     "student/CourseDetailPage.tsx": {
       "baseline": 239,
       "class": "authed",
-      "max": 128
+      "max": 80
     },
     "student/CoursesPage.tsx": {
       "baseline": 203,
       "class": "authed",
-      "max": 115
+      "max": 87
     },
     "student/DashboardPage.tsx": {
       "baseline": 326,
       "class": "authed",
-      "max": 188
+      "max": 148
     },
     "student/JobsPage.tsx": {
       "baseline": 135,
       "class": "authed",
-      "max": 78
+      "max": 70
     },
     "student/LabsPage.tsx": {
       "baseline": 281,
       "class": "authed",
-      "max": 164
+      "max": 147
     },
     "student/LecturePlayerPage.tsx": {
       "baseline": 192,
       "class": "authed",
-      "max": 114
+      "max": 86
     },
     "student/LibraryPage.tsx": {
       "baseline": 331,
       "class": "authed",
-      "max": 195
+      "max": 175
     },
     "student/LivePage.tsx": {
       "baseline": 148,
       "class": "authed",
-      "max": 87
+      "max": 61
     },
     "student/MatrixPage.tsx": {
       "baseline": 167,
       "class": "authed",
-      "max": 99
+      "max": 82
     },
     "student/MessagesPage.tsx": {
       "baseline": 50,
@@ -303,77 +303,77 @@
     "student/MoocPage.tsx": {
       "baseline": 79,
       "class": "authed",
-      "max": 43
+      "max": 38
     },
     "student/MorePages.tsx": {
       "baseline": 690,
       "class": "authed",
-      "max": 356
+      "max": 262
     },
     "student/PaymentPage.tsx": {
       "baseline": 156,
       "class": "authed",
-      "max": 91
+      "max": 64
     },
     "student/ProfilePage.tsx": {
       "baseline": 186,
       "class": "authed",
-      "max": 110
+      "max": 72
     },
     "student/ResearchPage.tsx": {
       "baseline": 369,
       "class": "authed",
-      "max": 218
+      "max": 177
     },
     "student/TrainingPages.tsx": {
       "baseline": 359,
       "class": "authed",
-      "max": 183
+      "max": 154
     },
     "student/WebinarsPage.tsx": {
       "baseline": 123,
       "class": "authed",
-      "max": 68
+      "max": 56
     },
     "teacher/ExamAuthorPages.tsx": {
       "baseline": 1331,
       "class": "authed",
-      "max": 707
+      "max": 627
     },
     "teacher/ResearchReviewPage.tsx": {
       "baseline": 306,
       "class": "authed",
-      "max": 180
+      "max": 155
     },
     "teacher/TeacherDashboardPage.tsx": {
       "baseline": 277,
       "class": "authed",
-      "max": 120
+      "max": 87
     },
     "teacher/TeacherIntelligencePage.tsx": {
       "baseline": 285,
       "class": "authed",
-      "max": 167
+      "max": 90
     },
     "teacher/TeacherLabsPage.tsx": {
       "baseline": 110,
       "class": "authed",
-      "max": 62
+      "max": 52
     },
     "teacher/TeacherLivePage.tsx": {
       "baseline": 176,
       "class": "authed",
-      "max": 104
+      "max": 75
     },
     "teacher/TeacherPages.tsx": {
       "baseline": 1117,
       "class": "authed",
-      "max": 450
+      "max": 357
     },
     "teacher/TeacherProfilePage.tsx": {
       "baseline": 267,
       "class": "authed",
-      "max": 139
+      "max": 100
     },
     "vision/VisionPages.tsx": {
       "baseline": 136,
@@ -383,7 +383,7 @@
     "auth/VerifyEmailPage.tsx": {
       "baseline": 43,
       "class": "public",
-      "max": 45
+      "max": 44
     }
   },
   "meta": {

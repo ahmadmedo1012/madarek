@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/toast";
 import { socialApi } from "@/api/social";
 import type { PilotFeedback } from "@/api/types";
 import { fromNow, latn } from "@/lib/format";
+import {UNDER_PROCESSING, NO_REPORTS_HERE} from "@/lib/copy";
 import {
   FEEDBACK_NEXT,
   PagerFooter,
@@ -60,14 +61,14 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
       <StackHeader title="صندوق التغذية الراجعة" kicker={kicker} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <T variant="body" color="muted">
-          كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل.
+          كل «أبلغ عن مشكلة / اقتراح» — بسياقه الكامل.
         </T>
 
         <Segmented
           options={[
             { id: "all", label: "الكل" },
             { id: "open", label: "مفتوحة" },
-            { id: "triage", label: "تحت المعالجة" },
+            { id: "triage", label: UNDER_PROCESSING },
             { id: "fixed", label: "أُصلحت" },
             { id: "dismissed", label: "مرفوضة" },
           ]}
@@ -84,8 +85,8 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
           <ErrorState message={humanizeError(inbox.error)} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا تقارير هنا"
-            message="تقارير «أبلغ عن مشكلة» تصل هنا بسياقها الكامل."
+            title={NO_REPORTS_HERE}
+            message="تصل هنا بسياقها الكامل."
           />
         ) : (
           <View style={{ gap: 12 }}>
@@ -152,7 +153,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
               loading={inbox.isFetching}
             />
             <T variant="xs" color="faint">
-              الحالة تتحرّك باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · {latn(rows.length)} تقريراً في الصفحة.
+              الحالة باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · {latn(rows.length)} تقريراً.
             </T>
           </View>
         )}

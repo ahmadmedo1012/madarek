@@ -30,6 +30,7 @@ import { LedgerRow, ProgressBar, RowList } from "@/components/ui/data";
 import { dateTime, dueLabel, latn, pct } from "@/lib/format";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { countAr } from "@/features/student/more";
+import {EXAM_WINDOW_OPEN, MASTERY_EMPTY_NOTE} from "@/lib/copy";
 
 /* ══ Time formatting (web formatMmSs — mm:ss, Western glyphs) ══════ */
 
@@ -223,7 +224,7 @@ export function GapList({
   if (rows.length === 0) {
     return (
       <T variant="sm" color="muted">
-        {emptyNote ?? "أجب عن نقاط التفاعل لترسم خريطة إتقانك."}
+        {emptyNote ?? MASTERY_EMPTY_NOTE}
       </T>
     );
   }
@@ -764,7 +765,7 @@ export function nextStep(
         ? `يفتح باب الاختبار ${dateTime(nextExam.openAt)}`
         : nextExam.closeAt
           ? `آخر موعد للتسليم ${dateTime(nextExam.closeAt)}`
-          : "نافذة الاختبار مفتوحة",
+          : EXAM_WINDOW_OPEN,
       actionLabel: "فتح الاختبار",
       href: "/student/online-exams",
       a11y: `الاختبار التالي: ${nextExam.title}`,

@@ -1,0 +1,4008 @@
+{
+ "generatedAt": "2026-11-19T10:13:31.690Z",
+ "url": "http://localhost:5306/",
+ "dark": true,
+ "routes": {
+  "/admin/dashboard": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 81,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 15
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ الطلاب"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.78048780487805,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 82,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 16
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ الطلاب"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 81,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 15
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ الطلاب"
+     }
+    }
+   }
+  },
+  "/admin/students": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 45,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 42
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "استيراد الطلاب"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 98.6,
+    "axes": {
+     "typeRungs": {
+      "score": 91.30434782608695,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلّ الكلّيّات"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلية الهندسة"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلية الطب البشري"
+       }
+      ],
+      "total": 46,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 43
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "استيراد الطلاب"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 45,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 42
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "استيراد الطلاب"
+     }
+    }
+   }
+  },
+  "/admin/directory": {
+   "1440:dark": {
+    "score": 80,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 31,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 28
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "768:dark": {
+    "score": 74.3,
+    "axes": {
+     "typeRungs": {
+      "score": 65.625,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كل الأوضاع"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "صباحي"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "مسائي"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "موازي"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كل الحالات"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "مقيّد"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "موقوف"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "مؤجّل"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "متخرّج"
+       }
+      ],
+      "total": 32,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 29
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "390:dark": {
+    "score": 80,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 31,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 28
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   }
+  },
+  "/admin/people/spr_e2e_amna": {
+   "1440:dark": {
+    "score": 80,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 66,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 10
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 42
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "768:dark": {
+    "score": 79.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.52941176470588,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 68,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 10
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 44
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "390:dark": {
+    "score": 80,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 67,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 10
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 43
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   }
+  },
+  "/admin/teachers": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 30,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 30
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إدارة المقرّرات"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.4,
+    "axes": {
+     "typeRungs": {
+      "score": 96.55172413793103,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 29,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 29
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إدارة المقرّرات"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 98.2,
+    "axes": {
+     "typeRungs": {
+      "score": 89.28571428571429,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 15,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "لف"
+       },
+       {
+        "fs": 15,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "خم"
+       },
+       {
+        "fs": 15,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "أش"
+       }
+      ],
+      "total": 28,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 28
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إدارة المقرّرات"
+     }
+    }
+   }
+  },
+  "/admin/permissions/usr_e2e_teacher": {
+   "1440:dark": {
+    "score": 76.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 102,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 11
+     },
+     "pattern": {
+      "score": 60,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 48
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "768:dark": {
+    "score": 76.5,
+    "axes": {
+     "typeRungs": {
+      "score": 99.03846153846155,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 104,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 11
+     },
+     "pattern": {
+      "score": 60,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 50
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "390:dark": {
+    "score": 76.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 103,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 11
+     },
+     "pattern": {
+      "score": 60,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 49
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   }
+  },
+  "/admin/community": {
+   "1440:dark": {
+    "score": 99,
+    "axes": {
+     "typeRungs": {
+      "score": 93.75,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 31.5,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "[01]المجتمع الجامعي"
+       },
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "الإعلانات"
+       }
+      ],
+      "total": 32,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 3
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 32
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المسابقات"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 98.5,
+    "axes": {
+     "typeRungs": {
+      "score": 90.9090909090909,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       },
+       {
+        "fs": 27.6259,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "[01]المجتمع الجامعي"
+       },
+       {
+        "fs": 25.7842,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "الإعلانات"
+       }
+      ],
+      "total": 33,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 3
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 33
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المسابقات"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 99.5,
+    "axes": {
+     "typeRungs": {
+      "score": 96.875,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "الإعلانات"
+       }
+      ],
+      "total": 32,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 3
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 32
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المسابقات"
+     }
+    }
+   }
+  },
+  "/admin/faculties": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 44,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إضافة كلّيّة"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 98.9,
+    "axes": {
+     "typeRungs": {
+      "score": 93.33333333333333,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلّ المدن"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "الزاوية"
+       }
+      ],
+      "total": 45,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 19
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إضافة كلّيّة"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 44,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إضافة كلّيّة"
+     }
+    }
+   }
+  },
+  "/admin/courses": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 61,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 61
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إضافة مقرّر"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 98.8,
+    "axes": {
+     "typeRungs": {
+      "score": 92.98245614035088,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلّ الكلّيّات"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلية الهندسة"
+       },
+       {
+        "fs": 16,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلية الطب البشري"
+       }
+      ],
+      "total": 57,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 57
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إضافة مقرّر"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 56,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 56
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إضافة مقرّر"
+     }
+    }
+   }
+  },
+  "/admin/analysis": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 105,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 89
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التحوّل الرقميّ"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 99.05660377358491,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 106,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 90
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التحوّل الرقميّ"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 105,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 89
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التحوّل الرقميّ"
+     }
+    }
+   }
+  },
+  "/admin/digital": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 50,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 38
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التقارير المؤسسية"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.7,
+    "axes": {
+     "typeRungs": {
+      "score": 98.0392156862745,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 51,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 39
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التقارير المؤسسية"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 50,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 38
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التقارير المؤسسية"
+     }
+    }
+   }
+  },
+  "/admin/reports": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 104,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 61
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التحوّل الرقميّ"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 99.04761904761905,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 105,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 62
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التحوّل الرقميّ"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 104,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 61
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التحوّل الرقميّ"
+     }
+    }
+   }
+  },
+  "/admin/settings": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 52,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 20
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "مزامنة الجامعة"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.7,
+    "axes": {
+     "typeRungs": {
+      "score": 98.11320754716981,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 53,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 21
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "مزامنة الجامعة"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 52,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 20
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "مزامنة الجامعة"
+     }
+    }
+   }
+  },
+  "/admin/mail": {
+   "1440:dark": {
+    "score": 80,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 39,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 23
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": "إرسال"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 79.6,
+    "axes": {
+     "typeRungs": {
+      "score": 97.5,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       }
+      ],
+      "total": 40,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 24
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": "إرسال"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 80,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 39,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 23
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": "إرسال"
+     }
+    }
+   }
+  },
+  "/admin/import": {
+   "1440:dark": {
+    "score": 76.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 29,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 60,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 26
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "768:dark": {
+    "score": 73.4,
+    "axes": {
+     "typeRungs": {
+      "score": 80.64516129032258,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       },
+       {
+        "fs": 12,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "1"
+       },
+       {
+        "fs": 12,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "2"
+       },
+       {
+        "fs": 12,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "3"
+       },
+       {
+        "fs": 12,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "4"
+       },
+       {
+        "fs": 12,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "5"
+       }
+      ],
+      "total": 31,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 60,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 28
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   },
+   "390:dark": {
+    "score": 76.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 30,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 60,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": false,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 27
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 0,
+      "channels": 0,
+      "label": ""
+     }
+    }
+   }
+  },
+  "/admin/alerts": {
+   "1440:dark": {
+    "score": 99.4,
+    "axes": {
+     "typeRungs": {
+      "score": 96.66666666666667,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "آخر الإشعارات"
+       }
+      ],
+      "total": 30,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 30
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تعليم الكل كمقروء"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 98.4,
+    "axes": {
+     "typeRungs": {
+      "score": 90.32258064516128,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "سق"
+       },
+       {
+        "fs": 40.518,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "الإشعارات"
+       },
+       {
+        "fs": 25.7842,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "آخر الإشعارات"
+       }
+      ],
+      "total": 31,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 31
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تعليم الكل كمقروء"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 99.4,
+    "axes": {
+     "typeRungs": {
+      "score": 96.66666666666667,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "آخر الإشعارات"
+       }
+      ],
+      "total": 30,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 30
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تعليم الكل كمقروء"
+     }
+    }
+   }
+  }
+ },
+ "gate": false,
+ "floor": 90
+}

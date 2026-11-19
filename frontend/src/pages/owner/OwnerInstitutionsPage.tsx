@@ -1,3 +1,5 @@
+import { DASH_OWNER, CANCEL, LABEL_STATUS, LABEL_ACTIONS, LABEL_EMAIL, CREATING, LABEL_COLLEGES, FAILED_SERVER, STATUS_ACTIVE_F, FAILED_UPDATE, CREATED_AT, PASSWORD, INSTITUTIONS, CREATED, UPDATED } from '../../lib/copy';
+
 import { useState, type InputHTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -59,13 +61,13 @@ function institutionsCountLabel(n: number): string {
 }
 
 const STATUS_LABELS: Record<OwnerInstitution['status'], string> = {
-  ACTIVE: 'نشطة',
+  ACTIVE: STATUS_ACTIVE_F,
   SUSPENDED: 'معلّقة',
 };
 
 /* Shared silent-server fallback — the toast/AlertRow titles already
  * name WHICH action failed; this carries only the network fact. */
-const SERVER_SILENT_MSG = 'لم يستجب الخادم.';
+const SERVER_SILENT_MSG = FAILED_SERVER;
 
 /* ── Create form ─────────────────────────────────────────────── */
 
@@ -159,7 +161,7 @@ function CreateInstitutionCard({
         </FormField>
         <button type="submit" className="btn primary sm owner-inst-create-submit" disabled={!canSubmit} aria-busy={isPending}>
           <Icon icon={Plus} size={13} />
-          {isPending ? 'جارٍ الإنشاء…' : 'إنشاء المؤسسة'}
+          {isPending ? CREATING : 'إنشاء المؤسسة'}
         </button>
         {error != null && (
           <AlertRow
@@ -352,7 +354,7 @@ function ProvisionAdminModal({
             </select>
           </FormField>
 
-          <FormField label="البريد الإلكتروني" error={emailProblem}>
+          <FormField label={LABEL_EMAIL} error={emailProblem}>
             <input
               className="input"
               type="email"
@@ -386,7 +388,7 @@ function ProvisionAdminModal({
                   />
                 </FormField>
               </div>
-              <FormField label="كلمة المرور" error={passwordProblem} hint="12 حرفًا على الأقل">
+              <FormField label={PASSWORD} error={passwordProblem} hint="12 حرفًا على الأقل">
                 <PasswordControl
                   value={draft.password}
                   onChange={(v) => setDraft((d) => ({ ...d, password: v }))}
@@ -400,7 +402,7 @@ function ProvisionAdminModal({
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={close} disabled={isPending}>
-            إلغاء
+            {CANCEL}
           </button>
           <button type="submit" className="btn primary" disabled={!canSubmit} aria-busy={isPending}>
             <Icon icon={UserPlus} size={13} />
@@ -454,7 +456,7 @@ export function OwnerInstitutionsPage() {
   const onCreate = async (draft: { name: string; nameEn?: string; slug?: string }): Promise<boolean> => {
     try {
       const { institution } = await createM.mutateAsync(draft);
-      toast.success(`أُنشئت «${institution.name}».`, { title: 'تمّ الإنشاء' });
+      toast.success(`أُنشئت «${institution.name}».`, { title: CREATED });
       return true;
     } catch {
       return false;
@@ -479,13 +481,13 @@ export function OwnerInstitutionsPage() {
             onSuccess: () => {
               toast.success(
                 suspending ? `تمّ تعليق «${institution.name}».` : `أُعيد تنشيط «${institution.name}».`,
-                { title: 'تمّ التحديث' },
+                { title: UPDATED },
               );
             },
             onError: (error) => {
               toast.error(
                 apiErrorMessage(error, SERVER_SILENT_MSG),
-                { title: 'تعذّر التحديث' },
+                { title: FAILED_UPDATE },
               );
             },
           },
@@ -574,9 +576,9 @@ export function OwnerInstitutionsPage() {
   return (
     <div className="page r305ao">
       <PatternsPageHeader
-        title="المؤسسات"
+        title={INSTITUTIONS}
         /* r366 (2-e): the description restated the title — cut. */
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المؤسسات' }]}
+        breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: INSTITUTIONS }]}
         /* R341 D11: the [04] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). The page's primary
          * action (the create form's submit) is already the first
@@ -612,12 +614,12 @@ export function OwnerInstitutionsPage() {
               <thead>
                 <tr>
                   <th scope="col">المؤسسة</th>
-                  <th scope="col">الحالة</th>
+                  <th scope="col">{LABEL_STATUS}</th>
                   <th scope="col">الأعضاء</th>
-                  <th scope="col">الكليات</th>
+                  <th scope="col">{LABEL_COLLEGES}</th>
                   <th scope="col">المسجّلون</th>
-                  <th scope="col">تاريخ الإنشاء</th>
-                  <th scope="col">إجراءات</th>
+                  <th scope="col">{CREATED_AT}</th>
+                  <th scope="col">{LABEL_ACTIONS}</th>
                 </tr>
               </thead>
               <tbody>
@@ -632,7 +634,7 @@ export function OwnerInstitutionsPage() {
                         <span className="owner-inst-sub font-mono ws-meta" dir="ltr">{institution.slug}</span>
                       </div>
                     </td>
-                    <td data-label="الحالة">
+                    <td data-label={LABEL_STATUS}>
                       <Badge color={institution.status === 'ACTIVE' ? 'green' : 'red'}>
                         {STATUS_LABELS[institution.status]}
                       </Badge>
@@ -646,7 +648,7 @@ export function OwnerInstitutionsPage() {
                         {formatNum(institution.activeMembershipCount)}
                       </span>
                     </td>
-                    <td data-label="الكليات">
+                    <td data-label={LABEL_COLLEGES}>
                       <span className="owner-inst-metric">
                         {formatNum(institution.facultyCount)}
                       </span>
@@ -686,12 +688,12 @@ export function OwnerInstitutionsPage() {
                         </ul>
                       )}
                     </td>
-                    <td data-label="تاريخ الإنشاء">
+                    <td data-label={CREATED_AT}>
                       <span className="owner-inst-metric">
                         {formatDate(institution.createdAt, { dateStyle: 'medium' })}
                       </span>
                     </td>
-                    <td data-label="إجراءات">
+                    <td data-label={LABEL_ACTIONS}>
                       <span className="table-row-actions">
                         {/* r181 (phase-8 owner setup): the institution's own
                             academic-setup context — faculties → departments

@@ -31,6 +31,7 @@ import { humanizeError } from "@/lib/errors";
 import { countAr } from "@/features/student/more";
 import { PushFrame } from "@/features/student/components";
 import { catalogApi } from "@/api/catalog";
+import { NO_FACULTIES_YET } from "@/lib/copy";
 
 interface FacultyRow {
   id: string;
@@ -60,7 +61,7 @@ export default function UniversityScreen() {
     /* Null context (the multi-membership pre-selection edge): the
      * honest empty state — nothing is invented. */
     return (
-      <PushFrame title="عن المؤسّسة" kicker="مؤسستك">
+      <PushFrame title="عن المؤسّسة">
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لا مؤسسة في جلستك"
@@ -102,8 +103,7 @@ export default function UniversityScreen() {
       ) : faculties.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا كليّات بعد"
-          message="لا كليات بعد."
+          title={NO_FACULTIES_YET}
         />
       ) : (
         <>
@@ -111,13 +111,13 @@ export default function UniversityScreen() {
             <StatLine
               label="عدد الكليّات"
               value={latn(faculties.length)}
-              hint={countAr(faculties.length, ["كلّيّة واحدة", "كلّيّتان", "كلّيّات", "كلّيّة"])}
+              hint={countAr(faculties.length, ["كلّيّة", "كلّيّتان", "كلّيّات", "كلّيّة"])}
             />
             {departmentCount > 0 ? (
               <StatLine
                 label="عدد الأقسام"
                 value={latn(departmentCount)}
-                hint={countAr(departmentCount, ["قسم واحد", "قسمان", "أقسام", "قسم"])}
+                hint={countAr(departmentCount, ["قسم", "قسمان", "أقسام", "قسم"])}
               />
             ) : null}
           </Card>

@@ -170,7 +170,7 @@ export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
             {unread > 0 ? <MutedChip label={`${latn(unread > 99 ? 99 : unread)} غير مقروءة`} /> : null}
           </View>
           <T variant="xs" color="muted">
-            كل رسالة وصلتك أو أرسلتها عبر المنصّة — ردّ على الواردة.
+            رسائلك الواردة والمرسلة — ردّ من هنا.
           </T>
         </View>
         {unread > 0 ? (
@@ -207,7 +207,7 @@ export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
         loadMoreError={list.loadMoreError}
         onRetryLoadMore={list.retryLoadMore}
         emptyTitle="لا رسائل بعد"
-        emptyMessage="الرسائل الواردة — يمكنك الردّ عليها."
+        emptyMessage="يمكنك الردّ عليها."
         contentPadding={{ horizontal: 16, top: 12, bottom: 24 }}
       />
 
@@ -371,7 +371,7 @@ function ThreadSheet({
         <View style={{ gap: sp[10] }}>
           {thread.length === 0 ? (
             <T variant="sm" color="muted">
-              لا رسائل محمّلة مع هذا المستخدم بعد.
+              لا رسائل مع هذا المستخدم بعد.
             </T>
           ) : (
             thread.map((msg) => (

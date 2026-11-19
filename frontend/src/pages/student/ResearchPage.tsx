@@ -1,3 +1,5 @@
+import { CANCEL, EMPTY_RESEARCH_YET, E_LIBRARY, NEXT_STEP, ONE_POST, MY_COURSES, STATUS_DONE, FAILED_VERIFICATION, UPLOADING_FILE, MY_RESEARCH, UNDER_REVIEW, ONE_RESEARCH, RESEARCH, PENDING_CHECK, CHECKING, RUNNING_NOW, NO_COURSE_DASH, REMOVE_FILE } from '../../lib/copy';
+
 import { useId, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -40,16 +42,16 @@ import '../../styles/student/pages.css';
 import '../../styles/student/academic-pages.css';
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
-  UPLOADED: 'بانتظار الفحص',
-  SCANNING: 'جارٍ الفحص',
+  UPLOADED: PENDING_CHECK,
+  SCANNING: CHECKING,
   CHECKS_PASSED: 'بانتظار تقييم الأستاذ',
   // r134 فشل→تعذّر family canon: «فشل الفحص» named the CHECKS_FAILED
   // bucket with the banned verb; تعذّر اجتياز keeps the meaning (the
   // paper could not pass) and stays distinct from the operational
   // «تعذّر إجراء الفحص» alert below (the scan itself could not run).
-  CHECKS_FAILED: 'تعذّر اجتياز الفحص',
+  CHECKS_FAILED: FAILED_VERIFICATION,
   GRADED: 'مُقيَّم',
-  PUBLISHED: 'منشور',
+  PUBLISHED: ONE_POST,
 };
 
 /* R305-A7: status chips — dot + Arabic label (state never rides color
@@ -81,25 +83,24 @@ function StatusChip({ tone, label }: { tone: ChipTone; label: string }) {
    r304: the workflow is a sequence the student can READ. Each status
    maps to ONE next action (or an explicit «no action needed»), in the
    same vocabulary the row's badge and the pipeline rail speak. */
-const SCANNING_NOW = { k: 'جارٍ الآن', hint: 'الفحص يجري — النتائج تظهر تلقائياً.' };
+const SCANNING_NOW = { k: RUNNING_NOW, hint: 'الفحص يجري — النتائج تظهر تلقائياً.' };
 const UPLOAD_NEW = 'رفع بحث جديد';
-const UPLOADING_FILE = 'جارٍ رفع الملف…';
 function nextStepFor(paper: ResearchPaper, isScanning: boolean): { k: string; hint: string } {
   switch (paper.status) {
     case 'UPLOADED':
       return isScanning
         ? SCANNING_NOW
-        : { k: 'الخطوة التالية', hint: 'ابدأ الفحص (انتحال + ذكاء اصطناعي).' };
+        : { k: NEXT_STEP, hint: 'ابدأ الفحص (انتحال + ذكاء اصطناعي).' };
     case 'SCANNING':
       return SCANNING_NOW;
     case 'CHECKS_PASSED':
-      return { k: 'الخطوة التالية', hint: 'بانتظار تقييم أستاذك — لا إجراء مطلوب.' };
+      return { k: NEXT_STEP, hint: 'بانتظار تقييم أستاذك — لا إجراء مطلوب.' };
     case 'CHECKS_FAILED':
-      return { k: 'الخطوة التالية', hint: 'ارفع نسخة معدّلة — تُعبّأ مسبقاً.' };
+      return { k: NEXT_STEP, hint: 'ارفع نسخة معدّلة — تُعبّأ مسبقاً.' };
     case 'GRADED':
       return { k: 'التقييم وصل', hint: 'راجع الدرجة والملاحظات — النشر للأستاذ.' };
     case 'PUBLISHED':
-      return { k: 'مكتمل', hint: 'متاح في المكتبة.' };
+      return { k: STATUS_DONE, hint: 'متاح في المكتبة.' };
   }
 }
 
@@ -144,9 +145,9 @@ export default function StudentResearchPage() {
    * alone. */
   const kpis: Array<{ label: string; value: ReactNode; hint: string; flag?: boolean }> = [
     { label: 'إجمالي بحوثك', value: formatInt(papers.length), hint: 'منذ البداية' },
-    { label: 'قيد المراجعة', value: formatInt(pendingCount), hint: pendingCount > 0 ? 'بانتظار خطوة' : 'لا شيء' },
+    { label: UNDER_REVIEW, value: formatInt(pendingCount), hint: pendingCount > 0 ? 'بانتظار خطوة' : 'لا شيء' },
     { label: 'مُقيَّمة', value: formatInt(gradedCount), hint: gradedCount > 0 ? 'منها المنشور' : 'لا توجد بعد' },
-    { label: 'تعذّر اجتياز الفحص', value: formatInt(failedCount), hint: failedCount > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', flag: failedCount > 0 },
+    { label: FAILED_VERIFICATION, value: formatInt(failedCount), hint: failedCount > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', flag: failedCount > 0 },
   ];
 
   const startScan = async (id: string) => {
@@ -205,11 +206,11 @@ export default function StudentResearchPage() {
           <>
             <RouterLink to="/student/library" className="btn primary sm">
               <Icon icon={BookMarked} size={13} />
-              المكتبة الإلكترونية
+              {E_LIBRARY}
             </RouterLink>
             <RouterLink to="/student/courses" className="btn ghost sm">
               <Icon icon={FileText} size={13} />
-              مقرّراتي الدراسية
+              {MY_COURSES}
             </RouterLink>
           </>
         )}
@@ -272,12 +273,12 @@ export default function StudentResearchPage() {
               unnumbered like the dashboard's momentum strip). */}
           <SectionBar
             index="01"
-            title="بحوثي"
+            title={MY_RESEARCH}
             meta={
               papers.length > 0 ? (
                 <BarCount
                   n={papers.length}
-                  srLabel={countAr(papers.length, ['بحث واحد', 'بحثان', 'بحوث', 'بحثاً'])}
+                  srLabel={countAr(papers.length, [ONE_RESEARCH, 'بحثان', RESEARCH, 'بحثاً'])}
                 />
               ) : undefined
             }
@@ -382,7 +383,7 @@ function EmptyUpload({ onOpen }: { onOpen: () => void }) {
   return (
     <EmptyState
       icon={BookMarked}
-      title="لا بحوث بعد"
+      title={EMPTY_RESEARCH_YET}
       illustration="empty-research"
       action={
         <button type="button" className="btn primary" onClick={onOpen}>
@@ -703,7 +704,7 @@ function UploadModal({
 
         <FormField label="المقرّر المرتبط (اختياري)" id={offeringFieldId}>
           <select className="input" value={offeringId} onChange={(e) => setOfferingId(e.target.value)}>
-            <option value="">— بدون مقرّر —</option>
+            <option value="">{NO_COURSE_DASH}</option>
             {enrollmentsPending && (
               <option value="" disabled>جارٍ تحميل المقرّرات…</option>
             )}
@@ -751,7 +752,7 @@ function UploadModal({
                 disabled={isPending}
               >
                 <Icon icon={X} size={14} />
-                إزالة الملف
+                {REMOVE_FILE}
               </button>
             </div>
             {/* r164f: the staged-reuse hint — the bytes are already on
@@ -792,7 +793,7 @@ function UploadModal({
           </p>
         )}
         <button type="button" className="btn ghost" onClick={requestClose} disabled={isPending}>
-          إلغاء
+          {CANCEL}
         </button>
         <button
           type="button"

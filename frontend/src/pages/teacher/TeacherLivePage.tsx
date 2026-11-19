@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, CANCEL, LABEL_THE_COURSE, CLOSE, CREATING, CHECK_CONNECTION, PICK_FROM_CALENDAR, LIVE_NOW, UPCOMING_SESSIONS, DESC_OPTIONAL } from '../../lib/copy';
+
 /**
  * Teacher live-session control center.
  *
@@ -37,7 +39,7 @@ import { formatDate } from '../../utils/numbers';
 
 const STATUS_LABEL: Record<LiveSessionRow['status'], string> = {
   SCHEDULED: 'مجدولة',
-  LIVE: 'مباشرة الآن',
+  LIVE: LIVE_NOW,
   ENDED: 'منتهية',
   CANCELLED: 'ملغاة',
 };
@@ -148,7 +150,7 @@ export default function TeacherLivePage() {
     } catch (err) {
       // Keep the form open with the entered values; the Arabic error
       // renders inside the card so the teacher can retry.
-      setCreateError(apiErrorMessage(err, 'تحقّق من اتصالك.'));
+      setCreateError(apiErrorMessage(err, CHECK_CONNECTION));
     }
   };
 
@@ -169,7 +171,7 @@ export default function TeacherLivePage() {
           className="btn accent hr-cta"
           onClick={() => (showForm ? requestClose() : setShowForm(true))}
         >
-          <Icon icon={Plus} size={14} /> {showForm ? 'إغلاق' : 'جلسة جديدة'}
+          <Icon icon={Plus} size={14} /> {showForm ? CLOSE : 'جلسة جديدة'}
         </button>
       </header>
 
@@ -182,7 +184,7 @@ export default function TeacherLivePage() {
           <StatStrip
             ariaLabel="حالة الجلسات"
             cells={[
-              { label: 'مباشرة الآن', value: '—' },
+              { label: LIVE_NOW, value: '—' },
               { label: 'مجدولة', value: '—' },
               { label: 'منتهية', value: '—' },
             ]}
@@ -201,7 +203,7 @@ export default function TeacherLivePage() {
             ariaLabel="حالة الجلسات"
             cells={[
               {
-                label: 'مباشرة الآن',
+                label: LIVE_NOW,
                 value: live.length.toString(),
                 /* A6 P2 (22-a): keep the honest zeros, add the one-word
                    context — the bare 0/0/0 wall read as a malfunction
@@ -231,12 +233,12 @@ export default function TeacherLivePage() {
                     <Icon icon={AlertCircle} size={14} />
                     <span className="flex-1">تعذَّر تحميل مقرّراتك.</span>
                     <button type="button" className="btn ghost sm" onClick={() => offerings.refetch()}>
-                      <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+                      <Icon icon={RefreshCw} size={12} /> {RETRY_ACTION}
                     </button>
                   </div>
                 )}
                 <div className="form-grid-2">
-                  <FormField label="المقرّر">
+                  <FormField label={LABEL_THE_COURSE}>
                     <select
                       className="input"
                       value={form.offeringId}
@@ -245,7 +247,7 @@ export default function TeacherLivePage() {
                       disabled={offerings.isError}
                     >
                       <option value="">
-                        {offerings.isPending ? 'جارٍ التحميل…' : '— اختر مقرراً —'}
+                        {offerings.isPending ? LOADING : '— اختر مقرراً —'}
                       </option>
                       {offerings.data?.map((o) => (
                         <option key={o.id} value={o.id}>
@@ -268,7 +270,7 @@ export default function TeacherLivePage() {
                     id="live-when"
                     hint={form.scheduledAt
                       ? <>المحدَّد: {formatDateTimeAr(form.scheduledAt)}</>
-                      : 'اختر من التقويم.'}
+                      : PICK_FROM_CALENDAR}
                   >
                     <input
                       type="datetime-local"
@@ -312,7 +314,7 @@ export default function TeacherLivePage() {
                     maxLength={500}
                   />
                 </FormField>
-                <FormField label="وصف (اختياري)">
+                <FormField label={DESC_OPTIONAL}>
                   <textarea
                     className="input"
                     rows={3}
@@ -331,9 +333,9 @@ export default function TeacherLivePage() {
                   </div>
                 )}
                 <div className="flex justify-end gap-2">
-                  <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
+                  <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>{CANCEL}</button>
                   <button type="submit" className="btn primary" disabled={create.isPending || offerings.isError}>
-                    {create.isPending ? 'جارٍ الإنشاء…' : 'جدولة الجلسة'}
+                    {create.isPending ? CREATING : 'جدولة الجلسة'}
                   </button>
                 </div>
               </form>
@@ -349,14 +351,14 @@ export default function TeacherLivePage() {
                 {apiErrorMessage(cycle.error, 'تعذَّر تحديث حالة الجلسة.')}
               </span>
               <button type="button" className="btn ghost sm" onClick={retryCycle} disabled={cycle.isPending}>
-                <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+                <Icon icon={RefreshCw} size={12} /> {RETRY_ACTION}
               </button>
             </div>
           )}
 
           {/* Live now */}
           {live.length > 0 && (
-            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>مباشرة الآن</>} icon={Radio}>
+            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>{LIVE_NOW}</>} icon={Radio}>
               <div className="flex-col gap-2">
                 {live.map((s) => (
                   <SessionRow
@@ -374,7 +376,7 @@ export default function TeacherLivePage() {
               مجدولة` template broke at 0 and 2 — «0 جلسة مجدولة» / «2
               جلسة مجدولة»); the zero case names the reality. */}
           <Card
-            title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>جلسات قادمة</>}
+            title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>{UPCOMING_SESSIONS}</>}
             icon={Calendar}
             subtitle={scheduled.length === 0
               ? 'لا جلسات مجدولة'

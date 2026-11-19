@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
 import Flag from "lucide-react-native/icons/flag";
@@ -6,7 +6,7 @@ import Hash from "lucide-react-native/icons/hash";
 import Moon from "lucide-react-native/icons/moon";
 import Mail from "lucide-react-native/icons/mail";
 import Vibrate from "lucide-react-native/icons/vibrate";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiWithCookieCapture, ApiError, get, put } from "@/api/client";
 import { useSession, ROLE_LABELS, POSITION_LABELS, RANK_LABELS } from "@/auth/session";
@@ -26,7 +26,7 @@ import { toast } from "@/components/ui/toast";
 import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometricLockEnabled } from "@/lib/biometric";
 import type { SessionResponse } from "@/api/types";
 import Constants from "expo-constants";
-import { LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, SAVING } from "@/lib/copy";
+import {LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, SAVING, PW_NEW, PW_CONFIRM, PW_SAVE, PW_RANGE_HINT, PASSWORD_LABEL, LOGOUT_ACTION, CONFIRM_LOCK_ENABLE} from "@/lib/copy";
 
 /** /settings — the SHARED settings surface (every role). R341 M3: the
  *  30-row wall of boxed one-per-setting cards is dead — rows are grouped
@@ -90,7 +90,7 @@ export default function Settings() {
     setBioBusy(true);
     try {
       if (next) {
-        const ok = await authenticate("أكّد تفعيل القفل");
+        const ok = await authenticate(CONFIRM_LOCK_ENABLE);
         if (!ok) return; // refused → the toggle stays off
       }
       await setBiometricLockEnabled(next);
@@ -157,6 +157,29 @@ export default function Settings() {
     }
   };
 
+  /* R369 C3.1 — the capture-pipeline theme door: `madarek://settings?theme=dark`
+   * applies the preference on arrival. WHY an app-side door: the ui-screens
+   * capture flows could never drive the theme pill — maestro's tap on the
+   * Segmented's testID completes yet never fires the Pressable's onPress
+   * (three run generations of "dark" captures rendered light; the seg-tap
+   * was re-verified broken on the deterministic-flow run 44579053777 —
+   * the 02/03 before/after shots pixel-identical except the clock). A deep
+   * link is the one navigation mechanism the capture pipeline demonstrably
+   * owns. The door is idempotent (only fires when the param differs from
+   * the live preference — a user tapping the same theme just re-lands),
+   * rides the SAME applyTheme the pill uses (local set + best-effort
+   * server sync), and is guarded by a ref so re-renders can't loop. */
+  const themeParam = useLocalSearchParams<{ theme?: string }>().theme;
+  const appliedThemeParam = useRef<string | null>(null);
+  useEffect(() => {
+    const next = themeParam;
+    if (!next || (next !== "light" && next !== "dark" && next !== "system")) return;
+    if (appliedThemeParam.current === next) return;
+    appliedThemeParam.current = next;
+    if (next !== preference) void applyTheme(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themeParam]);
+
   const changeNumerals = (next: string) => {
     haptics.selection();
     setNumerals(next as typeof numerals);
@@ -165,7 +188,7 @@ export default function Settings() {
   const changePassword = async () => {
     setPwError(null);
     if (newPassword.length < 12 || newPassword.length > 72) {
-      setPwError("بين 12 و72 حرفًا.");
+      setPwError(PW_RANGE_HINT);
       return;
     }
     if (newPassword !== confirm) {
@@ -182,7 +205,7 @@ export default function Settings() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirm("");
-      toast.success("غُيّرت كلمة المرور.", "كلمة المرور");
+      toast.success("غُيّرت كلمة المرور.", PASSWORD_LABEL);
     } catch (err) {
       setPwError((err as ApiError).message ?? "تعذّر التغيير.");
     } finally {
@@ -232,7 +255,7 @@ export default function Settings() {
             </View>
             <Segmented options={NUMERALS_OPTIONS} selectedId={numerals} onSelect={changeNumerals} />
             <T variant="xs" color="faint">
-              طريقة عرض الأرقام في لوحتك ونتائجك — {`١٢٣`} بالخط العربي أو {`123`} باللاتيني.
+              أرقام لوحتك ونتائجك — {`١٢٣`} عربي أو {`123`} لاتيني.
             </T>
           </LedgerRow>
           <LedgerRow last>
@@ -241,7 +264,7 @@ export default function Settings() {
               <View style={{ flex: 1 }}>
                 <T variant="body" weight="medium">ردود اللمس</T>
                 <T variant="xs" color="muted">
-                  اهتزاز خفيف عند التفاعلات الرئيسة — يعمل على الجوال فقط.
+                  اهتزاز خفيف للتفاعلات الرئيسة.
                 </T>
               </View>
               <Button
@@ -271,7 +294,7 @@ export default function Settings() {
                       <View style={{ flex: 1 }}>
                         <T variant="body" weight="medium">{label}</T>
                         <T variant="xs" color="muted">
-                          ضروري لأمان حسابك — لا يمكن إيقافه.
+                          لأمان حسابك — لا يُوقف.
                         </T>
                       </View>
                       <Badge label="دائمًا" tone="sky" />
@@ -318,10 +341,10 @@ export default function Settings() {
               {user ? <Badge label={ROLE_LABELS[user.role] ?? user.role} tone="sky" /> : null}
             </View>
           </LedgerRow>
-          <FactRow label="المؤسّسة الحالية" value={user?.currentInstitution?.name ?? "—"} />
+          <FactRow label="المؤسّسة" value={user?.currentInstitution?.name ?? "—"} />
           <FactRow
             label="نطاق العمل"
-            value={user?.scopeFaculty ? `كلية ${user.scopeFaculty.name}` : user?.scopeFacultyId ? "كلية محددة" : "على مستوى الجامعة"}
+            value={user?.scopeFaculty ? `كلية ${user.scopeFaculty.name}` : user?.scopeFacultyId ? "كلية محددة" : "كل الجامعة"}
           />
           {user?.teacherProfile?.position ? (
             <FactRow
@@ -353,7 +376,7 @@ export default function Settings() {
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="medium">قفل التطبيق بالبصمة</T>
                   <T variant="xs" color="muted">
-                    عند التفعيل، يُطلب فتح القفل عند كل فتح بارد للتطبيق قبل عرض أي بيانات — مع رمز الجهاز كبديل دائمًا.
+                    يُطلب عند كل فتح بارد — ورمز الجهاز بديل.
                   </T>
                 </View>
                 <Button
@@ -368,20 +391,20 @@ export default function Settings() {
           ) : (
             <LedgerRow last>
               <T variant="sm" color="muted">
-                قفل التطبيق بالبصمة متاح على الأجهزة المزوّدة بمستشعر بصمة أو تعرّف على الوجه — جهازك الحالي لا يوفّره (أو لم تُسجّل بصمة في النظام).
+                يحتاج بصمة أو وجهًا مسجّلًا في النظام — غير متاح على جهازك.
               </T>
             </LedgerRow>
           )}
         </RowList>
         <Card style={{ gap: sp[10] }}>
           <Field label="كلمة المرور الحالية" value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry autoCorrect={false} />
-          <SecretField label="كلمة المرور الجديدة" value={newPassword} onChangeText={setNewPassword} hint="12 حرفًا على الأقل." />
-          <SecretField label="تأكيد كلمة المرور" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
+          <SecretField label={PW_NEW} value={newPassword} onChangeText={setNewPassword} hint="12 حرفًا على الأقل." />
+          <SecretField label={PW_CONFIRM} value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
           {pwError ? <T variant="sm" color="danger">{pwError}</T> : null}
           <T variant="xs" color="faint">
-            تغيير كلمة المرور ينهي جلساتك على جميع الأجهزة الأخرى.
+            التغيير يُنهي جلساتك على بقية الأجهزة.
           </T>
-          <Button label={busy ? SAVING : "حفظ كلمة المرور"} onPress={changePassword} loading={busy} />
+          <Button label={busy ? SAVING : PW_SAVE} onPress={changePassword} loading={busy} />
         </Card>
       </View>
 
@@ -414,7 +437,7 @@ export default function Settings() {
       <View style={{ gap: sp[8] }}>
         <GroupHeader index={6} title="الجلسة" />
         <Button
-          label="تسجيل الخروج"
+          label={LOGOUT_ACTION}
           kind="danger"
           onPress={() => {
             haptics.notify("warning");

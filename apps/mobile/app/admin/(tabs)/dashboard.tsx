@@ -28,7 +28,7 @@ import {
   PaperStatusChip,
   type PaperRow,
 } from "@/features/governance/components";
-import { APPEARS_AFTER_FIRST_UPLOAD, FEEDBACK } from "@/lib/copy";
+import {APPEARS_AFTER_FIRST_UPLOAD, FEEDBACK, NO_PAPERS_YET} from "@/lib/copy";
 
 /** (tabs) Admin dashboard — «لوحة المسجل العام» (web AdminDashboardPage parity).
  *  Metric hierarchy: ONE hero (students) + supporting tiles — not a flat grid.
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
             لوحة {ROLE_LABELS[user?.role ?? "ADMIN"] ?? "المسجل العام"}
           </T>
           <T variant="body" color="muted">
-            إحصائيات حيّة عن طلاب وأساتذة المنصّة.
+            إحصائيات حيّة عن الطلاب والأساتذة.
           </T>
         </Animated.View>
 
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
             hasNextPage={papers.hasNextPage}
             loadMoreError={papers.loadMoreError}
             onRetryLoadMore={papers.retryLoadMore}
-            emptyTitle="لا بحوث بعد"
+            emptyTitle={NO_PAPERS_YET}
             emptyMessage={APPEARS_AFTER_FIRST_UPLOAD}
             loadingSlot={
               <View style={{ gap: sp[8], paddingTop: sp[8] }}>
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
 
         <Animated.View entering={entering(4)}>
           <T variant="xs" color="faint" style={{ paddingBottom: sp[8] }}>
-            الكلّيات والأقسام في تبويب «الكلّيات» · الطلاب والأساتذة والتقارير في تبويبات الشريط السفلي.
+            الكلّيات والأقسام في تبويب «الكلّيات» — البقية في الشريط.
           </T>
         </Animated.View>
       </View>

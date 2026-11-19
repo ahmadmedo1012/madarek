@@ -94,7 +94,7 @@ export default function TeacherSchedule() {
                           ? ""
                           : it.enrolled === 0
                             ? "لا طلاب مسجَّلين"
-                            : arCount(it.enrolled, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
+                            : arCount(it.enrolled, ["طالب", "طالبان", "طلاب", "طالباً"])}
                       </T>
                     </View>
                     <T variant="sm" color="secondary" maxFontSizeMultiplier={1.4}>

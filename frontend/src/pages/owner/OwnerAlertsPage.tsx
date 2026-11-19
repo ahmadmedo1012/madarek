@@ -1,3 +1,5 @@
+import { RETRY_ACTION, DASH_OWNER, ACTIVITY_LOG, LIVE_MONITORING, PENDING_DATA, CRITICAL_ALERTS, NOTHING_CRITICAL, SYSTEM_OPS, OPEN_ALERTS, THE_OPEN_ALERTS } from '../../lib/copy';
+
 import { CheckCircle2, Activity, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
@@ -144,7 +146,7 @@ export function OwnerAlertsPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="التنبيهات التشغيليّة"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'التنبيهات التشغيليّة' }]}
+        breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: 'التنبيهات التشغيليّة' }]}
         /* R341 D11: the [11] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
         index="11"
@@ -155,8 +157,8 @@ export function OwnerAlertsPage() {
          * their alert rows. */
         actions={(
           <>
-            <Link to="/owner/realtime" className="btn accent sm">المراقبة الحيّة</Link>
-            <Link to="/owner/system" className="btn ghost sm">النظام والتشغيل</Link>
+            <Link to="/owner/realtime" className="btn accent sm">{LIVE_MONITORING}</Link>
+            <Link to="/owner/system" className="btn ghost sm">{SYSTEM_OPS}</Link>
           </>
         )}
       />
@@ -169,21 +171,21 @@ export function OwnerAlertsPage() {
         ariaLabel="مؤشرات التنبيهات التشغيليّة"
         cells={[
           {
-            label: 'تنبيهات مفتوحة',
+            label: OPEN_ALERTS,
             value: kpiValue(openTotal),
-            trend: kpiKnown ? (openTotal === 0 ? 'لا شيء مفتوحًا' : 'تستوجب مراجعة') : 'بانتظار البيانات',
+            trend: kpiKnown ? (openTotal === 0 ? 'لا شيء مفتوحًا' : 'تستوجب مراجعة') : PENDING_DATA,
             trendTone: kpiKnown ? (openTotal > 0 ? 'down' : 'up') : 'flat',
           },
           {
-            label: 'تنبيهات حرجة',
+            label: CRITICAL_ALERTS,
             value: kpiValue(criticalCount),
-            trend: kpiKnown ? (criticalCount === 0 ? 'لا شيء حرجًا' : 'تستوجب قرارًا الآن') : 'بانتظار البيانات',
+            trend: kpiKnown ? (criticalCount === 0 ? NOTHING_CRITICAL : 'تستوجب قرارًا الآن') : PENDING_DATA,
             trendTone: kpiKnown ? (criticalCount > 0 ? 'down' : 'up') : 'flat',
           },
           {
             label: 'تحذيرات',
             value: kpiValue(warningCount),
-            trend: kpiKnown ? (warningCount === 0 ? 'لا تحذيرات' : 'تحتاج متابعة') : 'بانتظار البيانات',
+            trend: kpiKnown ? (warningCount === 0 ? 'لا تحذيرات' : 'تحتاج متابعة') : PENDING_DATA,
             trendTone: kpiKnown ? (warningCount > 0 ? 'down' : 'up') : 'flat',
           },
         ]}
@@ -192,7 +194,7 @@ export function OwnerAlertsPage() {
       {/* r299: «التنبيهات المفتوحة» — the KPI above says «مفتوحة», the
           dashboard band says «مفتوحة»; one console, one word for one
           concept («نشطة» described a different state on other pages). */}
-      <Card title="التنبيهات المفتوحة">
+      <Card title={THE_OPEN_ALERTS}>
         {alertsQuery.isPending ? (
           <AlertListSkeleton />
         ) : alertsQuery.isError ? (
@@ -204,7 +206,7 @@ export function OwnerAlertsPage() {
             action={(
               <Link to="/owner/activity" className="btn ghost sm">
                 <Icon icon={Activity} size={12} />
-                سجلّ النشاط
+                {ACTIVITY_LOG}
               </Link>
             )}
           />
@@ -256,7 +258,7 @@ export function OwnerAlertsPage() {
                         disabled={resolveAlert.isPending}
                       >
                         <Icon icon={RefreshCw} size={12} />
-                        إعادة المحاولة
+                        {RETRY_ACTION}
                       </button>
                     </div>
                   )}

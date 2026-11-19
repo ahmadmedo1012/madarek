@@ -1,4 +1,4 @@
-/* ==================================================================
+/* ===
    MADAREK — Admin workspace sheet (admin.css)
    ------------------------------------------------------------------
    R304 (workstream 4D — administration & owner workspaces): the
@@ -6,21 +6,21 @@
    sheet carries the family's page-scoped layer:
 
    §1  ws-table — the workspace table family (NEW): dense rosters
-       with identity-first cells, quiet headers and — on phones —
-       row summaries instead of scaled-down wide tables. Opt-in per
-       table (`ws-table`); teacher/quality sheets never render it,
-       so the shared .table canon is untouched.
+    with identity-first cells, quiet headers and — on phones —
+    row summaries instead of scaled-down wide tables. Opt-in per
+    table (`ws-table`); teacher/quality sheets never render it,
+    so the shared .table canon is untouched.
    §2  The rosters toolbar (.admin-students-*) — PRESERVED verbatim
-       in behavior; borrowed by QualityPages and the owner
-       institution detail (shared, never broken here).
+    in behavior; borrowed by QualityPages and the owner
+    institution detail (shared, never broken here).
    §3  The permission-matrix domain groups (.govx-*) + the
-       SplitView row-select plate (r250/r251/r299) — PRESERVED.
+    SplitView row-select plate (r250/r251/r299) — PRESERVED.
    §4  The settings rows (.settings-*) — PRESERVED.
    §5  .spin — the sync in-flight motion (r299, contract-pinned:
-       motion-spin + duration token + --ease-linear).
+    motion-spin + duration token + --ease-linear).
    §6  Workspace refinements: the faculty card's decorative hover
-       lift quiets to a surface step (an admin console lists, it
-       does not bounce), scoped to the pages this sheet serves.
+    lift quiets to a surface step (an admin console lists, it
+    does not bounce), scoped to the pages this sheet serves.
 
    Consumers: AdminPages (faculties/courses/reports), AdminExtraPages
    (students/digital/settings), AdminGovernancePages (teachers +
@@ -28,13 +28,14 @@
    OwnerInstitutionDetailPage + OwnerInstitutionsPage (R304 — the
    workspace tables ride the same family).
    Layer: pages (same as every page-scoped sheet).
-   ================================================================== */
+   ===
+*/
 
 @layer pages {
 
-/* ════════════════════════════════════════════════════════════════
+/* ═══
    §1 · ws-table — the workspace table family (R304)
-   ════════════════════════════════════════════════════════════════
+   ═══
    The canonical .table (components.css) already owns the surface:
    hairline rows, surface-2 header band, hover tint. What the
    workspace adds is DENSITY and IDENTITY discipline:
@@ -42,16 +43,18 @@
    · .ws-table        — the opt-in table (rosters, registers, consoles)
    · .ws-table th     — the 13px Arabic-floor header voice, tightened
    · .ws-id           — the identity cell (the row's name): semibold
-                        ink over its quiet meta line; on phones it
-                        becomes the summary card's title (label hidden,
-                        hairline under) so the card reads name-first.
+            ink over its quiet meta line; on phones it
+            becomes the summary card's title (label hidden,
+            hairline under) so the card reads name-first.
    · .ws-meta         — the secondary line under an identity cell.
 
-   Everything is token-only, logical (RTL) and hover-guarded. */
+   Everything is token-only, logical (RTL) and hover-guarded.
+*/
 
 .ws-table thead th {
   padding: var(--sp-2-5) var(--sp-4);
-  font-size: max(var(--fs-xxs), 13px); /* 13px Arabic floor (1A) */
+  font-size: max(var(--fs-xxs), 13px); /* 13px Arabic floor (1A)
+*/
   font-weight: var(--fw-semibold);
   white-space: nowrap;
 }
@@ -60,7 +63,8 @@
   padding-block: var(--sp-2-5);
 }
 
-/* Identity cell — the row reads by its name first. */
+/* Identity cell — the row reads by its name first.
+*/
 .ws-table td.ws-id {
   font-weight: var(--fw-semibold);
   color: var(--text);
@@ -73,14 +77,16 @@
 }
 
 /* Numeric emphasis inside ws-table keeps the canonical centered
-   .admin-table-num alignment; only the tabular figures are added. */
+   .admin-table-num alignment; only the tabular figures are added.
+*/
 .ws-table td.admin-table-num,
 .ws-table th.admin-table-num {
   font-variant-numeric: tabular-nums;
 }
 
 /* Action clusters keep the family's always-visible grammar (the
-   hover-reveal .table-row-actions stays for icon-only clusters). */
+   hover-reveal .table-row-actions stays for icon-only clusters).
+*/
 .ws-table td .flex { min-inline-size: 0; }
 
 /* ── Phones: row summaries, not a scaled-down grid ────────────────
@@ -90,7 +96,8 @@
    the row becomes a quiet column), its attr() label hides, the name
    sits strong with a hairline under it, and the rest of the fields
    read as the label/value list the canon already paints. Actions
-   land as the card's footer row. */
+   land as the card's footer row.
+*/
 @media (max-width: 640px) {
   .ws-table.tbl-stack tr { display: flex; flex-direction: column; }
   .ws-table.tbl-stack td.ws-id {
@@ -104,16 +111,7 @@
   .ws-table.tbl-stack td:last-child { padding-block-start: var(--sp-2); }
 }
 
-/* ════════════════════════════════════════════════════════════════
-   §2 · The rosters toolbar (.admin-students-*) — PRESERVED
-   ════════════════════════════════════════════════════════════════ */
 
-.admin-students-toolbar {
-  display: flex;
-  gap: var(--sp-3);
-  margin-block-end: var(--sp-3);
-  flex-wrap: wrap;
-}
 .admin-students-search {
   position: relative;
   flex: 1 1 240px;
@@ -124,26 +122,33 @@
   border-radius: var(--r-md);
   background: var(--surface-2);
   /* R313 (WP-F · D16): the field's resting hairline is the strong
-     #B3B3AF rung — the reference's own input thread. */
+   #B3B3AF rung — the reference's own input thread.
+*/
   border: 1px solid var(--rule);
   color: var(--text-muted);
+  min-block-size: 36px; /* r294: the pill owns the surface — matches the 36px select. R369-C (C4.2): folded home from the duplicate block below.
+*/
 }
 .admin-students-search:focus-within {
   /* R313 (WP-F · D16): focus = the reference's #ED4C1F signal border,
-     no halo (mirrors components.css's input focus; no token seat
-     exists yet). */
-  border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet) */
+   no halo (mirrors components.css's input focus; no token seat
+   exists yet).
+*/
+  border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet)
+*/
 }
 .admin-students-search input {
   /* r294 (polish v8 fold): the bare-input reset comes home — the
-     wrapper is the pill (border/bg/halo on .admin-students-search),
-     so the input itself is bare. Colleges keeps flow, family, size
-     and ink.
-     21-c (A10 P1 cross-ref): 13px → 16px — iOS Safari zooms the
-     viewport on any <16px input focus. */
+   wrapper is the pill (border/bg/halo on .admin-students-search),
+   so the input itself is bare. Colleges keeps flow, family, size
+   and ink.
+   21-c (A10 P1 cross-ref): 13px → 16px — iOS Safari zooms the
+   viewport on any <16px input focus.
+*/
   flex: 1 1 auto;
   font-family: inherit;
-  font-size: 16px; /* type-gate: allow — iOS-zoom floor (Safari zooms <16px inputs on focus; fix 21-c) */
+  font-size: max(16px, var(--fs-body-lg)); /* R369-C follow-up: the iOS-zoom floor rides the ladder (see components.css)
+*/
   color: var(--text);
   background: transparent;
   border: 0;
@@ -163,23 +168,29 @@
   border-radius: var(--r-md);
   background: var(--surface-2);
   /* R313 (WP-F · D16): the field's resting hairline is the strong
-     #B3B3AF rung. */
+   #B3B3AF rung.
+*/
   border: 1px solid var(--rule);
   color: var(--text);
-  /* 21-c (A10 P1 cross-ref): 13px → 16px iOS-zoom floor. */
-  font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
+  /* 21-c (A10 P1 cross-ref): 13px → 16px iOS-zoom floor.
+*/
+  font-size: max(16px, var(--fs-body-lg)); /* R369-C follow-up: the iOS-zoom floor rides the ladder (see components.css)
+*/
   font-family: inherit;
 }
 .admin-students-input:focus {
   outline: none;
   /* R313 (WP-F · D16): focus = the reference's #ED4C1F signal border,
-     no halo (mirrors components.css's input focus; no token seat
-     exists yet). */
-  border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet) */
+   no halo (mirrors components.css's input focus; no token seat
+   exists yet).
+*/
+  border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet)
+*/
 }
 
 /* r299: the -name content class stays (the papers register's cell
-   anatomy; the students roster's avatar+name pair). */
+   anatomy; the students roster's avatar+name pair).
+*/
 .admin-students-name {
   display: inline-flex;
   align-items: center;
@@ -191,15 +202,18 @@
    .admin-students-input rule) leaves the pill content-sized (~20px)
    next to the 36px faculty select. Size the PILL — the wrapper owns
    the surface — and let the bare input fill it (0,2,0 out-specifies
-   the polish reset's 0,1,1 across the same layer). */
-.admin-students-search { min-block-size: 36px; }
+   the polish reset's 0,1,1 across the same layer). R369-C (C4.2): the
+   sizing note moved HOME (min-block-size lives in the base block
+   above — one owner per selector).
+*/
 .admin-students-search .admin-students-input {
   align-self: stretch;
   padding-inline: 0;
 }
 
 /* Mobile touch floor (craft floor: ≥44px) for the students toolbar
-   (the pill + the 36px select). */
+   (the pill + the 36px select).
+*/
 @media (max-width: 640px) {
   .admin-students-input,
   .admin-students-search { min-block-size: 44px; }
@@ -214,7 +228,8 @@
    R304: the select also gets a label-safe cap — a <select>'s auto
    width follows its LONGEST option (a 25-faculty roster pushes it
    ~600px wide), which alone broke the rail onto three wrapped lines.
-   The shared .filter-bar budget caps selects for the same reason. */
+   The shared .filter-bar budget caps selects for the same reason.
+*/
 .pf-filterbar .admin-students-input {
   block-size: 44px;
   min-block-size: 44px;
@@ -226,7 +241,8 @@
    measure — its roster toolbar grow (flex: 1 1 240px) filled the
    whole filters slot and pushed the select/create onto their own
    wrapped lines; bounded, search → filter → action read on one line
-   at desktop and wrap as a group on narrow screens. */
+   at desktop and wrap as a group on narrow screens.
+*/
 .pf-filterbar .admin-students-search {
   flex: 0 1 360px;
   min-inline-size: 220px;
@@ -237,15 +253,17 @@
    (the wrapping flex container's intrinsic-size quirk), internally
    wrapping the select beneath the search while the bar still had
    free space. Growing the slot lets its children pack one line and
-   pins the trailing action to the rail's far edge. */
+   pins the trailing action to the rail's far edge.
+*/
 .pf-filterbar .pf-filterbar-filters {
   flex: 1 1 auto;
   min-inline-size: 0;
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ═══
    §3 · The permission-matrix domain groups (.govx-*) — PRESERVED
-   ════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 .govx-matrix {
   display: flex;
@@ -266,7 +284,8 @@
   flex-wrap: wrap;
   padding-block-end: var(--sp-2);
   /* R313 (WP-F · D16): header dividers ride the structural #B3B3AF
-     rung (WP-D's table grammar: فاصل ترويسة #B3B3AF). */
+   rung (WP-D's table grammar: فاصل ترويسة #B3B3AF).
+*/
   border-block-end: 1px solid var(--rule);
 }
 .govx-group-title {
@@ -276,10 +295,10 @@
   color: var(--text);
 }
 .govx-group-count {
-  font-size: var(--fs-xxs);
   color: var(--text-muted);
   /* 13px Arabic floor (1A): the metadata line never drops below the
-     floor even though fs-xxs is its nominal step. */
+   floor even though fs-xxs is its nominal step.
+*/
   font-size: max(var(--fs-xxs), 13px);
 }
 .govx-rows {
@@ -295,7 +314,8 @@
    the accessible name is the teacher's name, and :has() marks the
    row selected (the same idiom owner.css already uses).
    r299: the position context is SCOPED to the rows that carry the
-   plate (.pf-row is patterns-owned and rendered app-wide). */
+   plate (.pf-row is patterns-owned and rendered app-wide).
+*/
 .pf-row:has(.govx-row-select) { position: relative; }
 .govx-row-select {
   position: static;
@@ -326,9 +346,10 @@
   color: var(--accent-ink, var(--accent));
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ═══
    §4 · The settings rows (.settings-*) — PRESERVED
-   ════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 .settings-row {
   display: flex;
@@ -337,7 +358,8 @@
   gap: var(--sp-3);
   padding: var(--sp-3) 0;
   /* R313 (WP-F · D16): solid hairline row rule (#E0E0DA) — the dashed
-     settings idiom retired (the reference draws solid 1px lines only). */
+   settings idiom retired (the reference draws solid 1px lines only).
+*/
   border-block-end: 1px solid var(--border);
 }
 .settings-row:last-child { border-block-end: 0; }
@@ -378,28 +400,30 @@
   .settings-links a:hover { background: var(--surface-2); }
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ═══
    §5 · .spin — the sync in-flight motion (contract-pinned)
-   ════════════════════════════════════════════════════════════════
+   ═══
    The trigger button's RefreshCw while a run pends + the RUNNING
    badge in the history. The keyframes (motion-spin) are global/eager
    (motion.css), the duration/easing ride the motion tokens, and
-   base.css's reduced-motion belt kills it under RM. */
+   base.css's reduced-motion belt kills it under RM.
+*/
 
 .spin {
   display: inline-block;
   animation: motion-spin var(--motion-duration-stat) var(--ease-linear) infinite;
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ═══
    §6 · Workspace refinements (R304)
-   ════════════════════════════════════════════════════════════════
+   ═══
    The faculty directory card (components.css owns the anatomy) —
    the console quiets its decorative hover: surface step + hairline,
    no lift, no premium shadow. An administration surface lists; it
    does not bounce. Scoped to this sheet's pages (the only
    .admin-faculty-card consumers are the faculties console and the
-   owner institution detail — both load admin.css). */
+   owner institution detail — both load admin.css).
+*/
 
 .admin-faculty-card {
   box-shadow: none;
@@ -415,10 +439,12 @@
 /* Faculty header chevron — the collapse affordance keeps its 44px
    touch discipline via the card head's own padding (the head button
    fills the card); the departments grid stays the components
-   family's. (No new rules — this banner documents the decision.) */
+   family's. (No new rules — this banner documents the decision.)
+*/
 
 /* The create-institution band on the owner console borrows this
    sheet (see owner.css §R304); the form keeps its 480px measure and
-   the fields ride the FormField canon — nothing to add here. */
+   the fields ride the FormField canon — nothing to add here.
+*/
 
 }

@@ -1,0 +1,64 @@
+Applications Graphics Acceleration Info:
+Uptime: 140149 Realtime: 140149
+
+** Graphics info for pid 5670 [ly.madarek.mobile] **
+
+Stats since: 74479053585ns
+Total frames rendered: 401
+Janky frames: 330 (82.29%)
+Janky frames (legacy): 371 (92.52%)
+50th percentile: 69ms
+90th percentile: 125ms
+95th percentile: 150ms
+99th percentile: 250ms
+Number Missed Vsync: 167
+Number High input latency: 136
+Number Slow UI thread: 185
+Number Slow bitmap uploads: 19
+Number Slow issue draw commands: 323
+Number Frame deadline missed: 330
+Number Frame deadline missed (legacy): 304
+HISTOGRAM: 5ms=0 6ms=0 7ms=1 8ms=0 9ms=0 10ms=1 11ms=0 12ms=0 13ms=0 14ms=1 15ms=0 16ms=16 17ms=3 18ms=3 19ms=2 20ms=0 21ms=2 22ms=1 23ms=0 24ms=0 25ms=1 26ms=0 27ms=1 28ms=0 29ms=1 30ms=2 31ms=2 32ms=19 34ms=7 36ms=6 38ms=5 40ms=7 42ms=5 44ms=15 46ms=8 48ms=23 53ms=17 57ms=19 61ms=14 65ms=17 69ms=20 73ms=19 77ms=13 81ms=19 85ms=15 89ms=8 93ms=6 97ms=6 101ms=11 105ms=10 109ms=8 113ms=9 117ms=10 121ms=2 125ms=7 129ms=5 133ms=3 150ms=19 200ms=4 250ms=4 300ms=1 350ms=2 400ms=0 450ms=0 500ms=1 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0
+50th gpu percentile: 4950ms
+90th gpu percentile: 4950ms
+95th gpu percentile: 4950ms
+99th gpu percentile: 4950ms
+GPU HISTOGRAM: 1ms=0 2ms=0 3ms=0 4ms=0 5ms=1 6ms=0 7ms=0 8ms=6 9ms=1 10ms=0 11ms=5 12ms=3 13ms=4 14ms=5 15ms=4 16ms=17 17ms=6 18ms=4 19ms=4 20ms=10 21ms=8 22ms=8 23ms=8 24ms=10 25ms=8 4950ms=289
+
+Pipeline=Skia (OpenGL)
+Memory policy:
+  Max surface area: 2527200
+  Max resource usage: 121.31MB (x48)
+  Background retention: 50% (altUiHidden = true)
+  GPU Context timeout: 10
+Contexts: 1 (stopped = 0)
+CPU Caches:
+  Glyph Cache: 1.49 MB (1 entry)
+  Glyph Count: 101 
+Total CPU memory usage:
+  1563347 bytes, 1.49 MB (0.00 bytes is purgeable)
+GPU Caches:
+  Other:
+    Other: 98.19 KB (1 entry)
+  Image:
+    Texture: 6.69 MB (68 entries)
+  Scratch:
+    RenderTarget: 55.66 MB (4 entries)
+    Texture: 23.47 MB (39 entries)
+    Buffer Object: 238.00 KB (7 entries)
+Total GPU memory usage:
+  90326600 bytes, 86.14 MB (83.96 MB is purgeable)
+
+Profile data in ms:
+
+	ly.madarek.mobile/ly.madarek.mobile.MainActivity/android.view.ViewRootImpl@eaf7dfa (visibility=0)
+View hierarchy:
+
+  ly.madarek.mobile/ly.madarek.mobile.MainActivity/android.view.ViewRootImpl@eaf7dfa
+  55 views, 111.75 kB of render nodes
+
+
+Total ViewRootImpl   : 1
+Total attached Views : 55
+Total RenderNode     : 111.75 kB (used) / 392.32 kB (capacity)
+

@@ -1,3 +1,5 @@
+import { LABEL_TODAY, DAYS, NOUN_DAY_ACC, EXAMS, HOMEWORK, TODAY_COMMITMENTS } from '../../lib/copy';
+
 import { useMemo, useState, type ComponentProps } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -61,8 +63,8 @@ import '../../styles/student/academic-pages.css';
 
 const KIND_LEGEND: Array<{ kind: CalendarEventKind; label: string }> = [
   { kind: 'class', label: 'حصص ومحاضرات' },
-  { kind: 'assignment', label: 'واجبات' },
-  { kind: 'exam', label: 'اختبارات' },
+  { kind: 'assignment', label: HOMEWORK },
+  { kind: 'exam', label: EXAMS },
   { kind: 'live', label: 'بث مباشر' },
 ];
 
@@ -384,7 +386,7 @@ export default function StudentCalendarPage() {
            الكامل» ghost). */
         actions={
           <Link to="/student/dashboard" className="btn accent sm">
-            التزامات اليوم
+            {TODAY_COMMITMENTS}
           </Link>
         }
       />
@@ -402,7 +404,7 @@ export default function StudentCalendarPage() {
           monthEventCount > 0 ? (
             <BarCount
               n={monthEventCount}
-              srLabel={countAr(monthEventCount, ['يوم', 'يومان', 'أيام', 'يوماً'])}
+              srLabel={countAr(monthEventCount, ['يوم', 'يومان', DAYS, NOUN_DAY_ACC])}
             />
           ) : undefined
         }
@@ -438,7 +440,7 @@ export default function StudentCalendarPage() {
                 onClick={goToday}
                 aria-label="العودة إلى اليوم"
               >
-                اليوم
+                {LABEL_TODAY}
               </button>
             )}
             <button

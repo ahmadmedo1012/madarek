@@ -36,7 +36,7 @@ import { heronEase } from "@/design/tokens.generated";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { T } from "./text";
 import { Button } from "./pressables";
-import { RETRY } from "@/lib/copy";
+import {RETRY, LOADING} from "@/lib/copy";
 
 const EASE = Easing.bezier(heronEase[0], heronEase[1], heronEase[2], heronEase[3]);
 const CYCLE = 520;
@@ -215,7 +215,7 @@ export function resolveEntryDestination(
 const SLOW_AFTER_MS = 6000;
 
 export function Boot({
-  label = "جارٍ التحميل…",
+  label = LOADING,
   slowLabel = "الخادم يستيقظ… لحظات ويبدأ العمل.",
   onRetry,
   size = 120,

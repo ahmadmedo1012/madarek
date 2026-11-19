@@ -232,7 +232,9 @@ describe('R305-A8 marker — governance module roots', () => {
     renderWithProviders(<AdminPermissionsPage />, '/admin/permissions/u1');
     expect(await screen.findByRole('heading', { level: 1, name: /أمينة المشرفة/ })).toBeInTheDocument();
     const root = scopedRoot();
-    expect(root).toContainElement(screen.getByText('الصلاحيات')); // R355 copy diet: card title tightened
+    // getAllByText throws when none exist → the array is non-empty; the
+    // non-null index follows the TEST_ACCOUNTS[0]! precedent (r320).
+    expect(root).toContainElement(screen.getAllByText('الصلاحيات')[0]!); // R369: the PageHeader breadcrumb 'الصلاحيات' (df57897a) twins the Card title — both inside the module root
   });
 });
 
@@ -287,7 +289,7 @@ describe('R305-A8 danger hierarchy — destructive verbs ride the new vocabulary
     });
 
     renderWithProviders(<AdminPermissionsPage />, '/admin/permissions/u1');
-    expect(await screen.findByText('الصلاحيات')).toBeInTheDocument(); // R355 copy diet: card title tightened
+    expect(await screen.findAllByText('الصلاحيات')).not.toHaveLength(0); // R369: the breadcrumb + the Card title twins — both render
 
     // The matrix structure is untouched — six domain groups of perm rows.
     expect(document.querySelector('.govx-matrix')).not.toBeNull();

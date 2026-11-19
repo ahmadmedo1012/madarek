@@ -36,7 +36,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { AssignSubmitSheet, type SubmitTarget } from "@/features/student/components";
-import { QUIZ_LABEL } from "@/lib/copy";
+import {QUIZ_LABEL, APPEARS_ONCE_ADDED} from "@/lib/copy";
 
 const ASSIGNMENT_KIND_LABEL: Record<string, string> = {
   HOMEWORK: "واجب",
@@ -79,8 +79,12 @@ export function assignmentStatus(
   return "pending";
 }
 
+/** Counted-grammar nouns — shared by the countdown branches (R369 C4.1). */
+const DAY_COUNT: [string, string, string, string] = ["يوم", "يومين", "أيام", "يوماً"];
+const HOUR_COUNT: [string, string, string, string] = ["ساعة", "ساعتين", "ساعات", "ساعة"];
+
 /**
- * Due-date countdown — «متبقٍ ٥ ساعات» / «متبقٍ يومان» / «متأخر ٤ أيام».
+ * Due-date countdown — «متبقٍ ٥ ساعات» / «متبقٍ يومين» / «متأخر ٤ أيام».
  * Null when there is no due date. Western digits (latn) per numerals
  * policy; pure function of (dueAt, now).
  */
@@ -95,13 +99,13 @@ export function dueCountdown(dueAt: string | null | undefined, now: number): str
   const days = Math.round(hours / 24);
   if (days >= 1) {
     return overdue
-      ? countAr(days, ["متأخر يوم واحد", "متأخر يومان", "متأخر أيام", "متأخر يومًا"])
-      : countAr(days, ["متبقٍ يوم واحد", "متبقٍ يومان", "متبقٍ أيام", "متبقٍ يومًا"]);
+      ? `متأخر ${countAr(days, DAY_COUNT)}`
+      : `متبقٍ ${countAr(days, DAY_COUNT)}`;
   }
   if (hours >= 1) {
     return overdue
-      ? countAr(hours, ["متأخر ساعة واحدة", "متأخر ساعتان", "متأخر ساعات", "متأخر ساعةً"])
-      : countAr(hours, ["متبقية ساعة واحدة", "متبقية ساعتان", "متبقية ساعات", "متبقية ساعةً"]);
+      ? `متأخر ${countAr(hours, HOUR_COUNT)}`
+      : `متبقية ${countAr(hours, HOUR_COUNT)}`;
   }
   const minutes = Math.max(1, Math.round(absMs / 60_000));
   return overdue
@@ -169,12 +173,12 @@ export default function AssignmentsScreen() {
               }
             />
             <T variant="sm" color="muted">
-              لعرض سجل تكاليف كل مقرر وتقييماتها، افتح صفحة المقرّر من مقرّراتي.
+              التقييمات في صفحة المقرّر من «مقرّراتي».
             </T>
           </View>
         }
         emptyTitle="لا تكاليف بانتظارك"
-        emptyMessage="تظهر فور إضافتها."
+        emptyMessage={APPEARS_ONCE_ADDED}
         contentPadding={{ horizontal: 16, top: 12, bottom: 24 }}
         extraData={now}
       />
