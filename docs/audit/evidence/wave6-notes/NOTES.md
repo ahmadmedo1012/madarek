@@ -222,3 +222,86 @@ admin (16 routes), owner (15), quality (10), exams (3 seats). Wave 2 also
 inherits: the `.tpg-` dark ember fix (quality/exams import teacher/heron.css)
 and the §9 night-pole recipe as the pattern for any deep-band children their
 pages mount.
+
+---
+
+# Wave 6 notes — r368 Task 6-b (wave 2) session log
+
+Worktree `/home/z/wt/r368-t6`, branch `wip/r368-t6` (base `c0e3fbef` — wave 1
+landed). Instruments: `scripts/conformance/pages-{owner,quality,registrar,admin}.mjs
+--url http://localhost:5306/` (own vite `5306 --strictPort`, hermetic seeded
+session + mock transport — no backend). All numbers below are MY OWN runs from
+this tree. `PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers` for every browser run.
+
+## N7 · Owner family (14 mounted routes) — baseline matrix + one ink fix
+
+**Baseline (pre-fix, committed with this note:
+`baselines/pages-owner-before-{light,dark}-3bp-W2.json`):** 14 routes ×
+{1440,768,390} × {light,dark} = 84 cells, worst cell **98.4** — every cell ≥
+floor 90 with no work done. The r305/r341 grammar (`styles/owner.css` +
+`styles/shared/heron-admin-owner.css`, the `.r305ao` scoped sheet) already
+carries the family. Commands:
+
+```
+node scripts/conformance/pages-owner.mjs --url http://localhost:5306/ \
+  --routes /owner/dashboard,/owner/realtime,/owner/users,/owner/institutions,\
+/owner/institutions/zu,/owner/activity,/owner/content,/owner/system,\
+/owner/education,/owner/ai,/owner/notifications,/owner/alerts,/owner/governance,\
+/owner/feedback --bps 1440,768,390           # light, then again --dark
+```
+
+| route | light 1440/768/390 | dark 1440/768/390 | note |
+|---|---|---|---|
+| dashboard | 100/99.8/100 | 100/99.8/100 | |
+| realtime | 100/99.5/100 | 100/99.5/100 | |
+| users | 98.8/98.6/100 | 98.8/98.6/100 | typeRungs 93/92 @1440/768 — avatar monograms (N6 class) |
+| institutions | 100/99.7/100 | 100/99.7/100 | |
+| institutions/zu | 100/99.8/100 | 100/99.8/100 | |
+| activity | 100/99.7/100 | 100/99.7/100 | |
+| content | 100/99.5/100 | 100/99.5/100 | |
+| system | 99.7/99.4/99.7 | 100/99.7/100 | **light darkInk 98 — the fix below** |
+| education | 100/99.8/100 | 100/99.8/100 | |
+| ai | 100/99.8/100 | 100/99.8/100 | |
+| notifications | 99.5/**98.4**/99.4 | 99.5/**98.4**/99.4 | shared AlertsPage (W1 file) @768 typeRungs 90 |
+| alerts | 100/99.6/100 | 100/99.6/100 | |
+| governance | 100/99.8/100 | 100/99.8/100 | |
+| feedback | 100/99.7/100 | 100/99.7/100 | |
+
+**Fix W2-O1 — the alert counter on the rose fill (light, 4.42:1).**
+`/owner/system` light: the page-title alert counter (`.owner-badge-counter`,
+OwnerSystemPage) paints `--warm-ink` #191918 on `--danger` #E5481F — the T3-F4
+comment predates the R366 danger re-tune and its 5.51:1 math no longer holds:
+**measured 4.42:1**, darkInk axis 98. Fix: the tokens' own label-on-danger seat
+`--danger-fg` (#101010, 4.78:1 — tokens.css documents this exact pair), one
+declaration in `styles/owner.css` (owner-exclusive class; caller grep: only
+OwnerSystemPage renders it). Dark unchanged (night `--danger-fg ≡ --warm-ink`,
+7.81:1 documented). Re-measured: system light 100/99.7/100 (darkInk 100 all
+bps), dark 100/99.7/100 — darkInk 100 both themes. Full post-fix matrices:
+`baselines/pages-owner-after-{light,dark}-3bp-W2.json` (family worst cell
+unchanged at 98.4 — the shared AlertsPage @768 cell; every W2-owned cell
+≥ 98.6).
+
+**Axe (post-fix):** `/home/z/t6b/axe-owner.mjs` (the instrument's hermetic
+OWNER session + axe-core 4.10.3 injected; script outside the repo, wave-1
+`t6a-shell-audit.mjs` precedent) on 6 representative routes × {1440,390} ×
+{light,dark} = 24 audit cells — **critical/serious zero everywhere**
+(`screenshots/audit-OWNER.json`).
+
+**Overflow probe:** all 14 routes × {1440,768,390} — horizontal overflow zero
+(`screenshots/overflow-OWNER.json`). VLM spot-check on the fixed seat
+(`screenshots/vlm-owner-system-light.json`): layout coherent; its "prefer
+white digits" note is REJECTED by measurement — white on #E5481F ≈ 3.9:1
+(fails AA at 13px), the shipped --danger-fg 4.78:1 passes.
+
+**Gates:** route/permission + owner battery 10 files / 105 tests green
+(App-routes, permissions-matrix, route-titles-coverage, nav-routes-consistency,
+Owner* unit files) — unchanged files, unchanged assertions; root
+`npm run typecheck` green; `lint:css` zero NEW problems (owner.css clean;
+repo held at 20 errors/86 warnings); `bash scripts/gates/stylelint-gate.sh`
+ratchet green (baseline held).
+
+**Residuals (owner):** `/owner/users` typeRungs 93/92 @1440/768 — the
+UserAvatar monogram seats (14px/12px Geist Mono, `Math.round(size*0.4)`),
+N6's shared-primitive class, out of ownership (components/UserAvatar);
+`/owner/notifications` @768 98.4 — the shared AlertsPage (W1 file) on the
+same N6 fluid-heading class; both ≥ floor.

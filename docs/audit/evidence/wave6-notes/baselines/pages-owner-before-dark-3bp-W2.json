@@ -1,0 +1,3428 @@
+{
+ "generatedAt": "2026-11-19T09:13:12.703Z",
+ "url": "http://localhost:5306/",
+ "dark": true,
+ "routes": {
+  "/owner/dashboard": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 91,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 68
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.9010989010989,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 91,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 68
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المراقبة الحيّة"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 90,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 67
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المراقبة الحيّة"
+     }
+    }
+   }
+  },
+  "/owner/realtime": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 33,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 21
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.5,
+    "axes": {
+     "typeRungs": {
+      "score": 96.96969696969697,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 33,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 21
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التنبيهات"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 32,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 20
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التنبيهات"
+     }
+    }
+   }
+  },
+  "/owner/users": {
+   "1440:dark": {
+    "score": 98.8,
+    "axes": {
+     "typeRungs": {
+      "score": 92.95774647887323,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مع"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "أر"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "طس"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "أج"
+       }
+      ],
+      "total": 71,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 68
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 98.6,
+    "axes": {
+     "typeRungs": {
+      "score": 91.54929577464789,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مع"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "أر"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "طس"
+       },
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "أج"
+       }
+      ],
+      "total": 71,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 68
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ النشاط"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 70,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 67
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ النشاط"
+     }
+    }
+   }
+  },
+  "/owner/institutions": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 65,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 58
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.7,
+    "axes": {
+     "typeRungs": {
+      "score": 98.46153846153847,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 65,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 58
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إنشاء المؤسسة"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 64,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 57
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إنشاء المؤسسة"
+     }
+    }
+   }
+  },
+  "/owner/institutions/zu": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 74,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 52
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.66666666666667,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 75,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 53
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "دليل الأعضاء"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 74,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 52
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "دليل الأعضاء"
+     }
+    }
+   }
+  },
+  "/owner/activity": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 58,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 36
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.7,
+    "axes": {
+     "typeRungs": {
+      "score": 98.27586206896551,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 58,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 36
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "الحوكمة"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 57,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 35
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "الحوكمة"
+     }
+    }
+   }
+  },
+  "/owner/content": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 33,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.5,
+    "axes": {
+     "typeRungs": {
+      "score": 96.96969696969697,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 33,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "فتح المجتمع"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 32,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 17
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "فتح المجتمع"
+     }
+    }
+   }
+  },
+  "/owner/system": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 53,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 19
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.7,
+    "axes": {
+     "typeRungs": {
+      "score": 98.11320754716981,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 53,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 19
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التنبيهات"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 52,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "التنبيهات"
+     }
+    }
+   }
+  },
+  "/owner/education": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 81,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 34
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.76543209876543,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 81,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 34
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المستخدمون"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 80,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 33
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المستخدمون"
+     }
+    }
+   }
+  },
+  "/owner/ai": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 94,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 38
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "النظام والتشغيل"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.94736842105263,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 95,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 39
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "النظام والتشغيل"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 94,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 9
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 38
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "النظام والتشغيل"
+     }
+    }
+   }
+  },
+  "/owner/notifications": {
+   "1440:dark": {
+    "score": 99.5,
+    "axes": {
+     "typeRungs": {
+      "score": 96.7741935483871,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "آخر الإشعارات"
+       }
+      ],
+      "total": 31,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 31
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 98.4,
+    "axes": {
+     "typeRungs": {
+      "score": 90.32258064516128,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       },
+       {
+        "fs": 40.518,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "الإشعارات"
+       },
+       {
+        "fs": 25.7842,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "آخر الإشعارات"
+       }
+      ],
+      "total": 31,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 31
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تعليم الكل كمقروء"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 99.4,
+    "axes": {
+     "typeRungs": {
+      "score": 96.66666666666667,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "آخر الإشعارات"
+       }
+      ],
+      "total": 30,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 30
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تعليم الكل كمقروء"
+     }
+    }
+   }
+  },
+  "/owner/alerts": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 46,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 27
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.6,
+    "axes": {
+     "typeRungs": {
+      "score": 97.82608695652173,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 46,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 27
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المراقبة الحيّة"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 45,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 26
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المراقبة الحيّة"
+     }
+    }
+   }
+  },
+  "/owner/governance": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 88,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 78
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.86363636363636,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 88,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 78
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ النشاط"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 87,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 7
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 77
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ النشاط"
+     }
+    }
+   }
+  },
+  "/owner/feedback": {
+   "1440:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 56,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 17
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.7,
+    "axes": {
+     "typeRungs": {
+      "score": 98.21428571428571,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 12,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "مأ"
+       }
+      ],
+      "total": 56,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 17
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ النشاط"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 55,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 16
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ النشاط"
+     }
+    }
+   }
+  }
+ },
+ "gate": false,
+ "floor": 90
+}
